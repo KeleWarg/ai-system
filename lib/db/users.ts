@@ -46,7 +46,7 @@ export async function updateUserRole(id: string, role: 'admin' | 'editor') {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('users')
-    .update({ role })
+    .update({ role } as never)
     .eq('id', id)
     .select()
     .single()

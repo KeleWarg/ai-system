@@ -52,7 +52,7 @@ export async function createTheme(theme: Omit<Theme, 'id' | 'created_at' | 'upda
   const supabase = createClient()
   const { data, error } = await supabase
     .from('themes')
-    .insert(theme)
+    .insert(theme as never)
     .select()
     .single()
 
@@ -68,7 +68,7 @@ export async function updateTheme(id: string, updates: Partial<Omit<Theme, 'id' 
   const supabase = createClient()
   const { data, error } = await supabase
     .from('themes')
-    .update(updates)
+    .update(updates as never)
     .eq('id', id)
     .select()
     .single()
@@ -102,13 +102,13 @@ export async function setActiveTheme(id: string) {
   // First, deactivate all themes
   await supabase
     .from('themes')
-    .update({ is_active: false })
+    .update({ is_active: false } as never)
     .neq('id', id)
 
   // Then activate the selected theme
   const { data, error } = await supabase
     .from('themes')
-    .update({ is_active: true })
+    .update({ is_active: true } as never)
     .eq('id', id)
     .select()
     .single()
