@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase'
 
+interface ComponentPayload {
+  name: string
+  slug: string
+  description?: string
+  category?: string
+  code: string
+  variants?: Record<string, string[]>
+  props?: Record<string, unknown>
+  prompts?: {
+    basic: string[]
+    advanced: string[]
+    useCases: string[]
+  }
+  installation?: string
+  theme_id?: string
+}
+
 export async function POST(req: NextRequest) {
   try {
     const supabase = createClient()
@@ -15,7 +32,7 @@ export async function POST(req: NextRequest) {
       )
     }
     
-    const body = await req.json()
+    const body = await req.json() as ComponentPayload
     const {
       name,
       slug,
