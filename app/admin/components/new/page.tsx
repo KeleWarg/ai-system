@@ -8,16 +8,33 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
 
+interface ExtractedData {
+  name: string
+  description: string
+  category: string
+  variants?: Record<string, string[]>
+  colors?: string[]
+  spacing?: Record<string, string>
+}
+
+interface Theme {
+  id: string
+  name: string
+  is_active: boolean
+  colors: Record<string, string>
+  spacing?: Record<string, string>
+}
+
 export default function NewComponentPage() {
   const router = useRouter()
   const [uploading, setUploading] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [extractedData, setExtractedData] = useState<Record<string, unknown> | null>(null)
+  const [extractedData, setExtractedData] = useState<ExtractedData | null>(null)
   const [generatedCode, setGeneratedCode] = useState('')
   const [componentName, setComponentName] = useState('')
-  const [themes, setThemes] = useState<Array<Record<string, unknown>>>([])
-  const [selectedTheme, setSelectedTheme] = useState<Record<string, unknown> | null>(null)
+  const [themes, setThemes] = useState<Theme[]>([])
+  const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null)
   const [error, setError] = useState('')
   
   // Load themes on mount
@@ -29,7 +46,7 @@ export default function NewComponentPage() {
         setThemes(data)
         
         // Set active theme as default
-        const activeTheme = data.find((t: Record<string, unknown>) => t.is_active)
+        const activeTheme = data.find((t: Theme) => t.is_active)
         if (activeTheme) {
           setSelectedTheme(activeTheme)
         }
@@ -204,7 +221,7 @@ export default function NewComponentPage() {
         </Label>
         <select
           id="theme-select"
-          value={(selectedTheme?.id as string) || ''}
+          value={selectedTheme?.id || ''}
           onChange={(e) => {
             const theme = themes.find(t => t.id === e.target.value)
             setSelectedTheme(theme || null)
@@ -212,8 +229,8 @@ export default function NewComponentPage() {
           className="w-full px-3 py-2 border border-border rounded-md bg-background"
         >
           {themes.map(theme => (
-            <option key={theme.id as string} value={theme.id as string}>
-              {theme.name as string} {theme.is_active ? '(Active)' : ''}
+            <option key={theme.id} value={theme.id}>
+              {theme.name} {theme.is_active ? '(Active)' : ''}
             </option>
           ))}
         </select>
@@ -274,14 +291,14 @@ export default function NewComponentPage() {
             <div>
               <Label>Description</Label>
               <p className="mt-2 text-sm text-muted-foreground">
-                {(extractedData.description as string) || 'No description extracted'}
+                {extractedData.description || 'No description extracted'}
               </p>
             </div>
             
             <div>
               <Label>Category</Label>
               <p className="mt-2 text-sm">
-                {(extractedData.category as string) || 'general'}
+                {extractedData.category || 'general'}
               </p>
             </div>
             
