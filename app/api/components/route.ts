@@ -55,21 +55,23 @@ export async function POST(req: NextRequest) {
     }
     
     // Insert component
+    const componentData = {
+      name,
+      slug,
+      description: description || '',
+      category: category || 'general',
+      code,
+      variants: variants || {},
+      props: props || {},
+      prompts: prompts || { basic: [], advanced: [], useCases: [] },
+      installation: installation || '',
+      theme_id: theme_id || null,
+      created_by: user.id,
+    }
+    
     const { data, error } = await supabase
       .from('components')
-      .insert({
-        name,
-        slug,
-        description: description || '',
-        category: category || 'general',
-        code,
-        variants: variants || {},
-        props: props || {},
-        prompts: prompts || { basic: [], advanced: [], useCases: [] },
-        installation: installation || '',
-        theme_id: theme_id || null,
-        created_by: user.id,
-      })
+      .insert(componentData as never)
       .select()
       .single()
     
