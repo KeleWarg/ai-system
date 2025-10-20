@@ -68,7 +68,7 @@ export async function GET() {
         description: c.description,
         category: c.category,
         variants: Object.keys(c.variants || {}),
-        has_prompts: !!(c.prompts && (c.prompts as any).basic?.length > 0),
+        has_prompts: !!(c.prompts && (c.prompts as Record<string, unknown>).basic),
       })),
     })
   } catch (error) {

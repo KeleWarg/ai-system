@@ -37,7 +37,7 @@ export async function GET(
         if (installData.dependencies) {
           dependencies = [...dependencies, ...installData.dependencies]
         }
-      } catch (e) {
+      } catch {
         // Installation is plain text, not JSON
       }
     }

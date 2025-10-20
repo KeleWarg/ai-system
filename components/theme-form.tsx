@@ -165,7 +165,7 @@ export function ThemeForm({ theme }: ThemeFormProps) {
         <CardHeader>
           <CardTitle>Colors (HSL Format)</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Use HSL format: "H S% L%" (e.g., "222.2 47.4% 11.2%")
+            Use HSL format: &quot;H S% L%&quot; (e.g., &quot;222.2 47.4% 11.2%&quot;)
           </p>
         </CardHeader>
         <CardContent className="space-y-4">

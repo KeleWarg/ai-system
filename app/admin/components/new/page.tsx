@@ -13,11 +13,11 @@ export default function NewComponentPage() {
   const [uploading, setUploading] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [extractedData, setExtractedData] = useState<any>(null)
+  const [extractedData, setExtractedData] = useState<Record<string, unknown> | null>(null)
   const [generatedCode, setGeneratedCode] = useState('')
   const [componentName, setComponentName] = useState('')
-  const [themes, setThemes] = useState<any[]>([])
-  const [selectedTheme, setSelectedTheme] = useState<any>(null)
+  const [themes, setThemes] = useState<Array<Record<string, unknown>>>([])
+  const [selectedTheme, setSelectedTheme] = useState<Record<string, unknown> | null>(null)
   const [error, setError] = useState('')
   
   // Load themes on mount
@@ -29,7 +29,7 @@ export default function NewComponentPage() {
         setThemes(data)
         
         // Set active theme as default
-        const activeTheme = data.find((t: any) => t.is_active)
+        const activeTheme = data.find((t: Record<string, unknown>) => t.is_active)
         if (activeTheme) {
           setSelectedTheme(activeTheme)
         }
@@ -218,7 +218,7 @@ export default function NewComponentPage() {
           ))}
         </select>
         <p className="text-sm text-muted-foreground mt-2">
-          Generated components will use this theme's color tokens
+          Generated components will use this theme&apos;s color tokens
         </p>
       </Card>
       

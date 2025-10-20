@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import { updateTheme, deleteTheme } from '@/lib/db/themes'
 import { getCurrentUser } from '@/lib/auth-helpers'
 import { createClient } from '@/lib/supabase'
-import type { Theme } from '@/lib/supabase'
 
 // GET single theme
 export async function GET(

@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getThemes, createTheme } from '@/lib/db/themes'
 import { getCurrentUser } from '@/lib/auth-helpers'
 

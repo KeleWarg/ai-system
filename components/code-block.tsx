@@ -10,7 +10,7 @@ interface CodeBlockProps {
   filename?: string
 }
 
-export function CodeBlock({ code, language = 'tsx', filename }: CodeBlockProps) {
+export function CodeBlock({ code, filename }: CodeBlockProps) {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {

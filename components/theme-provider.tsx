@@ -1,9 +1,8 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase'
 import type { Theme } from '@/lib/supabase'
-import { getActiveTheme } from '@/lib/db/themes'
 
 interface ThemeContextType {
   theme: Theme | null
@@ -21,7 +20,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   // Load themes and active theme
-  const loadThemes = async () => {
+  const loadThemes = useCallback(async () => {
     try {
       const supabase = createClient()
       
@@ -46,7 +45,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   // Apply theme CSS variables
   const applyTheme = (theme: Theme) => {
@@ -149,7 +148,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [])
+  }, [loadThemes])
 
   return (
     <ThemeContext.Provider

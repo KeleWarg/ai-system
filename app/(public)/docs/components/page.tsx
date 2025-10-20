@@ -49,7 +49,7 @@ export default async function ComponentsPage() {
             <div>
               <h3 className="font-semibold text-lg mb-2">No components yet</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Components will appear here once they're created in the admin panel.
+                Components will appear here once they&apos;re created in the admin panel.
               </p>
               <Link href="/admin">
                 <Button>
