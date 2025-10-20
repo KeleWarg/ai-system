@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from './supabase'
+import { createServerSupabaseClient } from './supabase-server'
 import { redirect } from 'next/navigation'
 import { getUser } from './db/users'
 
