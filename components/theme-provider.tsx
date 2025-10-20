@@ -90,7 +90,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       // Update theme to be active
       const { data, error } = await supabase
         .from('themes')
-        .update({ is_active: true })
+        .update({ is_active: true } as never)
         .eq('id', themeId)
         .select()
         .single()
@@ -98,8 +98,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       if (error) throw error
 
       if (data) {
-        setTheme(data)
-        applyTheme(data)
+        setTheme(data as Theme)
+        applyTheme(data as Theme)
       }
 
       // Refresh themes to update the list
