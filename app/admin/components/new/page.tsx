@@ -207,7 +207,7 @@ export default function NewComponentPage() {
           value={(selectedTheme?.id as string) || ''}
           onChange={(e) => {
             const theme = themes.find(t => t.id === e.target.value)
-            setSelectedTheme(theme)
+            setSelectedTheme(theme || null)
           }}
           className="w-full px-3 py-2 border border-border rounded-md bg-background"
         >
