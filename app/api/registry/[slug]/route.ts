@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getComponent } from '@/lib/db/components'
+import { getComponentBySlug } from '@/lib/db/components'
 
 /**
  * Registry API - Get individual component details
@@ -11,7 +11,7 @@ export async function GET(
 ) {
   try {
     const { slug } = await params
-    const component = await getComponent(slug)
+    const component = await getComponentBySlug(slug)
     
     if (!component) {
       return NextResponse.json(
