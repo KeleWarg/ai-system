@@ -204,7 +204,7 @@ export default function NewComponentPage() {
         </Label>
         <select
           id="theme-select"
-          value={selectedTheme?.id || ''}
+          value={(selectedTheme?.id as string) || ''}
           onChange={(e) => {
             const theme = themes.find(t => t.id === e.target.value)
             setSelectedTheme(theme)
@@ -212,8 +212,8 @@ export default function NewComponentPage() {
           className="w-full px-3 py-2 border border-border rounded-md bg-background"
         >
           {themes.map(theme => (
-            <option key={theme.id} value={theme.id}>
-              {theme.name} {theme.is_active ? '(Active)' : ''}
+            <option key={theme.id as string} value={theme.id as string}>
+              {theme.name as string} {theme.is_active ? '(Active)' : ''}
             </option>
           ))}
         </select>
