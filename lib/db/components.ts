@@ -52,7 +52,7 @@ export async function createComponent(component: Omit<Component, 'id' | 'created
   const supabase = createClient()
   const { data, error } = await supabase
     .from('components')
-    .insert(component)
+    .insert(component as never)
     .select()
     .single()
 
@@ -68,7 +68,7 @@ export async function updateComponent(id: string, updates: Partial<Omit<Componen
   const supabase = createClient()
   const { data, error } = await supabase
     .from('components')
-    .update(updates)
+    .update(updates as never)
     .eq('id', id)
     .select()
     .single()
