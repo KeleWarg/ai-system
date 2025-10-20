@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test:part1": "tsx scripts/test-setup.ts",
     "test:part2": "tsx scripts/test-supabase.ts",
-    "test:part3": "tsx scripts/test-auth.ts"
+    "test:part3": "tsx scripts/test-auth.ts",
+    "test:part4": "tsx scripts/test-themes.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.67.0",
