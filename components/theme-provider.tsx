@@ -31,10 +31,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         .order('created_at', { ascending: false })
 
       if (allThemes) {
-        setThemes(allThemes)
+        setThemes(allThemes as Theme[])
         
         // Find active theme
-        const activeTheme = allThemes.find((t) => t.is_active)
+        const activeTheme = (allThemes as Theme[]).find((t) => t.is_active)
         if (activeTheme) {
           setTheme(activeTheme)
           applyTheme(activeTheme)
