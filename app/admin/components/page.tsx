@@ -19,10 +19,12 @@ export default async function ComponentsPage() {
             Manage your design system components
           </p>
         </div>
-        <Button disabled>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Component
-        </Button>
+        <Link href="/admin/components/new">
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Create Component
+          </Button>
+        </Link>
       </div>
 
       {/* Components List */}
@@ -31,8 +33,14 @@ export default async function ComponentsPage() {
           <Box className="h-12 w-12 text-muted-foreground mb-4" />
           <h3 className="text-lg font-semibold mb-2">No components yet</h3>
           <p className="text-sm text-muted-foreground text-center mb-4">
-            Component management will be available in Part 6-8
+            Upload a PNG spec sheet to create your first component
           </p>
+          <Link href="/admin/components/new">
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Create Component
+            </Button>
+          </Link>
         </Card>
       ) : (
         <div className="grid gap-4">
@@ -50,9 +58,11 @@ export default async function ComponentsPage() {
                     </span>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" disabled>
-                  View
-                </Button>
+                <Link href={`/docs/components/${component.slug}`}>
+                  <Button variant="outline" size="sm">
+                    View
+                  </Button>
+                </Link>
               </div>
             </Card>
           ))}

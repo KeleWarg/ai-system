@@ -15,6 +15,13 @@ export interface GenerateComponentParams {
     required: boolean
     description: string
   }>
+  theme?: {
+    id: string
+    name: string
+    colors: Record<string, string>
+  }
+  colors?: string[]
+  spacing?: string[]
 }
 
 export interface GeneratePromptsParams {
@@ -49,6 +56,29 @@ export async function generateComponentCode(
     ? params.props.map((p) => `${p.name}: ${p.type} (${p.required ? 'required' : 'optional'}) - ${p.description}`).join('\n')
     : 'No props specified'
 
+  // Build theme color mapping information
+  let themeInfo = ''
+  if (params.theme && params.colors && params.colors.length > 0) {
+    themeInfo = `\n\nTheme Information:
+Theme Name: ${params.theme.name}
+Detected Colors in Spec: ${params.colors.join(', ')}
+
+IMPORTANT - Color Mapping:
+- Map detected colors to appropriate theme tokens from this theme:
+  * primary: ${params.theme.colors.primary || 'Main brand color'}
+  * secondary: ${params.theme.colors.secondary || 'Secondary actions'}
+  * accent: ${params.theme.colors.accent || 'Highlighted elements'}
+  * muted: ${params.theme.colors.muted || 'Subtle backgrounds'}
+  * destructive: ${params.theme.colors.destructive || 'Error states'}
+- NEVER use hardcoded hex colors like #3B82F6
+- ALWAYS use Tailwind theme classes like bg-primary, text-foreground, border-border
+- Example: If spec shows blue button, use bg-primary NOT bg-blue-500`
+  }
+
+  const spacingInfo = params.spacing?.length 
+    ? `\n\nSpacing/Sizing: ${params.spacing.join(', ')}`
+    : ''
+
   const prompt = `Generate a professional React component with TypeScript for a design system.
 
 Component Name: ${params.name}
@@ -59,18 +89,22 @@ Variants:
 ${variantsText}
 
 Props:
-${propsText}
+${propsText}${themeInfo}${spacingInfo}
 
 Requirements:
 1. Use TypeScript with proper types
 2. Use class-variance-authority (cva) for variant management
-3. Use Tailwind CSS classes
+3. Use Tailwind CSS classes with THEME TOKENS ONLY (bg-primary, text-foreground, NOT hex colors)
 4. Follow shadcn/ui patterns
 5. Include proper prop validation
 6. Make it accessible (ARIA attributes)
 7. Use React.forwardRef for ref forwarding
 8. Use the @/lib/utils cn() function for className merging
-9. Use CSS variables from the theme system (e.g., bg-primary, text-foreground)
+9. Map spec sheet colors to theme tokens intelligently:
+   - Primary colors → bg-primary, text-primary
+   - Neutral colors → bg-muted, text-muted-foreground
+   - Borders → border-border
+   - Backgrounds → bg-background, bg-card
 10. Include JSDoc comments
 
 Return ONLY the component code, no explanations.`
