@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI-Powered Design System
 
-## Getting Started
+A complete design system CMS that allows admins to upload PNG spec sheets and have AI automatically generate professional UI components.
 
-First, run the development server:
+## 🎯 Features
+
+- **AI Component Generation** - Upload PNG → AI extracts specs → Auto-generates React components
+- **Theme System** - HSL-based themes with real-time switching
+- **Admin Panel** - Manage themes, components, and configurations
+- **Public UI** - Browse, search, and copy components
+- **AI Integration** - MCP Server, Registry API, llms.txt for AI tools
+- **Tailwind-First** - Maximum flexibility using Tailwind utilities
+
+## 🚀 Tech Stack
+
+- **Frontend**: Next.js 15, TypeScript, Tailwind CSS, Radix UI
+- **Backend**: Supabase (PostgreSQL + Auth + Realtime)
+- **AI**: Anthropic Claude API (Vision + Code Generation)
+- **Hosting**: Vercel
+
+## 📦 Current Status
+
+**✅ Part 1 Complete: Initial Setup**
+- Next.js app initialized
+- Dependencies installed
+- Project structure created
+- Tailwind configured with HSL color system
+- Utility functions created
+- All 20 tests passing
+
+**Next Up: Part 2 - Supabase Backend**
+
+## 🧪 Testing
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run test:part1  # Test Part 1 setup
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎨 Customization
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This system is 100% customizable. See documentation:
+- `../CUSTOMIZATION_GUIDE.md` - Complete theming guide
+- `../LAYOUT_PHILOSOPHY.md` - Tailwind-first approach
+- `../TRUE_FROM_SCRATCH.md` - Full build guide
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📝 License
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
