@@ -10,10 +10,12 @@
     "test:part1": "tsx scripts/test-setup.ts",
     "test:part2": "tsx scripts/test-supabase.ts",
     "test:part3": "tsx scripts/test-auth.ts",
-    "test:part4": "tsx scripts/test-themes.ts"
+    "test:part4": "tsx scripts/test-themes.ts",
+    "test:part5": "tsx scripts/test-admin.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.67.0",
+    "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-scroll-area": "^1.2.10",
