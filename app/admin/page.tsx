@@ -18,13 +18,13 @@ async function getDashboardStats() {
     .from('themes')
     .select('name')
     .eq('is_active', true)
-    .single()
+    .maybeSingle()
 
   return {
     themes: themesResult.count || 0,
     components: componentsResult.count || 0,
     users: usersResult.count || 0,
-    activeTheme: activeTheme?.name || 'None',
+    activeTheme: (activeTheme as { name: string } | null)?.name || 'None',
   }
 }
 
