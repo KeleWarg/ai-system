@@ -11,7 +11,8 @@
     "test:part2": "tsx scripts/test-supabase.ts",
     "test:part3": "tsx scripts/test-auth.ts",
     "test:part4": "tsx scripts/test-themes.ts",
-    "test:part5": "tsx scripts/test-admin.ts"
+    "test:part5": "tsx scripts/test-admin.ts",
+    "test:part6": "tsx scripts/test-ai.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.67.0",
