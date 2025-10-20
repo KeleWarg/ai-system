@@ -1,9 +1,10 @@
 import { getComponentBySlug } from '@/lib/db/components'
 import { notFound } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { CodeBlock } from '@/components/code-block'
+import { CodeBlockEnhanced } from '@/components/code-block-enhanced'
 import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { Package, Layers, Code2 } from 'lucide-react'
 
 export default async function ComponentDetailPage({
   params,
@@ -18,50 +19,61 @@ export default async function ComponentDetailPage({
   }
 
   return (
-    <div className="container py-8 md:py-12">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-2 mb-4">
-          <Badge variant="outline">{component.category}</Badge>
-          <span className="text-sm text-muted-foreground">
-            Updated {new Date(component.updated_at).toLocaleDateString()}
-          </span>
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="gap-1">
+            <Layers className="h-3 w-3" />
+            {component.category}
+          </Badge>
         </div>
-        <h1 className="text-3xl font-bold tracking-tight md:text-4xl mb-2">
-          {component.name}
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          {component.description}
-        </p>
+        <div className="space-y-2">
+          <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">
+            {component.name}
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            {component.description}
+          </p>
+        </div>
       </div>
 
+      <Separator />
+
       {/* Tabs */}
-      <Tabs defaultValue="code" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="code">Code</TabsTrigger>
-          <TabsTrigger value="props">Props</TabsTrigger>
+      <Tabs defaultValue="code" className="space-y-6">
+        <TabsList className="grid w-full max-w-md grid-cols-4">
+          <TabsTrigger value="code" className="gap-2">
+            <Code2 className="h-4 w-4" />
+            Code
+          </TabsTrigger>
+          <TabsTrigger value="props" className="gap-2">
+            <Package className="h-4 w-4" />
+            Props
+          </TabsTrigger>
           {component.prompts && (
-            <TabsTrigger value="prompts">AI Prompts</TabsTrigger>
+            <TabsTrigger value="prompts">Prompts</TabsTrigger>
           )}
           {component.installation && (
-            <TabsTrigger value="installation">Installation</TabsTrigger>
+            <TabsTrigger value="installation">Install</TabsTrigger>
           )}
         </TabsList>
 
         {/* Code Tab */}
         <TabsContent value="code" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Component Code</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CodeBlock
-                code={component.code}
-                language="tsx"
-                filename={`${component.slug}.tsx`}
-              />
-            </CardContent>
-          </Card>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Component Code
+            </h2>
+            <p className="text-muted-foreground">
+              Copy and paste this into your project.
+            </p>
+          </div>
+          <CodeBlockEnhanced
+            code={component.code}
+            language="tsx"
+            filename={`${component.slug}.tsx`}
+          />
 
           {/* Variants */}
           {component.variants && Object.keys(component.variants).length > 0 && (

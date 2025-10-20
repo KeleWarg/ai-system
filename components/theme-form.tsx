@@ -6,9 +6,13 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { Loader2 } from 'lucide-react'
-import type { Theme } from '@/lib/supabase'
+import { Loader2, Plus, X } from 'lucide-react'
+import { ColorPicker } from './color-picker'
+import type { Theme, ThemeFont, ResponsiveValue } from '@/lib/supabase'
 import { slugify } from '@/lib/utils'
+import { DEFAULT_COLORS, COLOR_CATEGORIES, COLOR_LABELS } from '@/lib/color-system'
+import { DEFAULT_TYPOGRAPHY, FONT_SIZE_KEYS, LINE_HEIGHT_KEYS, FONT_WEIGHT_KEYS, LETTER_SPACING_KEYS } from '@/lib/typography-system'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
 
 interface ThemeFormProps {
   theme?: Theme
@@ -20,27 +24,15 @@ export function ThemeForm({ theme }: ThemeFormProps) {
   const [formData, setFormData] = useState({
     name: theme?.name || '',
     slug: theme?.slug || '',
-    colors: theme?.colors || {
-      background: '0 0% 100%',
-      foreground: '222.2 47.4% 11.2%',
-      primary: '222.2 47.4% 11.2%',
-      'primary-foreground': '210 40% 98%',
-      'primary-hover': '222.2 47.4% 20%',
-      secondary: '210 40% 96.1%',
-      'secondary-foreground': '222.2 47.4% 11.2%',
-      'secondary-hover': '210 40% 90%',
-      muted: '210 40% 96.1%',
-      'muted-foreground': '215.4 16.3% 46.9%',
-      accent: '210 40% 96.1%',
-      'accent-foreground': '222.2 47.4% 11.2%',
-      destructive: '0 84.2% 60.2%',
-      'destructive-foreground': '210 40% 98%',
-      'destructive-hover': '0 84.2% 50%',
-      border: '214.3 31.8% 91.4%',
-      input: '214.3 31.8% 91.4%',
-      ring: '222.2 84% 4.9%',
-      card: '0 0% 100%',
-      popover: '0 0% 100%',
+    colors: theme?.colors || DEFAULT_COLORS,
+    typography: theme?.typography || DEFAULT_TYPOGRAPHY,
+    spacing: theme?.spacing || {
+      xs: '0.5rem',
+      sm: '0.75rem',
+      md: '1rem',
+      lg: '1.5rem',
+      xl: '2rem',
+      '2xl': '3rem',
     },
     radius: theme?.radius || '0.5rem',
     is_active: theme?.is_active || false,
@@ -93,24 +85,95 @@ export function ThemeForm({ theme }: ThemeFormProps) {
     })
   }
 
-  const colorFields = [
-    { key: 'background', label: 'Background' },
-    { key: 'foreground', label: 'Foreground' },
-    { key: 'primary', label: 'Primary' },
-    { key: 'primary-foreground', label: 'Primary Foreground' },
-    { key: 'primary-hover', label: 'Primary Hover' },
-    { key: 'secondary', label: 'Secondary' },
-    { key: 'secondary-foreground', label: 'Secondary Foreground' },
-    { key: 'secondary-hover', label: 'Secondary Hover' },
-    { key: 'muted', label: 'Muted' },
-    { key: 'muted-foreground', label: 'Muted Foreground' },
-    { key: 'accent', label: 'Accent' },
-    { key: 'accent-foreground', label: 'Accent Foreground' },
-    { key: 'destructive', label: 'Destructive' },
-    { key: 'destructive-foreground', label: 'Destructive Foreground' },
-    { key: 'destructive-hover', label: 'Destructive Hover' },
-    { key: 'border', label: 'Border' },
-  ]
+  const addFont = () => {
+    const newFont: ThemeFont = {
+      name: `Font ${(formData.typography.fonts || []).length + 1}`,
+      family: 'Inter',
+      weights: ['400'],
+      fallback: 'sans-serif',
+    }
+    setFormData({
+      ...formData,
+      typography: {
+        ...formData.typography,
+        fonts: [...(formData.typography.fonts || []), newFont],
+      },
+    })
+  }
+
+  const removeFont = (index: number) => {
+    const fonts = [...(formData.typography.fonts || [])]
+    fonts.splice(index, 1)
+    setFormData({
+      ...formData,
+      typography: {
+        ...formData.typography,
+        fonts,
+      },
+    })
+  }
+
+  const updateFont = (index: number, updates: Partial<ThemeFont>) => {
+    const fonts = [...(formData.typography.fonts || [])]
+    fonts[index] = { ...fonts[index], ...updates }
+    setFormData({
+      ...formData,
+      typography: {
+        ...formData.typography,
+        fonts,
+      },
+    })
+  }
+
+  const updateResponsiveValue = (
+    category: 'fontSize' | 'lineHeight',
+    key: string,
+    device: 'desktop' | 'tablet' | 'mobile',
+    value: string
+  ) => {
+    const current = (formData.typography[category] || {}) as Record<string, ResponsiveValue>
+    const currentValue = current[key] || { desktop: '', tablet: '', mobile: '' }
+
+    setFormData({
+      ...formData,
+      typography: {
+        ...formData.typography,
+        [category]: {
+          ...current,
+          [key]: {
+            ...currentValue,
+            [device]: value,
+          },
+        },
+      },
+    })
+  }
+
+  const updateFontWeight = (key: string, value: string) => {
+    setFormData({
+      ...formData,
+      typography: {
+        ...formData.typography,
+        fontWeight: {
+          ...(formData.typography.fontWeight || {}),
+          [key]: value,
+        },
+      },
+    })
+  }
+
+  const updateLetterSpacing = (key: string, value: string) => {
+    setFormData({
+      ...formData,
+      typography: {
+        ...formData.typography,
+        letterSpacing: {
+          ...(formData.typography.letterSpacing || {}),
+          [key]: value,
+        },
+      },
+    })
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -153,9 +216,247 @@ export function ThemeForm({ theme }: ThemeFormProps) {
               onChange={(e) => setFormData({ ...formData, radius: e.target.value })}
               placeholder="e.g., 0.5rem"
             />
-            <p className="text-xs text-muted-foreground mt-1">
-              Default border radius for components (e.g., 0.5rem, 8px)
-            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Typography */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Typography</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Configure fonts, sizes, line heights, weights, and letter spacing
+          </p>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="fonts">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="fonts">Fonts</TabsTrigger>
+              <TabsTrigger value="sizes">Sizes</TabsTrigger>
+              <TabsTrigger value="lineHeight">Line Height</TabsTrigger>
+              <TabsTrigger value="weights">Weights</TabsTrigger>
+              <TabsTrigger value="spacing">Letter Spacing</TabsTrigger>
+            </TabsList>
+
+            {/* Fonts Tab */}
+            <TabsContent value="fonts" className="space-y-4 mt-4">
+              <div className="flex justify-end">
+                <Button type="button" size="sm" onClick={addFont} variant="outline">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Font
+                </Button>
+              </div>
+              {(formData.typography.fonts || []).map((font, index) => (
+                <Card key={index} className="border-2">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <Input
+                        value={font.name}
+                        onChange={(e) => updateFont(index, { name: e.target.value })}
+                        className="text-sm font-medium max-w-xs"
+                        placeholder="Font name"
+                      />
+                      {(formData.typography.fonts || []).length > 1 && (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => removeFont(index)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div>
+                        <Label className="text-xs">Font Family</Label>
+                        <Input
+                          value={font.family}
+                          onChange={(e) => updateFont(index, { family: e.target.value })}
+                          placeholder="e.g., Inter"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Fallback</Label>
+                        <Input
+                          value={font.fallback || ''}
+                          onChange={(e) => updateFont(index, { fallback: e.target.value })}
+                          placeholder="e.g., sans-serif"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-xs">Weights (comma-separated)</Label>
+                      <Input
+                        value={font.weights.join(', ')}
+                        onChange={(e) =>
+                          updateFont(index, {
+                            weights: e.target.value.split(',').map((w) => w.trim()),
+                          })
+                        }
+                        placeholder="e.g., 300, 400, 500, 600, 700"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Custom Font URL (optional)</Label>
+                      <Input
+                        value={font.url || ''}
+                        onChange={(e) => updateFont(index, { url: e.target.value })}
+                        placeholder="https://fonts.googleapis.com/..."
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </TabsContent>
+
+            {/* Font Sizes Tab */}
+            <TabsContent value="sizes" className="space-y-4 mt-4">
+              <div className="space-y-4">
+                <div className="grid grid-cols-4 gap-2 text-xs font-medium text-muted-foreground px-2">
+                  <div>Name</div>
+                  <div>Desktop</div>
+                  <div>Tablet</div>
+                  <div>Mobile</div>
+                </div>
+                {FONT_SIZE_KEYS.map((key) => {
+                  const value = (formData.typography.fontSize || {})[key] || { desktop: '', tablet: '', mobile: '' }
+                  return (
+                    <div key={key} className="grid grid-cols-4 gap-2 items-center">
+                      <Label className="text-xs">{key}</Label>
+                      <Input
+                        value={value.desktop}
+                        onChange={(e) => updateResponsiveValue('fontSize', key, 'desktop', e.target.value)}
+                        placeholder="56px"
+                        className="text-xs"
+                      />
+                      <Input
+                        value={value.tablet}
+                        onChange={(e) => updateResponsiveValue('fontSize', key, 'tablet', e.target.value)}
+                        placeholder="48px"
+                        className="text-xs"
+                      />
+                      <Input
+                        value={value.mobile}
+                        onChange={(e) => updateResponsiveValue('fontSize', key, 'mobile', e.target.value)}
+                        placeholder="32px"
+                        className="text-xs"
+                      />
+                    </div>
+                  )
+                })}
+              </div>
+            </TabsContent>
+
+            {/* Line Height Tab */}
+            <TabsContent value="lineHeight" className="space-y-4 mt-4">
+              <div className="space-y-4">
+                <div className="grid grid-cols-4 gap-2 text-xs font-medium text-muted-foreground px-2">
+                  <div>Name</div>
+                  <div>Desktop</div>
+                  <div>Tablet</div>
+                  <div>Mobile</div>
+                </div>
+                {LINE_HEIGHT_KEYS.map((key) => {
+                  const value = (formData.typography.lineHeight || {})[key] || { desktop: '', tablet: '', mobile: '' }
+                  return (
+                    <div key={key} className="grid grid-cols-4 gap-2 items-center">
+                      <Label className="text-xs">line-height-{key}</Label>
+                      <Input
+                        value={value.desktop}
+                        onChange={(e) => updateResponsiveValue('lineHeight', key, 'desktop', e.target.value)}
+                        placeholder="68px"
+                        className="text-xs"
+                      />
+                      <Input
+                        value={value.tablet}
+                        onChange={(e) => updateResponsiveValue('lineHeight', key, 'tablet', e.target.value)}
+                        placeholder="58px"
+                        className="text-xs"
+                      />
+                      <Input
+                        value={value.mobile}
+                        onChange={(e) => updateResponsiveValue('lineHeight', key, 'mobile', e.target.value)}
+                        placeholder="40px"
+                        className="text-xs"
+                      />
+                    </div>
+                  )
+                })}
+              </div>
+            </TabsContent>
+
+            {/* Font Weights Tab */}
+            <TabsContent value="weights" className="space-y-4 mt-4">
+              <div className="grid gap-3 sm:grid-cols-2">
+                {FONT_WEIGHT_KEYS.map((key) => (
+                  <div key={key}>
+                    <Label htmlFor={`weight-${key}`} className="text-xs">
+                      font-weight-{key}
+                    </Label>
+                    <Input
+                      id={`weight-${key}`}
+                      value={(formData.typography.fontWeight || {})[key] || ''}
+                      onChange={(e) => updateFontWeight(key, e.target.value)}
+                      placeholder="400"
+                    />
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+
+            {/* Letter Spacing Tab */}
+            <TabsContent value="spacing" className="space-y-4 mt-4">
+              <div className="grid gap-3 sm:grid-cols-2">
+                {LETTER_SPACING_KEYS.map((key) => (
+                  <div key={key}>
+                    <Label htmlFor={`spacing-${key}`} className="text-xs">
+                      spacing-{key}
+                    </Label>
+                    <Input
+                      id={`spacing-${key}`}
+                      value={(formData.typography.letterSpacing || {})[key] || ''}
+                      onChange={(e) => updateLetterSpacing(key, e.target.value)}
+                      placeholder="0"
+                    />
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+
+      {/* Spacing */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Spacing Scale</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {['xs', 'sm', 'md', 'lg', 'xl', '2xl'].map((size) => (
+              <div key={size}>
+                <Label htmlFor={`spacing-${size}`} className="text-xs text-muted-foreground">
+                  {size}
+                </Label>
+                <Input
+                  id={`spacing-${size}`}
+                  value={(formData.spacing as any)[size] || ''}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      spacing: {
+                        ...formData.spacing,
+                        [size]: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="e.g., 1rem"
+                />
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
@@ -163,32 +464,36 @@ export function ThemeForm({ theme }: ThemeFormProps) {
       {/* Colors */}
       <Card>
         <CardHeader>
-          <CardTitle>Colors (HSL Format)</CardTitle>
+          <CardTitle>Colors (Hex Format)</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Use HSL format: &quot;H S% L%&quot; (e.g., &quot;222.2 47.4% 11.2%&quot;)
+            Use hex format (#000000) or &quot;transparent&quot;
           </p>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            {colorFields.map(({ key, label }) => (
-              <div key={key}>
-                <Label htmlFor={key} className="flex items-center gap-2">
-                  <div
-                    className="h-4 w-4 rounded border border-border"
-                    style={{ backgroundColor: `hsl(${formData.colors[key]})` }}
-                  />
-                  {label}
-                </Label>
-                <Input
-                  id={key}
-                  value={formData.colors[key] || ''}
-                  onChange={(e) => handleColorChange(key, e.target.value)}
-                  placeholder="H S% L%"
-                  required
-                />
-              </div>
+        <CardContent>
+          <Tabs defaultValue="Primary Button">
+            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-5">
+              {Object.keys(COLOR_CATEGORIES).map((category) => (
+                <TabsTrigger key={category} value={category} className="text-xs">
+                  {category}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {Object.entries(COLOR_CATEGORIES).map(([category, colors]) => (
+              <TabsContent key={category} value={category} className="space-y-4 mt-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {colors.map((colorKey) => (
+                    <ColorPicker
+                      key={colorKey}
+                      id={colorKey}
+                      label={COLOR_LABELS[colorKey] || colorKey}
+                      value={formData.colors[colorKey] || DEFAULT_COLORS[colorKey]}
+                      onChange={(value) => handleColorChange(colorKey, value)}
+                    />
+                  ))}
+                </div>
+              </TabsContent>
             ))}
-          </div>
+          </Tabs>
         </CardContent>
       </Card>
 
@@ -198,15 +503,10 @@ export function ThemeForm({ theme }: ThemeFormProps) {
           {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           {theme ? 'Update Theme' : 'Create Theme'}
         </Button>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => router.back()}
-        >
+        <Button type="button" variant="outline" onClick={() => router.back()}>
           Cancel
         </Button>
       </div>
     </form>
   )
 }
-

@@ -1,102 +1,96 @@
 import { getComponents } from '@/lib/db/components'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { ArrowRight, Box } from 'lucide-react'
+import { ArrowRight, Box, Sparkles } from 'lucide-react'
 
 export default async function ComponentsPage() {
   const components = await getComponents()
 
-  // Group components by category
-  const componentsByCategory = components.reduce((acc, component) => {
-    const category = component.category || 'other'
-    if (!acc[category]) {
-      acc[category] = []
-    }
-    acc[category].push(component)
-    return acc
-  }, {} as Record<string, typeof components>)
-
-  const categoryNames: Record<string, string> = {
-    buttons: 'Buttons',
-    inputs: 'Inputs',
-    navigation: 'Navigation',
-    feedback: 'Feedback',
-    'data-display': 'Data Display',
-    overlays: 'Overlays',
-    other: 'Other',
-  }
-
   return (
-    <div className="container py-8 md:py-12">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col gap-4 mb-8">
-        <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-5 w-5 text-primary" />
+          <Badge variant="secondary" className="text-xs">
+            {components.length} Components
+          </Badge>
+        </div>
+        <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">
           Components
         </h1>
-        <p className="text-lg text-muted-foreground max-w-3xl">
-          Browse our collection of AI-generated components. Copy the code and paste
-          into your project. All components are built with TypeScript, Tailwind CSS,
-          and designed to work with your theme system.
+        <p className="text-lg text-muted-foreground max-w-2xl">
+          Beautifully designed AI-generated components. Built with Radix UI and Tailwind CSS.
+          Copy and paste into your apps.
         </p>
       </div>
 
-      {/* Components by Category */}
+      {/* Components Grid */}
       {components.length === 0 ? (
-        <Card className="p-12">
-          <div className="flex flex-col items-center gap-4 text-center">
-            <Box className="h-12 w-12 text-muted-foreground" />
-            <div>
-              <h3 className="font-semibold text-lg mb-2">No components yet</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Components will appear here once they&apos;re created in the admin panel.
-              </p>
-              <Link href="/admin">
-                <Button>
-                  Go to Admin Panel
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
+        <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-12 text-center">
+          <div className="rounded-full bg-muted p-4">
+            <Box className="h-8 w-8 text-muted-foreground" />
           </div>
-        </Card>
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold">No components yet</h3>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              Components will appear here once they&apos;re created in the admin panel.
+              Start by uploading a design spec.
+            </p>
+          </div>
+          <Link href="/admin/components/new">
+            <Button className="mt-2">
+              Create Component
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
       ) : (
-        <div className="space-y-12">
-          {Object.entries(componentsByCategory).map(([category, categoryComponents]) => (
-            <div key={category}>
-              <h2 className="text-2xl font-bold mb-4">
-                {categoryNames[category] || category}
-              </h2>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {categoryComponents.map((component) => (
-                  <Link
-                    key={component.id}
-                    href={`/docs/components/${component.slug}`}
-                  >
-                    <Card className="h-full hover:border-primary transition-colors cursor-pointer">
-                      <CardHeader>
-                        <CardTitle>{component.name}</CardTitle>
-                        <CardDescription className="line-clamp-2">
-                          {component.description}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex flex-wrap gap-2">
-                          {Object.keys(component.variants || {}).slice(0, 3).map((variant) => (
-                            <span
-                              key={variant}
-                              className="text-xs bg-accent px-2 py-1 rounded"
-                            >
-                              {variant}
-                            </span>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {components.map((component) => (
+            <Link
+              key={component.id}
+              href={`/docs/components/${component.slug}`}
+              className="group relative flex flex-col rounded-lg border bg-card p-6 hover:border-primary transition-all hover:shadow-md"
+            >
+              <div className="space-y-3">
+                <div className="flex items-start justify-between">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                    <Box className="h-5 w-5" />
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    {component.category || 'other'}
+                  </Badge>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="font-semibold leading-none tracking-tight">
+                    {component.name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {component.description || 'No description available'}
+                  </p>
+                </div>
+                {Object.keys(component.variants || {}).length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {Object.keys(component.variants || {}).slice(0, 3).map((variant) => (
+                      <Badge key={variant} variant="secondary" className="text-xs">
+                        {variant}
+                      </Badge>
+                    ))}
+                    {Object.keys(component.variants || {}).length > 3 && (
+                      <Badge variant="secondary" className="text-xs">
+                        +{Object.keys(component.variants || {}).length - 3}
+                      </Badge>
+                    )}
+                  </div>
+                )}
               </div>
-            </div>
+              <div className="mt-auto pt-4 flex items-center text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                View component
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </div>
+            </Link>
           ))}
         </div>
       )}

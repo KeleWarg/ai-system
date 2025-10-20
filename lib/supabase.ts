@@ -1,12 +1,34 @@
 import { createBrowserClient } from '@supabase/ssr'
 
 // TypeScript types
+export interface ThemeFont {
+  name: string
+  family: string
+  weights: string[]
+  url?: string // For custom fonts
+  fallback?: string // e.g., 'sans-serif', 'serif'
+}
+
+export interface ResponsiveValue {
+  desktop: string
+  tablet: string
+  mobile: string
+}
+
+export interface Typography {
+  fonts?: ThemeFont[]
+  fontSize?: Record<string, ResponsiveValue>
+  lineHeight?: Record<string, ResponsiveValue>
+  fontWeight?: Record<string, string>
+  letterSpacing?: Record<string, string>
+}
+
 export interface Theme {
   id: string
   name: string
   slug: string
-  colors: Record<string, string>
-  typography?: Record<string, unknown>
+  colors: Record<string, string> // Hex colors
+  typography?: Typography
   spacing?: Record<string, unknown>
   radius?: string
   is_active: boolean
