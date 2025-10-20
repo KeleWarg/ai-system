@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button } from './ui/button'
+import { ThemeSwitcher } from './theme-switcher'
 import { Box } from 'lucide-react'
 
 export function PublicNav() {
@@ -43,6 +44,7 @@ export function PublicNav() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <ThemeSwitcher />
           <Link href="/admin">
             <Button variant="ghost" size="sm">
               Sign In

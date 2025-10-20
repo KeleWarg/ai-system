@@ -33,11 +33,26 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       if (allThemes) {
         setThemes(allThemes as Theme[])
         
-        // Find active theme
-        const activeTheme = (allThemes as Theme[]).find((t) => t.is_active)
-        if (activeTheme) {
-          setTheme(activeTheme)
-          applyTheme(activeTheme)
+        // Check for user's preferred theme in localStorage
+        const preferredThemeId = typeof window !== 'undefined' 
+          ? localStorage.getItem('preferred-theme-id')
+          : null
+        
+        let themeToApply: Theme | undefined
+        
+        if (preferredThemeId) {
+          // Try to find the user's preferred theme
+          themeToApply = (allThemes as Theme[]).find((t) => t.id === preferredThemeId)
+        }
+        
+        // Fall back to active theme if no preference or preference not found
+        if (!themeToApply) {
+          themeToApply = (allThemes as Theme[]).find((t) => t.is_active)
+        }
+        
+        if (themeToApply) {
+          setTheme(themeToApply)
+          applyTheme(themeToApply)
         }
       }
     } catch (error) {
@@ -82,28 +97,22 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  // Set active theme
+  // Set active theme (user preference - client-side only)
   const setActiveTheme = async (themeId: string) => {
     try {
-      const supabase = createClient()
+      // Find the theme in our loaded themes
+      const selectedTheme = themes.find((t) => t.id === themeId)
       
-      // Update theme to be active
-      const { data, error } = await supabase
-        .from('themes')
-        .update({ is_active: true } as never)
-        .eq('id', themeId)
-        .select()
-        .single()
-
-      if (error) throw error
-
-      if (data) {
-        setTheme(data as Theme)
-        applyTheme(data as Theme)
+      if (selectedTheme) {
+        // Apply the theme
+        setTheme(selectedTheme)
+        applyTheme(selectedTheme)
+        
+        // Save user preference to localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('preferred-theme-id', themeId)
+        }
       }
-
-      // Refresh themes to update the list
-      await loadThemes()
     } catch (error) {
       console.error('Error setting active theme:', error)
       throw error
