@@ -1,0 +1,11 @@
+# Vercel ignore file
+node_modules
+.next
+.env.local
+.env*.local
+*.log
+.DS_Store
+.turbo
+coverage
+scripts/test-*.ts
+

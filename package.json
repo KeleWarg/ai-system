@@ -15,7 +15,9 @@
     "test:part6": "tsx scripts/test-ai.ts",
     "test:part7": "tsx scripts/test-public-ui.ts",
     "test:part8": "tsx scripts/test-component-generation.ts",
-    "test:part9": "tsx scripts/test-ai-integration.ts"
+    "test:part9": "tsx scripts/test-ai-integration.ts",
+    "test:deploy": "tsx scripts/test-deployment-readiness.ts",
+    "test:all": "npm run test:part1 && npm run test:part2 && npm run test:part3 && npm run test:part4 && npm run test:part5 && npm run test:part6 && npm run test:part7 && npm run test:part8 && npm run test:part9"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.67.0",
