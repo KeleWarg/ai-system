@@ -274,14 +274,14 @@ export default function NewComponentPage() {
             <div>
               <Label>Description</Label>
               <p className="mt-2 text-sm text-muted-foreground">
-                {extractedData.description || 'No description extracted'}
+                {(extractedData.description as string) || 'No description extracted'}
               </p>
             </div>
             
             <div>
               <Label>Category</Label>
               <p className="mt-2 text-sm">
-                {extractedData.category || 'general'}
+                {(extractedData.category as string) || 'general'}
               </p>
             </div>
             
