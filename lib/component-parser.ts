@@ -334,7 +334,20 @@ export function groupProperties(properties: EditableProperty[]): {
   }
   
   properties.forEach((prop) => {
-    const categoryKey = prop.category === 'color' ? 'colors' : `${prop.category}s` as 'spacing' | 'colors' | 'typography' | 'variants'
+    let categoryKey: 'spacing' | 'colors' | 'typography' | 'variants'
+    
+    if (prop.category === 'color') {
+      categoryKey = 'colors'
+    } else if (prop.category === 'spacing') {
+      categoryKey = 'spacing'
+    } else if (prop.category === 'typography') {
+      categoryKey = 'typography'
+    } else if (prop.category === 'variant') {
+      categoryKey = 'variants'
+    } else {
+      return // Skip unknown categories
+    }
+    
     const target = prop.hasIssue ? grouped[categoryKey].issues : grouped[categoryKey].optional
     target.push(prop)
   })
