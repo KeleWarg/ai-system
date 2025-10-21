@@ -57,11 +57,13 @@ export default function NewComponentPage() {
     async function loadThemes() {
       try {
         const res = await fetch('/api/themes')
-        const data = await res.json()
-        setThemes(data)
+        const result = await res.json()
+        // Handle pagination format from Phase 3
+        const themesData = result.data || result
+        setThemes(themesData)
         
         // Set active theme as default
-        const activeTheme = data.find((t: Theme) => t.is_active)
+        const activeTheme = themesData.find((t: Theme) => t.is_active)
         if (activeTheme) {
           setSelectedTheme(activeTheme)
         }
