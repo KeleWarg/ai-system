@@ -1,11 +1,13 @@
 import { getComponents } from '@/lib/db/components'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/empty-state'
 import Link from 'next/link'
 import { ArrowRight, Box, Sparkles } from 'lucide-react'
 
 export default async function ComponentsPage() {
-  const components = await getComponents()
+  const result = await getComponents()
+  const components = result.data
 
   return (
     <div className="space-y-8">
@@ -28,24 +30,15 @@ export default async function ComponentsPage() {
 
       {/* Components Grid */}
       {components.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-12 text-center">
-          <div className="rounded-full bg-muted p-4">
-            <Box className="h-8 w-8 text-muted-foreground" />
-          </div>
-          <div className="space-y-2">
-            <h3 className="text-lg font-semibold">No components yet</h3>
-            <p className="text-sm text-muted-foreground max-w-sm">
-              Components will appear here once they&apos;re created in the admin panel.
-              Start by uploading a design spec.
-            </p>
-          </div>
-          <Link href="/admin/components/new">
-            <Button className="mt-2">
-              Create Component
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
+        <EmptyState
+          icon={Box}
+          title="No components yet"
+          description="Components will appear here once they're created in the admin panel. Start by uploading a design spec."
+          action={{
+            label: "Create Component",
+            href: "/admin/components/new"
+          }}
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {components.map((component) => (

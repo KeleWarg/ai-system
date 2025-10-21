@@ -2,13 +2,15 @@ import { requireAuth } from '@/lib/auth-helpers'
 import { getComponents } from '@/lib/db/components'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/empty-state'
 import { Plus, Box } from 'lucide-react'
 import Link from 'next/link'
 import { ComponentActions } from '@/components/component-actions'
 
 export default async function ComponentsPage() {
   await requireAuth()
-  const components = await getComponents()
+  const result = await getComponents()
+  const components = result.data
 
   return (
     <div className="flex flex-col gap-6 p-8">
@@ -30,19 +32,15 @@ export default async function ComponentsPage() {
 
       {/* Components List */}
       {components.length === 0 ? (
-        <Card className="flex flex-col items-center justify-center p-12">
-          <Box className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No components yet</h3>
-          <p className="text-sm text-muted-foreground text-center mb-4">
-            Upload a PNG spec sheet to create your first component
-          </p>
-          <Link href="/admin/components/new">
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Component
-            </Button>
-          </Link>
-        </Card>
+        <EmptyState
+          icon={Box}
+          title="No components yet"
+          description="Upload a PNG spec sheet to create your first component."
+          action={{
+            label: "Create Component",
+            href: "/admin/components/new"
+          }}
+        />
       ) : (
         <div className="grid gap-4">
           {components.map((component) => (

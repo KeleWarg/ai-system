@@ -5,6 +5,7 @@ import {
   generateImprovementPrompt,
   type ExtractedSpec,
 } from '@/lib/ai/spec-validator'
+import { checkRateLimit, aiRateLimiter } from '@/lib/rate-limit'
 
 /**
  * API endpoint to validate generated component against spec sheet
@@ -16,6 +17,12 @@ export async function POST(request: Request) {
     const currentUser = await getCurrentUser()
     if (!currentUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Apply rate limiting
+    const rateLimitResult = await checkRateLimit(currentUser.user.id, aiRateLimiter)
+    if (!rateLimitResult.allowed) {
+      return rateLimitResult.response
     }
 
     const body = await request.json()

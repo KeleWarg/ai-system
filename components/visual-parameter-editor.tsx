@@ -1,39 +1,39 @@
 'use client'
 
 /**
- * Visual Parameter Editor
- * No-code interface for fixing component validation issues
+ * Visual Parameter Editor (Theme Mapping Tool)
+ * User-friendly interface for mapping spec requirements to theme tokens
  */
 
-import { useState, useEffect } from 'react'
-import { Card } from './ui/card'
+import { useState, useMemo, useRef } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
 import { Button } from './ui/button'
-import { Badge } from './ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion'
+import { CheckCircle2, X } from 'lucide-react'
 import {
-  SpacingInput,
-  ColorInput,
-  TypographyInput,
-  VariantManager,
-} from './ui/property-input'
-import {
-  parseComponentProperties,
-  groupProperties,
+  extractMappingIssues,
+  extractAllEditableProperties,
+  type MappingIssue,
   type ExtractedSpec,
-} from '@/lib/component-parser'
+  type Theme,
+} from '@/lib/mapping-extractor'
 import type { ComponentAnalysis } from '@/lib/ai/spec-validator'
 import {
-  updateComponentProperty,
-  validateUpdatedCode,
-  type EditableProperty,
-} from '@/lib/component-updater'
+  applyMappingsToCode,
+  type SpecToThemeMappings,
+} from '@/lib/code-mapper'
+import { validateComponentAgainstSpec } from '@/lib/ai/spec-validator'
+import {
+  ColorMappingInput,
+  SpacingMappingInput,
+  VariantMappingInput,
+} from './ui/mapping-inputs'
 
 interface VisualParameterEditorProps {
   componentCode: string
   spec: ExtractedSpec
   validation: ComponentAnalysis
-  onApply: (updatedCode: string) => void
+  currentTheme?: Theme
+  onApply: (updatedCode: string, newScore: number) => void
   onCancel: () => void
 }
 
@@ -41,339 +41,283 @@ export function VisualParameterEditor({
   componentCode,
   spec,
   validation,
+  currentTheme,
   onApply,
   onCancel,
 }: VisualParameterEditorProps) {
-  const [code, setCode] = useState(componentCode)
-  const [properties, setProperties] = useState(() =>
-    parseComponentProperties(componentCode, spec, validation)
+  const [mode, setMode] = useState<'issues' | 'advanced'>('issues')
+  
+  const [issues] = useState<MappingIssue[]>(() =>
+    extractMappingIssues(spec, validation, currentTheme)
   )
   
-  useEffect(() => {
-    setCode(componentCode)
-    setProperties(parseComponentProperties(componentCode, spec, validation))
-  }, [componentCode, spec, validation])
+  const [allProperties] = useState<MappingIssue[]>(() =>
+    extractAllEditableProperties(spec, validation, componentCode, currentTheme)
+  )
   
-  const grouped = groupProperties(properties)
+  const [mappings, setMappings] = useState<SpecToThemeMappings>({
+    colors: [],
+    spacing: [],
+    variants: [],
+  })
   
-  const issueCount = {
-    spacing: grouped.spacing.issues.length,
-    colors: grouped.colors.issues.length,
-    typography: grouped.typography.issues.length,
-    variants: grouped.variants.issues.length,
+  // Use refs to prevent infinite loops
+  const mappingsRef = useRef(mappings)
+  mappingsRef.current = mappings
+  
+  // Memoize preview code - only recalculate when mappings actually change
+  const previewCode = useMemo(() => {
+    const hasMappings = mappings.colors.length > 0 || mappings.spacing.length > 0 || mappings.variants.length > 0
+    
+    if (hasMappings) {
+      console.log('🔄 Applying mappings to code')
+      return applyMappingsToCode(componentCode, mappings)
+    }
+    
+    return componentCode
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [componentCode, mappings.colors.length, mappings.spacing.length, mappings.variants.length])
+  
+  // Memoize preview score - only recalculate when preview code changes
+  const previewScore = useMemo(() => {
+    const hasMappings = mappingsRef.current.colors.length > 0 || mappingsRef.current.spacing.length > 0 || mappingsRef.current.variants.length > 0
+    
+    if (hasMappings) {
+      const newValidation = validateComponentAgainstSpec(previewCode, spec)
+      console.log('📊 Validation score:', newValidation.overallMatch)
+      return newValidation.overallMatch
+    }
+    
+    return validation.overallMatch
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [previewCode])
+  
+  const handleColorMapping = (issue: MappingIssue, themeToken: string) => {
+    setMappings(prev => ({
+      ...prev,
+      colors: [
+        ...prev.colors.filter(c => c.issueId !== issue.id),
+        {
+          issueId: issue.id,
+          hexValue: issue.currentValue,
+          themeToken,
+        },
+      ],
+    }))
   }
   
-  const totalIssues = Object.values(issueCount).reduce((a, b) => a + b, 0)
+  const handleSpacingMapping = (issue: MappingIssue, tailwindClass: string) => {
+    setMappings(prev => ({
+      ...prev,
+      spacing: [
+        ...prev.spacing.filter(s => s.issueId !== issue.id),
+        {
+          issueId: issue.id,
+          property: issue.title,
+          tailwindClass,
+        },
+      ],
+    }))
+  }
   
-  const handlePropertyChange = (property: EditableProperty, newValue: string) => {
-    const updatedCode = updateComponentProperty(code, property, newValue)
-    setCode(updatedCode)
+  const handleVariantMapping = (issue: MappingIssue, values: string[]) => {
+    // Extract variant key from title (e.g., "Missing variant: size" → "size")
+    const variantKey = issue.title.replace('Missing variant: ', '')
     
-    // Re-parse properties with updated code
-    const updatedProperties = parseComponentProperties(updatedCode, spec, validation)
-    setProperties(updatedProperties)
+    setMappings(prev => ({
+      ...prev,
+      variants: [
+        ...prev.variants.filter(v => v.issueId !== issue.id),
+        {
+          issueId: issue.id,
+          variantKey,
+          values,
+        },
+      ],
+    }))
   }
   
   const handleApply = () => {
-    const { valid, errors } = validateUpdatedCode(code)
-    
-    if (!valid) {
-      alert(`Code validation failed:\n${errors.join('\n')}`)
-      return
-    }
-    
-    onApply(code)
+    console.log('🎯 Apply button clicked!')
+    console.log('Preview code length:', previewCode.length)
+    console.log('Preview score:', previewScore)
+    console.log('Mappings:', mappings)
+    console.log('First 300 chars of preview code:', previewCode.substring(0, 300))
+    onApply(previewCode, previewScore)
   }
   
+  // Select which properties to show based on mode
+  const displayedProperties = mode === 'issues' ? issues : allProperties
+  
+  const colorIssues = displayedProperties.filter(i => i.type === 'color')
+  const spacingIssues = displayedProperties.filter(i => i.type === 'spacing')
+  const variantIssues = displayedProperties.filter(i => i.type === 'variant')
+  const typographyIssues = displayedProperties.filter(i => i.type === 'typography')
+  
+  const scoreImprovement = previewScore - validation.overallMatch
+  
   return (
-    <Card className="p-6 border-2 border-purple-500 bg-purple-50 dark:bg-purple-950/20">
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+    <Card className="border-border">
+      <CardHeader className="border-b">
+        <div className="flex items-start justify-between">
           <div>
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              🎨 Visual Editor
-            </h2>
-            <p className="text-sm text-muted-foreground mt-1">
-              Adjust properties visually without editing code
-            </p>
+            <CardTitle className="text-xl">Map Spec to Your Theme</CardTitle>
+            <CardDescription className="mt-1.5">
+              Select theme options that best match your design specifications.
+              {issues.length > 0 && ` Fix ${issues.length} ${issues.length === 1 ? 'issue' : 'issues'} below.`}
+            </CardDescription>
           </div>
           <Button
-            onClick={onCancel}
             variant="ghost"
-            size="sm"
+            size="icon"
+            onClick={onCancel}
+            className="h-8 w-8"
           >
-            ✕
+            <X className="h-4 w-4" />
           </Button>
         </div>
         
-        {/* Issue Summary */}
-        {totalIssues > 0 && (
-          <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 rounded-lg p-3">
-            <p className="text-sm font-medium text-red-600">
-              {totalIssues} {totalIssues === 1 ? 'issue' : 'issues'} found that need fixing
+        {/* Mode Toggle */}
+        <div className="flex gap-2 mt-4">
+          <Button
+            variant={mode === 'issues' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setMode('issues')}
+          >
+            Fix Issues Only ({issues.filter(i => i.isIssue !== false).length})
+          </Button>
+          <Button
+            variant={mode === 'advanced' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setMode('advanced')}
+          >
+            Advanced: Edit All Properties ({allProperties.length})
+          </Button>
+        </div>
+        
+        {/* Score Preview */}
+        <div className="flex items-center justify-between mt-4 p-4 bg-muted rounded-lg">
+          <div>
+            <span className="text-sm text-muted-foreground">Current Score:</span>
+            <span className="ml-2 text-2xl font-bold">{validation.overallMatch}/100</span>
+          </div>
+          <div className="text-right">
+            <span className="text-sm text-muted-foreground">Preview Score:</span>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold text-green-600 dark:text-green-400">
+                {previewScore}/100
+              </span>
+              {scoreImprovement > 0 && (
+                <span className="text-sm text-green-600 dark:text-green-400">
+                  (+{scoreImprovement})
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </CardHeader>
+      
+      <CardContent className="p-6">
+        {displayedProperties.length === 0 ? (
+          <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+            <CheckCircle2 className="h-5 w-5" />
+            <p className="text-sm font-medium">
+              {mode === 'issues' ? 'All issues have been resolved!' : 'No properties found in spec'}
             </p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {/* Variant Issues */}
+            {variantIssues.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                  Variant Options ({variantIssues.length})
+                </h3>
+                {variantIssues.map((issue) => (
+                  <VariantMappingInput
+                    key={issue.id}
+                    title={issue.title}
+                    specRequirement={issue.specRequirement}
+                    options={issue.options || []}
+                    selectedValues={
+                      mappings.variants.find(v => v.issueId === issue.id)?.values || issue.options || []
+                    }
+                    onChange={(values) => handleVariantMapping(issue, values)}
+                  />
+                ))}
+              </div>
+            )}
+            
+            {/* Spacing Issues */}
+            {spacingIssues.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                  Spacing & Sizing ({spacingIssues.length})
+                </h3>
+                {spacingIssues.map((issue) => (
+                  <SpacingMappingInput
+                    key={issue.id}
+                    title={issue.title}
+                    specRequirement={issue.specRequirement}
+                    suggestedFix={issue.suggestedFix}
+                    options={issue.options || []}
+                    value={mappings.spacing.find(s => s.issueId === issue.id)?.tailwindClass || issue.suggestedFix}
+                    onChange={(value) => handleSpacingMapping(issue, value)}
+                  />
+                ))}
+              </div>
+            )}
+            
+            {/* Color Issues */}
+            {colorIssues.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                  Colors ({colorIssues.length})
+                </h3>
+                {colorIssues.map((issue) => (
+                  <ColorMappingInput
+                    key={issue.id}
+                    title={issue.title}
+                    specRequirement={issue.specRequirement}
+                    currentValue={issue.currentValue}
+                    options={issue.options || []}
+                    value={mappings.colors.find(c => c.issueId === issue.id)?.themeToken || ''}
+                    onChange={(value) => handleColorMapping(issue, value)}
+                  />
+                ))}
+              </div>
+            )}
+            
+            {/* Typography (Advanced Mode) */}
+            {typographyIssues.length > 0 && mode === 'advanced' && (
+              <div className="space-y-4">
+                <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                  Typography ({typographyIssues.length})
+                </h3>
+                {typographyIssues.map((issue) => (
+                  <SpacingMappingInput
+                    key={issue.id}
+                    title={issue.title}
+                    specRequirement={issue.specRequirement}
+                    suggestedFix={issue.suggestedFix}
+                    options={issue.options || []}
+                    value={mappings.spacing.find(s => s.issueId === issue.id)?.tailwindClass || issue.suggestedFix}
+                    onChange={(value) => handleSpacingMapping(issue, value)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
         
-        {/* Property Tabs */}
-        <Tabs defaultValue="spacing" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="spacing">
-              Spacing
-              {issueCount.spacing > 0 && (
-                <Badge variant="destructive" className="ml-2">
-                  {issueCount.spacing}
-                </Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="colors">
-              Colors
-              {issueCount.colors > 0 && (
-                <Badge variant="destructive" className="ml-2">
-                  {issueCount.colors}
-                </Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="typography">
-              Typography
-              {issueCount.typography > 0 && (
-                <Badge variant="destructive" className="ml-2">
-                  {issueCount.typography}
-                </Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="variants">
-              Variants
-              {issueCount.variants > 0 && (
-                <Badge variant="destructive" className="ml-2">
-                  {issueCount.variants}
-                </Badge>
-              )}
-            </TabsTrigger>
-          </TabsList>
-          
-          {/* Spacing Tab */}
-          <TabsContent value="spacing" className="space-y-4">
-            <Accordion type="multiple" defaultValue={grouped.spacing.issues.length > 0 ? ['issues'] : []}>
-              {grouped.spacing.issues.length > 0 && (
-                <AccordionItem value="issues" className="border-red-200">
-                  <AccordionTrigger className="text-red-600 font-semibold">
-                    Issues to Fix ({grouped.spacing.issues.length})
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-3">
-                      {grouped.spacing.issues.map((prop) => (
-                        <SpacingInput
-                          key={prop.id}
-                          label={prop.name}
-                          tailwindValue={prop.tailwindClass || ''}
-                          pixelValue={prop.pixelValue || 0}
-                          property={prop.cssProperty || 'height'}
-                          hasIssue={prop.hasIssue}
-                          recommendation={prop.recommendation}
-                          onChange={(tw) => handlePropertyChange(prop, tw)}
-                        />
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-              
-              {grouped.spacing.optional.length > 0 && (
-                <AccordionItem value="optional">
-                  <AccordionTrigger>
-                    Optional Adjustments ({grouped.spacing.optional.length})
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-3">
-                      {grouped.spacing.optional.map((prop) => (
-                        <SpacingInput
-                          key={prop.id}
-                          label={prop.name}
-                          tailwindValue={prop.tailwindClass || ''}
-                          pixelValue={prop.pixelValue || 0}
-                          property={prop.cssProperty || 'height'}
-                          onChange={(tw) => handlePropertyChange(prop, tw)}
-                        />
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-            </Accordion>
-          </TabsContent>
-          
-          {/* Colors Tab */}
-          <TabsContent value="colors" className="space-y-4">
-            <Accordion type="multiple" defaultValue={grouped.colors.issues.length > 0 ? ['issues'] : []}>
-              {grouped.colors.issues.length > 0 && (
-                <AccordionItem value="issues" className="border-red-200">
-                  <AccordionTrigger className="text-red-600 font-semibold">
-                    Issues to Fix ({grouped.colors.issues.length})
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-3">
-                      {grouped.colors.issues.map((prop) => (
-                        <ColorInput
-                          key={prop.id}
-                          label={prop.name}
-                          currentValue={prop.currentValue}
-                          hasIssue={prop.hasIssue}
-                          recommendation={prop.recommendation}
-                          onChange={(val) => handlePropertyChange(prop, val)}
-                        />
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-              
-              {grouped.colors.optional.length > 0 && (
-                <AccordionItem value="optional">
-                  <AccordionTrigger>
-                    Optional Adjustments ({grouped.colors.optional.length})
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-3">
-                      {grouped.colors.optional.map((prop) => (
-                        <ColorInput
-                          key={prop.id}
-                          label={prop.name}
-                          currentValue={prop.currentValue}
-                          onChange={(val) => handlePropertyChange(prop, val)}
-                        />
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-            </Accordion>
-          </TabsContent>
-          
-          {/* Typography Tab */}
-          <TabsContent value="typography" className="space-y-4">
-            <Accordion type="multiple" defaultValue={grouped.typography.issues.length > 0 ? ['issues'] : []}>
-              {grouped.typography.issues.length > 0 && (
-                <AccordionItem value="issues" className="border-red-200">
-                  <AccordionTrigger className="text-red-600 font-semibold">
-                    Issues to Fix ({grouped.typography.issues.length})
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-3">
-                      {grouped.typography.issues.map((prop) => (
-                        <TypographyInput
-                          key={prop.id}
-                          label={prop.name}
-                          tailwindValue={prop.tailwindClass || ''}
-                          pixelValue={prop.pixelValue || 0}
-                          property={prop.cssProperty as 'fontSize' | 'fontWeight'}
-                          hasIssue={prop.hasIssue}
-                          recommendation={prop.recommendation}
-                          onChange={(val) => handlePropertyChange(prop, val)}
-                        />
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-              
-              {grouped.typography.optional.length > 0 && (
-                <AccordionItem value="optional">
-                  <AccordionTrigger>
-                    Optional Adjustments ({grouped.typography.optional.length})
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-3">
-                      {grouped.typography.optional.map((prop) => (
-                        <TypographyInput
-                          key={prop.id}
-                          label={prop.name}
-                          tailwindValue={prop.tailwindClass || ''}
-                          pixelValue={prop.pixelValue || 0}
-                          property={prop.cssProperty as 'fontSize' | 'fontWeight'}
-                          onChange={(val) => handlePropertyChange(prop, val)}
-                        />
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-            </Accordion>
-          </TabsContent>
-          
-          {/* Variants Tab */}
-          <TabsContent value="variants" className="space-y-4">
-            <Accordion type="multiple" defaultValue={grouped.variants.issues.length > 0 ? ['issues'] : []}>
-              {grouped.variants.issues.length > 0 && (
-                <AccordionItem value="issues" className="border-red-200">
-                  <AccordionTrigger className="text-red-600 font-semibold">
-                    Issues to Fix ({grouped.variants.issues.length})
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-3">
-                      {grouped.variants.issues.map((prop) => (
-                        <VariantManager
-                          key={prop.id}
-                          label={prop.name}
-                          variantKey={prop.variantKey || ''}
-                          values={prop.variantValues || []}
-                          hasIssue={prop.hasIssue}
-                          recommendation={prop.recommendation}
-                          onAdd={(val) => {
-                            const updated = [...(prop.variantValues || []), val]
-                            handlePropertyChange(prop, updated.join(','))
-                          }}
-                          onRemove={(val) => {
-                            const updated = (prop.variantValues || []).filter((v) => v !== val)
-                            handlePropertyChange(prop, updated.join(','))
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-              
-              {grouped.variants.optional.length > 0 && (
-                <AccordionItem value="optional">
-                  <AccordionTrigger>
-                    Optional Adjustments ({grouped.variants.optional.length})
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-3">
-                      {grouped.variants.optional.map((prop) => (
-                        <VariantManager
-                          key={prop.id}
-                          label={prop.name}
-                          variantKey={prop.variantKey || ''}
-                          values={prop.variantValues || []}
-                          onAdd={(val) => {
-                            const updated = [...(prop.variantValues || []), val]
-                            handlePropertyChange(prop, updated.join(','))
-                          }}
-                          onRemove={(val) => {
-                            const updated = (prop.variantValues || []).filter((v) => v !== val)
-                            handlePropertyChange(prop, updated.join(','))
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-            </Accordion>
-          </TabsContent>
-        </Tabs>
-        
         {/* Action Buttons */}
-        <div className="flex gap-2 pt-4 border-t">
+        <div className="flex gap-3 pt-6 mt-6 border-t">
           <Button
             onClick={handleApply}
-            variant="default"
             className="flex-1"
+            disabled={displayedProperties.length === 0}
           >
-            ✅ Apply Changes & Re-Validate
+            {mode === 'advanced' ? 'Apply All Changes' : 'Apply Mappings & Update Code'}
           </Button>
           <Button
             onClick={onCancel}
@@ -383,8 +327,7 @@ export function VisualParameterEditor({
             Cancel
           </Button>
         </div>
-      </div>
+      </CardContent>
     </Card>
   )
 }
-

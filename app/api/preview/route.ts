@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getCurrentUser } from '@/lib/auth-helpers'
 
 /**
  * Preview API endpoint for rendering component code in an iframe
@@ -6,6 +7,15 @@ import { NextRequest, NextResponse } from 'next/server'
  */
 export async function POST(req: NextRequest) {
   try {
+    // Check authentication
+    const currentUser = await getCurrentUser()
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: 'Unauthorized - Authentication required' },
+        { status: 401 }
+      )
+    }
+
     // Check if request has a body
     const contentType = req.headers.get('content-type') || ''
     if (!contentType.includes('application/json')) {

@@ -5,9 +5,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Button } from './ui/button'
+import { ConfirmationDialog } from '@/components/confirmation-dialog'
 import { Check, Edit, Trash2, Loader2 } from 'lucide-react'
 import type { Theme } from '@/lib/supabase'
 import { usePermissions } from '@/hooks/use-permissions'
+import { toast } from 'sonner'
 
 interface ThemeListItemProps {
   theme: Theme
@@ -17,12 +19,14 @@ export function ThemeListItem({ theme }: ThemeListItemProps) {
   const router = useRouter()
   const { canDeleteTheme, canActivateTheme } = usePermissions()
   const [isActivating, setIsActivating] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   const handleActivate = async () => {
     if (!canActivateTheme) return
     
     setIsActivating(true)
+    const toastId = toast.loading('Activating theme...')
+    
     try {
       const response = await fetch('/api/themes/active', {
         method: 'POST',
@@ -32,10 +36,11 @@ export function ThemeListItem({ theme }: ThemeListItemProps) {
 
       if (!response.ok) throw new Error('Failed to activate theme')
 
+      toast.success(`Theme "${theme.name}" activated successfully`, { id: toastId })
       router.refresh()
     } catch (error) {
       console.error('Error activating theme:', error)
-      alert('Failed to activate theme')
+      toast.error('Failed to activate theme', { id: toastId })
     } finally {
       setIsActivating(false)
     }
@@ -43,9 +48,9 @@ export function ThemeListItem({ theme }: ThemeListItemProps) {
 
   const handleDelete = async () => {
     if (!canDeleteTheme) return
-    if (!confirm(`Are you sure you want to delete "${theme.name}"?`)) return
 
-    setIsDeleting(true)
+    const toastId = toast.loading('Deleting theme...')
+    
     try {
       const response = await fetch(`/api/themes/${theme.id}`, {
         method: 'DELETE',
@@ -53,12 +58,11 @@ export function ThemeListItem({ theme }: ThemeListItemProps) {
 
       if (!response.ok) throw new Error('Failed to delete theme')
 
+      toast.success('Theme deleted successfully', { id: toastId })
       router.refresh()
     } catch (error) {
       console.error('Error deleting theme:', error)
-      alert('Failed to delete theme')
-    } finally {
-      setIsDeleting(false)
+      toast.error('Failed to delete theme', { id: toastId })
     }
   }
 
@@ -116,18 +120,24 @@ export function ThemeListItem({ theme }: ThemeListItemProps) {
             <Button
               variant="destructive"
               size="sm"
-              onClick={handleDelete}
-              disabled={isDeleting}
+              onClick={() => setShowDeleteDialog(true)}
             >
-              {isDeleting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Trash2 className="h-4 w-4" />
-              )}
+              <Trash2 className="h-4 w-4" />
             </Button>
           )}
         </div>
       </CardContent>
+
+      <ConfirmationDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        title="Delete Theme"
+        description={`Are you sure you want to delete "${theme.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+        onConfirm={handleDelete}
+      />
     </Card>
   )
 }

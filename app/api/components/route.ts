@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { isValidComponentName, extractComponentNameFromCode } from '@/lib/component-utils'
+import { getComponents } from '@/lib/db/components'
 
 interface ComponentPayload {
   name: string
@@ -20,14 +21,39 @@ interface ComponentPayload {
   theme_id?: string
 }
 
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url)
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '50')
+    const category = searchParams.get('category') || undefined
+    const search = searchParams.get('search') || undefined
+
+    const result = await getComponents({ page, limit, category, search })
+
+    return NextResponse.json(result)
+  } catch (error) {
+    console.error('Error fetching components:', error)
+    return NextResponse.json(
+      { error: 'Failed to fetch components' },
+      { status: 500 }
+    )
+  }
+}
+
 export async function POST(req: NextRequest) {
+  console.log('🔵 POST /api/components - Request received')
+  
   try {
     const supabase = await createServerSupabaseClient()
+    console.log('🔵 Supabase client created')
     
     // Check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser()
+    console.log('🔵 Auth check:', user ? `User ${user.id}` : 'No user', authError ? `Error: ${authError.message}` : 'OK')
     
     if (authError || !user) {
+      console.error('❌ Unauthorized request')
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -35,6 +61,15 @@ export async function POST(req: NextRequest) {
     }
     
     const body = await req.json() as ComponentPayload
+    console.log('🔵 Request body parsed:', {
+      name: body.name,
+      slug: body.slug,
+      component_name: body.component_name,
+      codeLength: body.code?.length,
+      hasVariants: !!body.variants,
+      hasPrompts: !!body.prompts,
+      theme_id: body.theme_id,
+    })
     const {
       name,
       slug,
@@ -59,11 +94,14 @@ export async function POST(req: NextRequest) {
     
     // Validate and extract component_name
     let component_name: string = providedComponentName || ''
+    console.log('🔵 Component name validation - provided:', providedComponentName)
     
     // If not provided, try to extract from code
     if (!component_name) {
       const extracted = extractComponentNameFromCode(code)
+      console.log('🔵 Extracted component name from code:', extracted)
       if (!extracted) {
+        console.error('❌ Could not extract component name from code')
         return NextResponse.json(
           { error: 'Could not extract component export name from code. Ensure code has: export const ComponentName = ...' },
           { status: 400 }
@@ -73,7 +111,11 @@ export async function POST(req: NextRequest) {
     }
     
     // Validate component name format
-    if (!isValidComponentName(component_name)) {
+    const isValid = isValidComponentName(component_name)
+    console.log('🔵 Component name format validation:', component_name, 'valid:', isValid)
+    
+    if (!isValid) {
+      console.error('❌ Invalid component name format:', component_name)
       return NextResponse.json(
         { error: `Invalid component name: ${component_name}. Must start with uppercase letter and contain only alphanumeric characters.` },
         { status: 400 }
@@ -89,12 +131,18 @@ export async function POST(req: NextRequest) {
       installationData = installation
     }
     
+    // Validate category (must match DB CHECK constraint)
+    const validCategories = ['buttons', 'inputs', 'navigation', 'feedback', 'data-display', 'overlays', 'other']
+    const finalCategory = category && validCategories.includes(category) ? category : 'other'
+    
+    console.log('🔵 Category validation:', category, '->', finalCategory)
+    
     const componentData = {
       name,
       slug,
       component_name, // Validated component export name
       description: description || '',
-      category: category || 'general',
+      category: finalCategory,
       code,
       variants: variants || {},
       props: props || {},
@@ -104,21 +152,27 @@ export async function POST(req: NextRequest) {
       created_by: user.id,
     }
     
+    console.log('🔵 Attempting database insert...')
+    
     const { data, error } = await supabase
       .from('components')
-      .insert(componentData as never)
+      .insert(componentData as any)
       .select()
       .single()
     
     if (error) {
-      console.error('Database error:', error)
-      console.error('Component data sent:', JSON.stringify(componentData, null, 2))
+      console.error('❌ Database error:', error)
+      console.error('❌ Error code:', error.code)
+      console.error('❌ Error message:', error.message)
+      console.error('❌ Error hint:', error.hint)
+      console.error('❌ Component data sent (first 500 chars):', JSON.stringify(componentData, null, 2).substring(0, 500))
       return NextResponse.json(
-        { error: 'Failed to save component', details: error.message, hint: error.hint || '' },
+        { error: 'Failed to save component', details: error.message, hint: error.hint || '', code: error.code },
         { status: 500 }
       )
     }
     
+    console.log('✅ Component saved successfully:', (data as any)?.id)
     return NextResponse.json(data)
   } catch (error) {
     console.error('Server error:', error)

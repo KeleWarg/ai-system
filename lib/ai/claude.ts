@@ -536,31 +536,75 @@ Return as JSON in this EXACT format:
   }
 
   // Extract JSON from response - try multiple patterns
-  let jsonText = textContent.text.trim()
+  let jsonText = textContent.text
+    .trim()
+    .replace(/^\uFEFF/, '') // Remove BOM
+    .replace(/^\s+/gm, '') // Remove leading spaces from lines
 
-  console.log('Raw Claude response for spec extraction:', jsonText)
+  console.log('📋 Raw Claude response for spec extraction (first 500 chars):', jsonText.substring(0, 500))
 
   // Try to extract from markdown code blocks (with or without json tag)
   const codeBlockPatterns = [
     /```json\s*\n([\s\S]*?)```/,
     /```\s*\n([\s\S]*?)```/,
     /```json\s*([\s\S]*?)```/,
+    /\{[\s\S]*\}/, // Match raw JSON object
   ]
 
+  let extracted = false
   for (const pattern of codeBlockPatterns) {
     const match = jsonText.match(pattern)
     if (match) {
-      jsonText = match[1].trim()
+      jsonText = match[1] ? match[1].trim() : match[0].trim()
+      extracted = true
+      console.log(`✅ Extracted using pattern: ${pattern}`)
       break
     }
   }
 
+  // If no pattern matched, try to find JSON boundaries manually
+  if (!extracted) {
+    const startIdx = jsonText.indexOf('{')
+    const endIdx = jsonText.lastIndexOf('}')
+    if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+      jsonText = jsonText.substring(startIdx, endIdx + 1)
+      console.log('✅ Extracted JSON by finding braces')
+    }
+  }
+
+  // Clean up any remaining issues
+  jsonText = jsonText
+    .replace(/\r\n/g, '\n') // Normalize line endings
+    .replace(/[\u0000-\u001F]+/g, ' ') // Remove control characters except newlines
+    .trim()
+
+  console.log('🔍 Cleaned JSON (first 300 chars):', jsonText.substring(0, 300))
+
   // Try to parse the JSON
   try {
-    return JSON.parse(jsonText)
+    const parsed = JSON.parse(jsonText)
+    console.log('✅ Successfully parsed spec extraction JSON')
+    return parsed
   } catch (parseError) {
-    console.error('Failed to parse JSON from Claude response:', jsonText)
-    throw new Error(`Failed to parse JSON response: ${parseError instanceof Error ? parseError.message : 'Unknown error'}. Response was: ${jsonText.substring(0, 200)}`)
+    console.error('❌ Failed to parse JSON from Claude response')
+    console.error('Error:', parseError instanceof Error ? parseError.message : String(parseError))
+    console.error('Full response:', jsonText)
+
+    // Try one last time with a more aggressive clean
+    try {
+      const cleanedAgain = jsonText
+        .replace(/,\s*}/g, '}') // Remove trailing commas
+        .replace(/,\s*]/g, ']') // Remove trailing commas in arrays
+      const parsed = JSON.parse(cleanedAgain)
+      console.log('✅ Parsed after removing trailing commas')
+      return parsed
+    } catch (secondError) {
+      throw new Error(
+        `Failed to parse JSON response from Claude API. ` +
+        `Error: ${parseError instanceof Error ? parseError.message : 'Unknown error'}. ` +
+        `Response preview: ${jsonText.substring(0, 300)}...`
+      )
+    }
   }
 }
 

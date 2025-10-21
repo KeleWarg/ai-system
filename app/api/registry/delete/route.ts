@@ -18,6 +18,14 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // Check if user is admin (only admins can delete component files)
+    if ((currentUser.dbUser as { role?: string } | null)?.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Forbidden - Admin access required' },
+        { status: 403 }
+      )
+    }
+
     const body = await req.json()
     const { slug } = body
 

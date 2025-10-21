@@ -78,22 +78,34 @@ export function validateComponentAgainstSpec(
   // Check 2: Validate spacing/sizing
   if (spec.spacing && spec.spacing.length > 0) {
     const spacingPatterns = extractSpacingPatterns(spec.spacing)
-
+    
+    // Group spacing by property to handle multiple values for different variants
+    const spacingByProperty: Record<string, string[]> = {}
     for (const pattern of spacingPatterns) {
       const { property, value } = pattern
-      // Check if spacing values appear in code (as Tailwind classes or direct values)
-      const spacingExists =
-        componentCode.includes(value) ||
-        componentCode.includes(convertToTailwindClass(property, value))
+      if (!spacingByProperty[property]) {
+        spacingByProperty[property] = []
+      }
+      spacingByProperty[property].push(value)
+    }
 
-      if (!spacingExists) {
+    for (const [property, values] of Object.entries(spacingByProperty)) {
+      // Check if AT LEAST ONE of the spacing values appears in code
+      // (because different variants can have different spacing)
+      const anySpacingExists = values.some(value =>
+        componentCode.includes(value) ||
+        componentCode.includes(convertToTailwindClass(property, value)) ||
+        // Check for arbitrary values like p-[10px]
+        componentCode.includes(`[${value}]`)
+      )
+
+      if (!anySpacingExists) {
         analysis.hasCorrectSpacing = false
-        analysis.spacingIssues.push(`Missing ${property}: ${value}`)
+        const valuesList = values.join(' or ')
+        analysis.spacingIssues.push(`Missing ${property}: ${valuesList}`)
+        const suggestions = values.map(v => convertToTailwindClass(property, v)).join(' or ')
         analysis.recommendations.push(
-          `Ensure ${property} is set to ${value} (use Tailwind class: ${convertToTailwindClass(
-            property,
-            value
-          )})`
+          `Ensure ${property} uses one of: ${suggestions}`
         )
       }
     }
@@ -131,17 +143,49 @@ export function validateComponentAgainstSpec(
     )
   }
 
-  // Calculate overall match score
+  // Calculate overall match score with capped deductions
   let score = 100
-  if (!analysis.hasRequiredVariants) score -= 30
-  if (analysis.missingVariants.length > 0)
-    score -= analysis.missingVariants.length * 5
-  if (!analysis.hasCorrectSpacing) score -= 20
-  if (analysis.spacingIssues.length > 0) score -= analysis.spacingIssues.length * 5
-  if (!analysis.hasThemeColors) score -= 20
-  if (analysis.colorIssues.length > 0) score -= analysis.colorIssues.length * 5
+  
+  // Variants (max -20 points)
+  if (!analysis.hasRequiredVariants || analysis.missingVariants.length > 0) {
+    const variantPenalty = 10 + analysis.missingVariants.length * 3
+    score -= Math.min(20, variantPenalty)
+  }
+  
+  // Spacing (max -30 points)
+  if (!analysis.hasCorrectSpacing || analysis.spacingIssues.length > 0) {
+    // More lenient scoring - only deduct for actual missing issues
+    const spacingPenalty = analysis.spacingIssues.length * 10
+    score -= Math.min(30, spacingPenalty)
+  }
+  
+  // Colors (max -20 points)
+  if (!analysis.hasThemeColors || analysis.colorIssues.length > 0) {
+    const colorPenalty = 10 + analysis.colorIssues.length * 2
+    score -= Math.min(20, colorPenalty)
+  }
+  
+  // General implementation quality (max -10 points if multiple categories fail)
+  const failedCategories = [
+    !analysis.hasRequiredVariants,
+    !analysis.hasCorrectSpacing,
+    !analysis.hasThemeColors,
+  ].filter(Boolean).length
+  
+  if (failedCategories >= 2) {
+    score -= 5
+  }
 
-  analysis.overallMatch = Math.max(0, score)
+  // If spacing issues exist but some spacing IS correct, give bonus points
+  if (analysis.spacingIssues.length > 0 && !analysis.hasCorrectSpacing) {
+    // Check if ANY spacing exists in code (partial credit)
+    const hasAnySpacing = /[hp]-\d+|[hp]-\[\d+px\]/.test(componentCode)
+    if (hasAnySpacing) {
+      score += 5 // Bonus for partial implementation
+    }
+  }
+
+  analysis.overallMatch = Math.max(0, Math.min(100, score))
 
   return analysis
 }

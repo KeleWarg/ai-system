@@ -2,13 +2,15 @@ import { requireAuth } from '@/lib/auth-helpers'
 import { getThemes } from '@/lib/db/themes'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/empty-state'
 import { Plus, Palette } from 'lucide-react'
 import Link from 'next/link'
 import { ThemeListItem } from '@/components/theme-list-item'
 
 export default async function ThemesPage() {
   await requireAuth()
-  const themes = await getThemes()
+  const result = await getThemes()
+  const themes = result.data
 
   return (
     <div className="flex flex-col gap-6 p-8">
@@ -30,19 +32,15 @@ export default async function ThemesPage() {
 
       {/* Themes List */}
       {themes.length === 0 ? (
-        <Card className="flex flex-col items-center justify-center p-12">
-          <Palette className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No themes yet</h3>
-          <p className="text-sm text-muted-foreground text-center mb-4">
-            Create your first theme to get started with your design system
-          </p>
-          <Link href="/admin/themes/new">
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Theme
-            </Button>
-          </Link>
-        </Card>
+        <EmptyState
+          icon={Palette}
+          title="No themes yet"
+          description="Create your first theme to get started with your design system."
+          action={{
+            label: "Create Theme",
+            href: "/admin/themes/new"
+          }}
+        />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {themes.map((theme) => (

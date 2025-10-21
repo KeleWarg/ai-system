@@ -1,19 +1,57 @@
 import { createClient } from '@/lib/supabase'
 import type { Theme } from '@/lib/supabase'
 
-export async function getThemes() {
+export async function getThemes(options?: {
+  page?: number
+  limit?: number
+  search?: string
+}) {
   const supabase = createClient()
-  const { data, error } = await supabase
+  const page = options?.page || 1
+  const limit = options?.limit || 50
+  const offset = (page - 1) * limit
+
+  let query = supabase
     .from('themes')
-    .select('*')
+    .select('*', { count: 'exact' })
     .order('created_at', { ascending: false })
+
+  // Apply pagination
+  query = query.range(offset, offset + limit - 1)
+
+  // Apply search filter if provided
+  if (options?.search) {
+    query = query.ilike('name', `%${options.search}%`)
+  }
+
+  const { data, error, count } = await query
 
   if (error) {
     console.error('Error fetching themes:', error)
-    return []
+    return {
+      data: [],
+      pagination: {
+        page: 1,
+        limit,
+        total: 0,
+        pages: 0,
+        hasNext: false,
+        hasPrev: false,
+      }
+    }
   }
 
-  return data as Theme[]
+  return {
+    data: (data || []) as Theme[],
+    pagination: {
+      page,
+      limit,
+      total: count || 0,
+      pages: Math.ceil((count || 0) / limit),
+      hasNext: offset + limit < (count || 0),
+      hasPrev: page > 1,
+    }
+  }
 }
 
 export async function getActiveTheme() {

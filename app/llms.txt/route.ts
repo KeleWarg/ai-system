@@ -6,7 +6,8 @@ import { getComponents } from '@/lib/db/components'
  * Used by v0.dev, Claude Desktop, Cursor, and other AI coding assistants
  */
 export async function GET() {
-  const components = await getComponents()
+  const result = await getComponents()
+  const components = result.data
   
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
   

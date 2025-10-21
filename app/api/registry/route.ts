@@ -7,7 +7,8 @@ import { getComponents } from '@/lib/db/components'
  */
 export async function GET() {
   try {
-    const components = await getComponents()
+    const result = await getComponents()
+    const components = result.data
     
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
     

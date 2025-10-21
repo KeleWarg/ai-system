@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/auth-helpers'
 import { generateUsagePrompts } from '@/lib/ai/claude'
+import { checkRateLimit, aiRateLimiter } from '@/lib/rate-limit'
 
 export async function POST(request: Request) {
   try {
@@ -11,6 +12,12 @@ export async function POST(request: Request) {
         { error: 'Unauthorized' },
         { status: 401 }
       )
+    }
+
+    // Apply rate limiting
+    const rateLimitResult = await checkRateLimit(currentUser.user.id, aiRateLimiter)
+    if (!rateLimitResult.allowed) {
+      return rateLimitResult.response
     }
 
     const body = await request.json()

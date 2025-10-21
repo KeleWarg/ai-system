@@ -40,6 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# temp preview files
+components/registry/.temp/
+
 # temporary documentation (keep locally, don't commit)
 ADMIN_DELETE_EDIT.md
 COMPLETED_IMPLEMENTATION.md

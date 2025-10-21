@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/auth-helpers'
 import Anthropic from '@anthropic-ai/sdk'
 import type { ComponentAnalysis, ExtractedSpec } from '@/lib/ai/spec-validator'
+import { checkRateLimit, aiRateLimiter } from '@/lib/rate-limit'
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -16,6 +17,12 @@ export async function POST(request: Request) {
     const currentUser = await getCurrentUser()
     if (!currentUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Apply rate limiting
+    const rateLimitResult = await checkRateLimit(currentUser.user.id, aiRateLimiter)
+    if (!rateLimitResult.allowed) {
+      return rateLimitResult.response
     }
 
     const body = await request.json()

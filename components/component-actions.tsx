@@ -10,16 +10,10 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { MoreVertical, Eye, Trash2, Edit, Loader2 } from 'lucide-react'
+import { ConfirmationDialog } from '@/components/confirmation-dialog'
+import { MoreVertical, Eye, Trash2, Edit } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface ComponentActionsProps {
   componentId: string
@@ -34,10 +28,10 @@ export function ComponentActions({
 }: ComponentActionsProps) {
   const router = useRouter()
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async () => {
-    setIsDeleting(true)
+    const toastId = toast.loading('Deleting component...')
+    
     try {
       const res = await fetch(`/api/components/${componentId}`, {
         method: 'DELETE',
@@ -48,14 +42,14 @@ export function ComponentActions({
         throw new Error(error.error || 'Failed to delete component')
       }
 
-      // Close dialog and refresh
-      setShowDeleteDialog(false)
+      toast.success('Component deleted successfully', { id: toastId })
       router.refresh()
     } catch (error) {
       console.error('Delete error:', error)
-      alert(error instanceof Error ? error.message : 'Failed to delete component')
-    } finally {
-      setIsDeleting(false)
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to delete component',
+        { id: toastId }
+      )
     }
   }
 
@@ -100,44 +94,16 @@ export function ComponentActions({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Component</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete <strong>{componentName}</strong>?
-              This will remove the component from the database and delete its files.
-              This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowDeleteDialog(false)}
-              disabled={isDeleting}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={isDeleting}
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Deleting...
-                </>
-              ) : (
-                <>
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmationDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        title="Delete Component"
+        description={`Are you sure you want to delete "${componentName}"? This will remove the component from the database and delete its files. This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+        onConfirm={handleDelete}
+      />
     </>
   )
 }

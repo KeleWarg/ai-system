@@ -1,19 +1,63 @@
 import { createClient } from '@/lib/supabase'
 import type { Component } from '@/lib/supabase'
 
-export async function getComponents() {
+export async function getComponents(options?: {
+  page?: number
+  limit?: number
+  category?: string
+  search?: string
+}) {
   const supabase = createClient()
-  const { data, error } = await supabase
+  const page = options?.page || 1
+  const limit = options?.limit || 50
+  const offset = (page - 1) * limit
+
+  let query = supabase
     .from('components')
-    .select('*')
+    .select('*', { count: 'exact' })
     .order('created_at', { ascending: false })
+
+  // Apply pagination
+  query = query.range(offset, offset + limit - 1)
+
+  // Apply category filter if provided
+  if (options?.category) {
+    query = query.eq('category', options.category)
+  }
+
+  // Apply search filter if provided
+  if (options?.search) {
+    query = query.or(`name.ilike.%${options.search}%,description.ilike.%${options.search}%`)
+  }
+
+  const { data, error, count } = await query
 
   if (error) {
     console.error('Error fetching components:', error)
-    return []
+    return {
+      data: [],
+      pagination: {
+        page: 1,
+        limit,
+        total: 0,
+        pages: 0,
+        hasNext: false,
+        hasPrev: false,
+      }
+    }
   }
 
-  return data as Component[]
+  return {
+    data: (data || []) as Component[],
+    pagination: {
+      page,
+      limit,
+      total: count || 0,
+      pages: Math.ceil((count || 0) / limit),
+      hasNext: offset + limit < (count || 0),
+      hasPrev: page > 1,
+    }
+  }
 }
 
 export async function getComponentsByCategory(category: string) {

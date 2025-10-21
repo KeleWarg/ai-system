@@ -8,7 +8,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
 import { VisualParameterEditor } from '@/components/visual-parameter-editor'
+import { InlineComponentPreview } from '@/components/inline-component-preview'
 import type { ComponentAnalysis } from '@/lib/ai/spec-validator'
+import { toast } from 'sonner'
 
 interface ExtractedData {
   name: string
@@ -77,6 +79,7 @@ export default function NewComponentPage() {
     
     setUploading(true)
     setError('')
+    const toastId = toast.loading('Extracting spec sheet from image...')
     
     try {
       const formData = new FormData()
@@ -98,9 +101,11 @@ export default function NewComponentPage() {
       const data = await res.json()
       setExtractedData(data)
       setComponentName(data.name || '')
+      toast.success('Spec sheet extracted successfully!', { id: toastId })
     } catch (error) {
       console.error('Upload failed:', error)
       const errorMessage = error instanceof Error ? error.message : 'Failed to extract spec sheet. Please try again.'
+      toast.error(errorMessage, { id: toastId })
       setError(errorMessage)
     } finally {
       setUploading(false)
@@ -112,6 +117,7 @@ export default function NewComponentPage() {
     
     setGenerating(true)
     setError('')
+    const toastId = toast.loading('Generating component code...')
     
     try {
       // Generate component code
@@ -132,12 +138,14 @@ export default function NewComponentPage() {
       
       const { code } = await codeRes.json()
       setGeneratedCode(code)
+      toast.success('Component code generated successfully!', { id: toastId })
       
       // Automatically validate the generated component
       await validateComponent(code, extractedData)
     } catch (error) {
       console.error('Generation failed:', error)
       const errorMessage = error instanceof Error ? error.message : 'Failed to generate component. Please try again.'
+      toast.error(errorMessage, { id: toastId })
       setError(errorMessage)
     } finally {
       setGenerating(false)
@@ -228,8 +236,11 @@ export default function NewComponentPage() {
     
     setSaving(true)
     setError('')
+    const toastId = toast.loading('Saving component...')
     
     try {
+      console.log('📝 Step 1: Generating prompts and docs...')
+      
       // Generate prompts and docs
       const [promptsRes, docsRes] = await Promise.all([
         fetch('/api/ai/generate-prompts', {
@@ -251,18 +262,27 @@ export default function NewComponentPage() {
         }),
       ])
       
+      console.log('📝 Prompts response:', promptsRes.status, promptsRes.ok)
+      console.log('📝 Docs response:', docsRes.status, docsRes.ok)
+      
       if (!promptsRes.ok || !docsRes.ok) {
         const errorData = await (promptsRes.ok ? docsRes : promptsRes).json().catch(() => ({}))
+        console.error('❌ Documentation generation failed:', errorData)
         throw new Error(errorData.error || 'Failed to generate documentation')
       }
       
       const prompts = await promptsRes.json()
       const docs = await docsRes.json()
       
+      console.log('✅ Prompts and docs generated successfully')
+      
       const slug = slugify(componentName)
+      console.log('📁 Component slug:', slug)
       
       // ⚠️ ATOMIC WRITE: Write to file system FIRST, then DB
       // This prevents orphaned DB entries if file write fails
+      
+      console.log('📝 Step 2: Writing to file system...')
       
       // Step 1: Write component to file system (shadcn approach)
       const writeRes = await fetch('/api/registry/write', {
@@ -276,8 +296,11 @@ export default function NewComponentPage() {
         }),
       })
       
+      console.log('📁 File write response:', writeRes.status, writeRes.ok)
+      
       if (!writeRes.ok) {
         const errorData = await writeRes.json().catch(() => ({}))
+        console.error('❌ File write failed:', errorData)
         throw new Error(errorData.error || 'Failed to write component file to registry')
       }
       
@@ -285,6 +308,21 @@ export default function NewComponentPage() {
       
       // Step 2: Save to database (with rollback on failure)
       try {
+        console.log('💾 Step 3: Saving to database...')
+        console.log('💾 Database payload:', {
+          name: componentName,
+          slug,
+          component_name: componentName,
+          description: extractedData.description || '',
+          category: extractedData.category || 'general',
+          codeLength: generatedCode.length,
+          variantsKeys: Object.keys(extractedData.variants || {}),
+          propsCount: Object.keys(docs.api?.props || {}).length,
+          hasPrompts: !!prompts,
+          hasInstallation: !!docs.installation,
+          theme_id: selectedTheme?.id || null,
+        })
+        
         const saveRes = await fetch('/api/components', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -303,8 +341,29 @@ export default function NewComponentPage() {
           }),
         })
         
+        console.log('💾 Database response:', saveRes.status, saveRes.ok)
+        
         if (!saveRes.ok) {
-          const errorData = await saveRes.json().catch(() => ({}))
+          // Try to get error as JSON, fallback to text
+          let errorData: any = {}
+          let errorText = ''
+          
+          try {
+            const responseText = await saveRes.text()
+            errorText = responseText
+            console.log('💾 Raw response text:', responseText.substring(0, 500))
+            
+            try {
+              errorData = JSON.parse(responseText)
+            } catch (jsonError) {
+              console.error('❌ Response is not valid JSON')
+              errorData = { error: responseText || 'Unknown error' }
+            }
+          } catch (textError) {
+            console.error('❌ Could not read response body:', textError)
+          }
+          
+          console.error('❌ Database save failed:', errorData)
           
           // Rollback: Delete the file we just wrote
           try {
@@ -318,16 +377,21 @@ export default function NewComponentPage() {
             console.error('Failed to rollback file write:', rollbackError)
           }
           
-          throw new Error(errorData.error || 'Failed to save component to database')
+          throw new Error(errorData.error || errorData.details || errorText || 'Failed to save component to database')
         }
         
         const component = await saveRes.json()
+        console.log('✅ Component saved to database:', component.id)
         
-        // Show success message with git instructions
+        toast.success('Component created successfully!', { id: toastId })
+        
+        // Show git instructions for local development
         if (typeof window !== 'undefined') {
           const isLocal = window.location.hostname === 'localhost'
-          if (isLocal && !writeRes.ok) {
-            alert(`✅ Component created successfully!\n\n⚠️ IMPORTANT: To see this component in production:\n1. Commit the new file: git add components/registry/${slug}.tsx\n2. Push to GitHub: git push\n3. Vercel will auto-deploy\n\nLocal preview available now at /docs/components/${component.slug}`)
+          if (isLocal) {
+            toast.info(`Don't forget to commit: git add components/registry/${slug}.tsx`, {
+              duration: 8000,
+            })
           }
         }
         
@@ -337,8 +401,16 @@ export default function NewComponentPage() {
         throw dbError
       }
     } catch (error) {
-      console.error('Save failed:', error)
+      console.error('❌ Save failed:', error)
+      console.error('Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        componentName,
+        extractedData,
+        codeLength: generatedCode?.length
+      })
       const errorMessage = error instanceof Error ? error.message : 'Failed to save component. Please try again.'
+      toast.error(errorMessage, { id: toastId })
       setError(errorMessage)
     } finally {
       setSaving(false)
@@ -499,6 +571,26 @@ export default function NewComponentPage() {
       {/* Generated Code */}
       {generatedCode && (
         <div className="space-y-6">
+          {/* Live Component Preview */}
+          <Card className="p-6 space-y-4 border-2 border-primary">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">Component Preview</h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Real component rendering using Next.js dynamic imports
+                </p>
+              </div>
+            </div>
+            
+            <div className="bg-muted/50 p-8 rounded-lg min-h-[300px]">
+              <InlineComponentPreview
+                code={generatedCode}
+                variants={extractedData?.variants}
+              />
+            </div>
+          </Card>
+          
+          {/* Generated Code Section */}
           <Card className="p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold">Generated Code</h2>
@@ -586,13 +678,13 @@ export default function NewComponentPage() {
                       >
                         {fixingSuggestion ? 'Generating Fix...' : '🤖 AI Auto-Fix'}
                       </Button>
-                      <Button
-                        onClick={() => setShowVisualEditor(true)}
-                        variant="default"
-                        size="sm"
-                      >
-                        🎨 Visual Editor
-                      </Button>
+                  <Button
+                    onClick={() => setShowVisualEditor(true)}
+                    variant="default"
+                    size="sm"
+                  >
+                    🎨 Map to Theme
+                  </Button>
                       <Button
                         onClick={manualEdit}
                         variant="outline"
@@ -680,9 +772,11 @@ export default function NewComponentPage() {
               componentCode={generatedCode}
               spec={extractedData}
               validation={validation}
-              onApply={async (updatedCode) => {
+              currentTheme={selectedTheme as any || undefined}
+              onApply={async (updatedCode, newScore) => {
                 setGeneratedCode(updatedCode)
                 setShowVisualEditor(false)
+                // Re-validate to get official updated analysis
                 await validateComponent(updatedCode, extractedData)
               }}
               onCancel={() => setShowVisualEditor(false)}
