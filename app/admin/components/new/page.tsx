@@ -206,37 +206,17 @@ export default function NewComponentPage() {
       const prompts = await promptsRes.json()
       const docs = await docsRes.json()
       
-      // Save to database via API
-      const saveRes = await fetch('/api/components', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: componentName,
-          slug: slugify(componentName),
-          description: extractedData.description || '',
-          category: extractedData.category || 'general',
-          code: generatedCode,
-          variants: extractedData.variants || {},
-          props: docs.api?.props || {},
-          prompts,
-          installation: docs.installation || '',
-          theme_id: selectedTheme?.id || null,
-        }),
-      })
+      const slug = slugify(componentName)
       
-      if (!saveRes.ok) {
-        const errorData = await saveRes.json().catch(() => ({}))
-        throw new Error(errorData.error || 'Failed to save component')
-      }
+      // ⚠️ ATOMIC WRITE: Write to file system FIRST, then DB
+      // This prevents orphaned DB entries if file write fails
       
-      const component = await saveRes.json()
-      
-      // Write component to file system (shadcn approach)
+      // Step 1: Write component to file system (shadcn approach)
       const writeRes = await fetch('/api/registry/write', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          slug: component.slug,
+          slug,
           code: generatedCode,
           componentName: componentName,
           variants: extractedData.variants || {},
@@ -245,14 +225,55 @@ export default function NewComponentPage() {
       
       if (!writeRes.ok) {
         const errorData = await writeRes.json().catch(() => ({}))
-        console.error('Failed to write component file:', errorData)
-        // Don't throw - component is already saved to DB
-        setError('Component saved to database but failed to write file. It may not render correctly.')
-      } else {
-        console.log('✅ Component written to file system')
+        throw new Error(errorData.error || 'Failed to write component file to registry')
       }
       
-      router.push(`/docs/components/${component.slug}`)
+      console.log('✅ Component written to file system')
+      
+      // Step 2: Save to database (with rollback on failure)
+      try {
+        const saveRes = await fetch('/api/components', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: componentName,
+            slug,
+            component_name: componentName, // Exact TypeScript export name
+            description: extractedData.description || '',
+            category: extractedData.category || 'general',
+            code: generatedCode,
+            variants: extractedData.variants || {},
+            props: docs.api?.props || {},
+            prompts,
+            installation: docs.installation || '',
+            theme_id: selectedTheme?.id || null,
+          }),
+        })
+        
+        if (!saveRes.ok) {
+          const errorData = await saveRes.json().catch(() => ({}))
+          
+          // Rollback: Delete the file we just wrote
+          try {
+            await fetch('/api/registry/delete', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ slug }),
+            })
+            console.log('🔄 Rolled back file write after DB save failure')
+          } catch (rollbackError) {
+            console.error('Failed to rollback file write:', rollbackError)
+          }
+          
+          throw new Error(errorData.error || 'Failed to save component to database')
+        }
+        
+        const component = await saveRes.json()
+        router.push(`/docs/components/${component.slug}`)
+      } catch (dbError) {
+        // Re-throw DB errors after rollback attempt
+        throw dbError
+      }
     } catch (error) {
       console.error('Save failed:', error)
       const errorMessage = error instanceof Error ? error.message : 'Failed to save component. Please try again.'

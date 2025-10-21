@@ -79,11 +79,41 @@ IMPORTANT - Color Mapping:
     ? `\n\n⚠️ CRITICAL - EXACT SPACING REQUIREMENTS (MUST MATCH):
 ${params.spacing.map(s => `• ${s}`).join('\n')}
 
-VALIDATION RULES:
-- Use EXACT pixel values from spec sheet
-- Map to closest Tailwind classes (h-8=32px, h-9=36px, h-10=40px, h-11=44px, h-12=48px)
-- If exact match not available, use arbitrary values: h-[40px], p-[12px]
-- Test all size variants have correct heights`
+📐 TAILWIND SPACING MAPPING TABLE (Use these EXACT mappings):
+
+HEIGHTS:
+• 24px = h-6       • 28px = h-7       • 32px = h-8
+• 36px = h-9       • 40px = h-10      • 44px = h-11
+• 48px = h-12      • 56px = h-14      • 64px = h-16
+
+PADDING (Horizontal px-* / Vertical py-*):
+• 4px = p-1        • 8px = p-2        • 12px = p-3
+• 16px = p-4       • 20px = p-5       • 24px = p-6
+• 32px = p-8       • 40px = p-10      • 48px = p-12
+
+GAP (Space between elements):
+• 4px = gap-1      • 8px = gap-2      • 12px = gap-3
+• 16px = gap-4     • 20px = gap-5     • 24px = gap-6
+
+BORDER RADIUS:
+• 2px = rounded-sm    • 4px = rounded    • 6px = rounded-md
+• 8px = rounded-lg    • 12px = rounded-xl • 16px = rounded-2xl
+
+FONT SIZES:
+• 12px = text-xs   • 14px = text-sm   • 16px = text-base
+• 18px = text-lg   • 20px = text-xl   • 24px = text-2xl
+
+FONT WEIGHTS:
+• 400 = font-normal  • 500 = font-medium  • 600 = font-semibold
+• 700 = font-bold    • 800 = font-extrabold
+
+⚠️ VALIDATION RULES:
+1. Use EXACT pixel values from spec sheet
+2. Map to closest Tailwind class from table above
+3. If EXACT match not available, use arbitrary values: h-[42px], px-[18px], text-[15px]
+4. NEVER round significantly (40px should be h-10, NOT h-12)
+5. Test all size variants have correct heights
+6. Arbitrary values are ACCEPTABLE for precision`
     : ''
 
   const prompt = `Generate a professional React component with TypeScript for a design system.
@@ -98,29 +128,66 @@ ${variantsText}
 Props:
 ${propsText}${themeInfo}${spacingInfo}
 
-⚠️ CRITICAL REQUIREMENTS (Component will be validated):
-1. Use TypeScript with proper types
-2. Use class-variance-authority (cva) for variant management
-3. Use Tailwind CSS classes with THEME TOKENS ONLY (bg-primary, text-foreground, NOT hex colors)
-4. Follow shadcn/ui patterns EXACTLY
-5. Include proper prop validation
-6. Make it accessible (ARIA attributes)
-7. Use React.forwardRef for ref forwarding
-8. Use the @/lib/utils cn() function for className merging
-9. Map spec sheet colors to theme tokens intelligently:
-   - Primary colors → bg-primary, text-primary
-   - Neutral colors → bg-muted, text-muted-foreground
-   - Borders → border-border
-   - Backgrounds → bg-background, bg-card
-10. MATCH EXACT SPACING from spec sheet (use h-[40px] if needed)
-11. Include ALL variants specified (${Object.keys(params.variants || {}).join(', ')})
-12. Include JSDoc comments with examples
+⚠️ MANDATORY REQUIREMENTS (Build will fail if violated):
 
-VALIDATION: Component will be checked against spec sheet. Ensure:
-✓ All variants present
-✓ Exact spacing matches
-✓ Theme colors only (no #hex)
-✓ Proper TypeScript types
+1. EXPORT NAME: Component MUST be exported with exact name: ${params.name}
+   export const ${params.name} = React.forwardRef<HTMLButtonElement, ${params.name}Props>(...)
+
+2. TYPESCRIPT:
+   ✓ Proper TypeScript types for ALL props
+   ✓ Use VariantProps<typeof ${params.name.toLowerCase()}Variants> for variant types
+   ✓ Extend React.ComponentPropsWithoutRef or HTMLAttributes
+   ✓ Export both component AND variant types
+
+3. VARIANTS (class-variance-authority):
+   ✓ Define ALL variants from spec: ${Object.keys(params.variants || {}).join(', ')}
+   ✓ Use cva() for variant definition
+   ✓ Include default values for each variant
+   ✓ MUST match spec sheet EXACTLY
+
+4. SPACING & SIZING:
+   ✓ Use EXACT measurements from spec sheet
+   ✓ Map using Tailwind table above (40px = h-10)
+   ✓ Use arbitrary values for non-standard sizes: h-[42px]
+   ✓ DO NOT approximate (40px is NOT h-12)
+
+5. COLOR MAPPING (NO HEX COLORS ALLOWED):
+   ✓ Map spec colors to theme tokens:
+     • Primary/Brand → bg-primary, text-primary-foreground
+     • Secondary → bg-secondary, text-secondary-foreground
+     • Neutral/Gray → bg-muted, text-muted-foreground
+     • Borders → border-border
+     • Hover states → hover:bg-primary/90
+     • Disabled → opacity-50, cursor-not-allowed
+   ✓ NEVER use: bg-blue-500, #3B82F6, rgb()
+   ✓ ALWAYS use: bg-primary, text-foreground
+
+6. SHADCN/UI PATTERNS:
+   ✓ Use React.forwardRef for ref forwarding
+   ✓ Use Slot from @radix-ui/react-slot for asChild pattern
+   ✓ Merge classNames with cn() utility
+   ✓ Spread remaining props with {...props}
+
+7. ACCESSIBILITY:
+   ✓ Proper ARIA attributes (aria-label, aria-disabled)
+   ✓ Keyboard navigation support
+   ✓ Focus visible styles (focus-visible:ring-2)
+   ✓ Disabled state handling
+
+8. STRUCTURE:
+   ✓ Import statements at top
+   ✓ Type definitions before component
+   ✓ cva() variant definition
+   ✓ Component with React.forwardRef
+   ✓ Export statement at bottom
+   ✓ JSDoc comments with usage examples
+
+⚠️ VALIDATION: Component will be programmatically validated against spec sheet:
+✓ Variant count matches (expecting ${Object.keys(params.variants || {}).length})
+✓ No hex colors present
+✓ Spacing matches spec
+✓ Export name: ${params.name}
+✓ TypeScript types present
 
 Return ONLY the component code, no explanations.`
 
@@ -333,36 +400,107 @@ export async function extractSpecFromImage(
   spacing: string[]
   notes: string
 }> {
-  const prompt = `Analyze this design specification image and extract component information.
+  const prompt = `⚠️ CRITICAL: Analyze this design specification image and extract EXACT component specifications.
 
-Extract the following information:
-1. Component name
+🎯 EXTRACTION REQUIREMENTS (Be extremely precise):
+
+1. Component name (as shown in spec)
 2. Brief description of what the component does
-3. Category (one of: buttons, inputs, navigation, feedback, data-display, overlays, other)
-4. Variants (e.g., size: small, medium, large; variant: primary, secondary, outline)
-5. Colors used (describe the color scheme)
-6. Spacing/sizing information (padding, margins, dimensions)
-7. Any additional notes or special requirements
+3. Category (MUST be one of: buttons, inputs, navigation, feedback, data-display, overlays, other)
 
-Return as JSON in this exact format:
+4. Variants - Extract ALL visible variants with their EXACT names:
+   - variant/type: ["primary", "secondary", "ghost", "outline", etc.]
+   - size: ["small", "medium", "large", "xl", etc.]
+   - state: ["default", "hover", "focus", "active", "disabled", "loading"]
+   - icon: ["none", "left", "right", "only"] (if icons are shown)
+   - ANY other variant dimensions you see
+
+5. Colors - Extract EXACT HEX VALUES (not descriptions):
+   ⚠️ CRITICAL: Use actual hex codes from the image
+   Format: "Purpose: #HEXCODE" (e.g., "Primary background: #3B82F6")
+   Extract:
+   - Background colors for each variant
+   - Text/foreground colors
+   - Border colors
+   - Hover state colors
+   - Focus ring colors
+   - Disabled state colors
+
+6. Spacing/Sizing - Extract EXACT PIXEL VALUES (not vague terms):
+   ⚠️ CRITICAL: Measure and report actual pixel dimensions
+   Extract:
+   - Component heights (e.g., "Default height: 40px", "Small height: 32px")
+   - Horizontal padding (e.g., "Horizontal padding: 16px")
+   - Vertical padding (e.g., "Vertical padding: 10px")
+   - Border radius (e.g., "Border radius: 6px")
+   - Icon size (e.g., "Icon size: 20px")
+   - Gap between icon and text (e.g., "Icon gap: 8px")
+   - Min width if specified
+
+7. Typography - Extract EXACT specifications:
+   - Font size (e.g., "Base: 14px", "Small: 12px")
+   - Font weight (e.g., "Medium: 500", "Bold: 600")
+   - Line height (e.g., "Line height: 20px")
+
+8. Border & Shadow specifications:
+   - Border width (e.g., "Border: 1px")
+   - Shadow for each state (e.g., "Focus shadow: 0 0 0 3px rgba(59, 130, 246, 0.5)")
+
+9. Notes - Any special requirements or additional context
+
+⚠️ VALIDATION RULES:
+- Colors MUST be hex codes (#RRGGBB), NOT descriptions
+- Spacing MUST be pixel values (e.g., "40px"), NOT "medium" or "large"
+- ALL visible variants MUST be included
+- State variants (hover, focus, disabled) MUST be extracted if visible
+
+Return as JSON in this EXACT format:
 {
   "name": "Component name",
   "description": "What this component does",
   "category": "category-name",
   "variants": {
-    "variant-key": ["value1", "value2", ...],
-    ...
+    "variant": ["primary", "secondary", "ghost"],
+    "size": ["small", "base", "large"],
+    "state": ["default", "hover", "focus", "disabled"],
+    "icon": ["none", "left", "right"]
   },
-  "colors": ["color description 1", "color description 2", ...],
-  "spacing": ["spacing detail 1", "spacing detail 2", ...],
+  "colors": [
+    "Primary background: #3B82F6",
+    "Primary text: #FFFFFF",
+    "Primary hover background: #2563EB",
+    "Secondary background: #F3F4F6",
+    "Border color: #E5E7EB",
+    "Focus ring: #3B82F6"
+  ],
+  "spacing": [
+    "Base height: 40px",
+    "Small height: 32px",
+    "Large height: 48px",
+    "Horizontal padding: 16px",
+    "Vertical padding: 10px",
+    "Border radius: 6px",
+    "Icon size: 20px",
+    "Icon gap: 8px"
+  ],
+  "typography": [
+    "Base font size: 14px",
+    "Small font size: 12px",
+    "Font weight: 500",
+    "Line height: 20px"
+  ],
+  "borders": [
+    "Border width: 1px",
+    "Focus shadow: 0 0 0 3px rgba(59, 130, 246, 0.5)"
+  ],
   "notes": "Additional notes or requirements"
 }
 
-Return ONLY valid JSON, no markdown or explanations.`
+⚠️ CRITICAL: Return ONLY valid JSON, no markdown code blocks, no explanations, no commentary.`
 
   const message = await anthropic.messages.create({
     model: 'claude-sonnet-4-20250514', // Claude 4.5 Sonnet - latest version
-    max_tokens: 1500,
+    max_tokens: 2500, // Increased for detailed extraction
     messages: [
       {
         role: 'user',

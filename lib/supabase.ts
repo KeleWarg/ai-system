@@ -52,6 +52,7 @@ export interface Component {
   id: string
   name: string
   slug: string
+  component_name: string  // Exact TypeScript export name (e.g., "Button2", "CardHeader")
   description: string
   category: string
   code: string

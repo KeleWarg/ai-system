@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { isValidComponentName, extractComponentNameFromCode } from '@/lib/component-utils'
 
 interface ComponentPayload {
   name: string
   slug: string
+  component_name?: string  // Exact TypeScript export name
   description?: string
   category?: string
   code: string
@@ -36,6 +38,7 @@ export async function POST(req: NextRequest) {
     const {
       name,
       slug,
+      component_name: providedComponentName,
       description,
       category,
       code,
@@ -54,10 +57,34 @@ export async function POST(req: NextRequest) {
       )
     }
     
+    // Validate and extract component_name
+    let component_name: string = providedComponentName || ''
+    
+    // If not provided, try to extract from code
+    if (!component_name) {
+      const extracted = extractComponentNameFromCode(code)
+      if (!extracted) {
+        return NextResponse.json(
+          { error: 'Could not extract component export name from code. Ensure code has: export const ComponentName = ...' },
+          { status: 400 }
+        )
+      }
+      component_name = extracted
+    }
+    
+    // Validate component name format
+    if (!isValidComponentName(component_name)) {
+      return NextResponse.json(
+        { error: `Invalid component name: ${component_name}. Must start with uppercase letter and contain only alphanumeric characters.` },
+        { status: 400 }
+      )
+    }
+    
     // Insert component
     const componentData = {
       name,
       slug,
+      component_name, // Validated component export name
       description: description || '',
       category: category || 'general',
       code,
