@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
+import { VisualParameterEditor } from '@/components/visual-parameter-editor'
+import type { ComponentAnalysis } from '@/lib/ai/spec-validator'
 
 interface ExtractedData {
   name: string
@@ -25,16 +27,8 @@ interface Theme {
   spacing?: Record<string, string>
 }
 
-interface ValidationAnalysis {
-  hasRequiredVariants: boolean
-  missingVariants: string[]
-  hasCorrectSpacing: boolean
-  spacingIssues: string[]
-  hasThemeColors: boolean
-  colorIssues: string[]
-  overallMatch: number
-  recommendations: string[]
-}
+// Use ComponentAnalysis type from spec-validator
+type ValidationAnalysis = ComponentAnalysis
 
 export default function NewComponentPage() {
   const router = useRouter()
@@ -54,6 +48,7 @@ export default function NewComponentPage() {
   const [suggestedFix, setSuggestedFix] = useState('')
   const [showFixModal, setShowFixModal] = useState(false)
   const [isEditingCode, setIsEditingCode] = useState(false)
+  const [showVisualEditor, setShowVisualEditor] = useState(false)
   
   // Load themes on mount
   useEffect(() => {
@@ -582,21 +577,26 @@ export default function NewComponentPage() {
                       <p className="mt-1">The generated component doesn&apos;t fully match the spec sheet. You have options:</p>
                     </div>
                     
-                    <div className="flex gap-2">
+                    <div className="grid grid-cols-2 gap-2">
                       <Button
                         onClick={requestAIFix}
                         disabled={fixingSuggestion}
                         variant="default"
                         size="sm"
-                        className="flex-1"
                       >
                         {fixingSuggestion ? 'Generating Fix...' : '🤖 AI Auto-Fix'}
+                      </Button>
+                      <Button
+                        onClick={() => setShowVisualEditor(true)}
+                        variant="default"
+                        size="sm"
+                      >
+                        🎨 Visual Editor
                       </Button>
                       <Button
                         onClick={manualEdit}
                         variant="outline"
                         size="sm"
-                        className="flex-1"
                       >
                         ✏️ Manual Edit
                       </Button>
@@ -605,7 +605,6 @@ export default function NewComponentPage() {
                         disabled={generating}
                         variant="outline"
                         size="sm"
-                        className="flex-1"
                       >
                         🔄 Regenerate
                       </Button>
@@ -673,6 +672,21 @@ export default function NewComponentPage() {
                 </div>
               </div>
             </Card>
+          )}
+          
+          {/* Visual Parameter Editor */}
+          {showVisualEditor && extractedData && validation && (
+            <VisualParameterEditor
+              componentCode={generatedCode}
+              spec={extractedData}
+              validation={validation}
+              onApply={async (updatedCode) => {
+                setGeneratedCode(updatedCode)
+                setShowVisualEditor(false)
+                await validateComponent(updatedCode, extractedData)
+              }}
+              onCancel={() => setShowVisualEditor(false)}
+            />
           )}
           
           {/* Manual Code Editor */}
