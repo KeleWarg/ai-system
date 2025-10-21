@@ -50,6 +50,10 @@ export default function NewComponentPage() {
   const [error, setError] = useState('')
   const [validation, setValidation] = useState<ValidationAnalysis | null>(null)
   const [showValidation, setShowValidation] = useState(false)
+  const [fixingSuggestion, setFixingSuggestion] = useState(false)
+  const [suggestedFix, setSuggestedFix] = useState('')
+  const [showFixModal, setShowFixModal] = useState(false)
+  const [isEditingCode, setIsEditingCode] = useState(false)
   
   // Load themes on mount
   useEffect(() => {
@@ -162,12 +166,66 @@ export default function NewComponentPage() {
         setValidation(data.analysis)
         setShowValidation(true)
         console.log('✅ Validation complete:', data.analysis)
+        
+        // If validation failed significantly, offer AI fix
+        if (data.analysis.overallMatch < 80) {
+          console.log('⚠️ Low validation score, AI fix available')
+        }
       }
     } catch (error) {
       console.error('Validation failed:', error)
     } finally {
       setValidating(false)
     }
+  }
+  
+  const requestAIFix = async () => {
+    if (!generatedCode || !extractedData || !validation) return
+    
+    setFixingSuggestion(true)
+    setError('')
+    
+    try {
+      const res = await fetch('/api/ai/suggest-fix', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          componentCode: generatedCode,
+          spec: extractedData,
+          analysis: validation,
+        }),
+      })
+      
+      if (!res.ok) {
+        throw new Error('Failed to generate fix')
+      }
+      
+      const data = await res.json()
+      setSuggestedFix(data.fixedCode)
+      setShowFixModal(true)
+      console.log('🔧 AI fix generated:', data.changes)
+    } catch (error) {
+      console.error('Failed to generate fix:', error)
+      setError('Failed to generate AI fix. Please try manual editing.')
+    } finally {
+      setFixingSuggestion(false)
+    }
+  }
+  
+  const applyAIFix = async () => {
+    if (!suggestedFix || !extractedData) return
+    
+    // Apply the fix
+    setGeneratedCode(suggestedFix)
+    setShowFixModal(false)
+    
+    // Re-validate the fixed code
+    await validateComponent(suggestedFix, extractedData)
+  }
+  
+  const manualEdit = () => {
+    setIsEditingCode(true)
+    setShowFixModal(false)
   }
   
   const handleSave = async () => {
@@ -518,10 +576,163 @@ export default function NewComponentPage() {
                 )}
                 
                 {validation.overallMatch < 90 && (
-                  <div className="text-xs text-muted-foreground bg-white dark:bg-background p-3 rounded border">
-                    <strong>💡 Tip:</strong> For better results, try regenerating or manually adjust the code to match the spec sheet measurements.
+                  <div className="space-y-3">
+                    <div className="text-xs text-muted-foreground bg-white dark:bg-background p-3 rounded border">
+                      <strong>⚠️ Validation Issues Detected</strong>
+                      <p className="mt-1">The generated component doesn&apos;t fully match the spec sheet. You have options:</p>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={requestAIFix}
+                        disabled={fixingSuggestion}
+                        variant="default"
+                        size="sm"
+                        className="flex-1"
+                      >
+                        {fixingSuggestion ? 'Generating Fix...' : '🤖 AI Auto-Fix'}
+                      </Button>
+                      <Button
+                        onClick={manualEdit}
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                      >
+                        ✏️ Manual Edit
+                      </Button>
+                      <Button
+                        onClick={handleGenerate}
+                        disabled={generating}
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                      >
+                        🔄 Regenerate
+                      </Button>
+                    </div>
                   </div>
                 )}
+              </div>
+            </Card>
+          )}
+          
+          {/* AI Fix Modal */}
+          {showFixModal && suggestedFix && (
+            <Card className="p-6 border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/20">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-semibold flex items-center gap-2">
+                    🤖 AI Suggested Fix
+                  </h2>
+                  <Button
+                    onClick={() => setShowFixModal(false)}
+                    variant="ghost"
+                    size="sm"
+                  >
+                    ✕
+                  </Button>
+                </div>
+                
+                <div className="text-sm text-muted-foreground bg-white dark:bg-background p-3 rounded">
+                  <strong>Changes Applied:</strong>
+                  <ul className="list-disc list-inside mt-2 space-y-1">
+                    {validation?.missingVariants.length ? (
+                      <li>Fixed {validation.missingVariants.length} missing variant(s)</li>
+                    ) : null}
+                    {validation?.spacingIssues.length ? (
+                      <li>Corrected {validation.spacingIssues.length} spacing issue(s)</li>
+                    ) : null}
+                    {validation?.colorIssues.length ? (
+                      <li>Replaced {validation.colorIssues.length} hardcoded color(s) with theme tokens</li>
+                    ) : null}
+                  </ul>
+                </div>
+                
+                <div className="max-h-[400px] overflow-y-auto">
+                  <Label>Fixed Code Preview:</Label>
+                  <pre className="mt-2 p-4 bg-muted rounded text-xs overflow-x-auto">
+                    {suggestedFix}
+                  </pre>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button
+                    onClick={applyAIFix}
+                    variant="default"
+                    className="flex-1"
+                  >
+                    ✅ Apply Fix & Re-Validate
+                  </Button>
+                  <Button
+                    onClick={() => setShowFixModal(false)}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    ❌ Reject
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          )}
+          
+          {/* Manual Code Editor */}
+          {isEditingCode && generatedCode && (
+            <Card className="p-6 border-2 border-purple-500 bg-purple-50 dark:bg-purple-950/20">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-semibold flex items-center gap-2">
+                    ✏️ Manual Code Editor
+                  </h2>
+                  <Button
+                    onClick={() => setIsEditingCode(false)}
+                    variant="ghost"
+                    size="sm"
+                  >
+                    ✕
+                  </Button>
+                </div>
+                
+                <div className="text-sm text-muted-foreground bg-white dark:bg-background p-3 rounded">
+                  <strong>💡 Edit Tips:</strong>
+                  <ul className="list-disc list-inside mt-2 space-y-1 text-xs">
+                    <li>Match spacing values exactly from the spec sheet</li>
+                    <li>Ensure all variants are present in the cva() configuration</li>
+                    <li>Use theme tokens (bg-primary, text-foreground) instead of hex colors</li>
+                    <li>Check Tailwind class names for typos</li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <Label>Component Code:</Label>
+                  <textarea
+                    value={generatedCode}
+                    onChange={(e) => setGeneratedCode(e.target.value)}
+                    className="mt-2 w-full h-[500px] p-4 font-mono text-xs border rounded bg-background"
+                    spellCheck={false}
+                  />
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button
+                    onClick={async () => {
+                      if (extractedData) {
+                        await validateComponent(generatedCode, extractedData)
+                        setIsEditingCode(false)
+                      }
+                    }}
+                    variant="default"
+                    className="flex-1"
+                  >
+                    ✅ Save & Re-Validate
+                  </Button>
+                  <Button
+                    onClick={() => setIsEditingCode(false)}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                </div>
               </div>
             </Card>
           )}

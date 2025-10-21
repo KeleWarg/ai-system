@@ -4,19 +4,31 @@
       "slug": "button",
       "name": "Button",
       "variants": {
-        "variant": [
-          "default",
+        "type": [
+          "primary",
           "secondary",
           "ghost",
           "white"
         ],
         "size": [
-          "default",
-          "sm",
-          "lg"
+          "small",
+          "base",
+          "large"
+        ],
+        "state": [
+          "enabled",
+          "hover",
+          "focused",
+          "pressed",
+          "disabled"
+        ],
+        "icon": [
+          "none",
+          "left",
+          "right"
         ]
       },
-      "addedAt": "2025-01-21T00:00:00.000Z"
+      "addedAt": "2025-10-21T15:29:54.447Z"
     },
     {
       "slug": "button2",
