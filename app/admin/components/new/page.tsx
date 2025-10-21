@@ -58,17 +58,21 @@ export default function NewComponentPage() {
       try {
         const res = await fetch('/api/themes')
         const result = await res.json()
-        // Handle pagination format from Phase 3
-        const themesData = result.data || result
+        
+        // Handle pagination format from Phase 3 and error responses
+        const themesData = Array.isArray(result) ? result : (result.data || [])
         setThemes(themesData)
         
         // Set active theme as default
-        const activeTheme = themesData.find((t: Theme) => t.is_active)
-        if (activeTheme) {
-          setSelectedTheme(activeTheme)
+        if (themesData.length > 0) {
+          const activeTheme = themesData.find((t: Theme) => t.is_active)
+          if (activeTheme) {
+            setSelectedTheme(activeTheme)
+          }
         }
       } catch (err) {
         console.error('Failed to load themes:', err)
+        setThemes([]) // Set empty array on error
       }
     }
     
