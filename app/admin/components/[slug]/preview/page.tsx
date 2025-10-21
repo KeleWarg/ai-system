@@ -106,30 +106,6 @@ export default async function AdminComponentPreviewPage({
         </Card>
       )}
 
-      {/* AI Metadata */}
-      {(component.ai_prompt || component.ai_documentation) && (
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">AI-Generated Metadata</h2>
-          <div className="space-y-4">
-            {component.ai_prompt && (
-              <div>
-                <h3 className="font-medium text-sm mb-2">AI Prompt</h3>
-                <p className="text-sm text-muted-foreground bg-muted p-3 rounded">
-                  {component.ai_prompt}
-                </p>
-              </div>
-            )}
-            {component.ai_documentation && (
-              <div>
-                <h3 className="font-medium text-sm mb-2">AI Documentation</h3>
-                <div className="text-sm text-muted-foreground bg-muted p-3 rounded whitespace-pre-wrap">
-                  {component.ai_documentation}
-                </div>
-              </div>
-            )}
-          </div>
-        </Card>
-      )}
     </div>
   )
 }

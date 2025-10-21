@@ -73,7 +73,7 @@ export async function DELETE(
   try {
     // Check authentication and admin role
     const currentUser = await getCurrentUser()
-    if (!currentUser || currentUser.dbUser?.role !== 'admin') {
+    if (!currentUser || (currentUser.dbUser as { role?: string } | null)?.role !== 'admin') {
       return NextResponse.json(
         { error: 'Unauthorized - Admin access required' },
         { status: 403 }

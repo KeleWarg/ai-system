@@ -9,7 +9,7 @@ const button2Variants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
-      type: {
+      variant: {
         Primary: "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90 active:bg-primary/80",
         Secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 focus:bg-secondary/80 active:bg-secondary/70",
         Ghost: "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground active:bg-accent/80",
@@ -34,7 +34,7 @@ const button2Variants = cva(
       },
     },
     defaultVariants: {
-      type: "Primary",
+      variant: "Primary",
       size: "Base",
       icon: "None",
       state: "Enabled",
@@ -46,7 +46,7 @@ const button2Variants = cva(
  * Props for the Button2 component
  */
 export interface Button2Props
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'>,
     VariantProps<typeof button2Variants> {
   /**
    * Icon element to display in the button
@@ -56,6 +56,10 @@ export interface Button2Props
    * Whether the button is in a loading state
    */
   loading?: boolean
+  /**
+   * HTML button type
+   */
+  type?: 'button' | 'submit' | 'reset'
 }
 
 /**
@@ -66,14 +70,15 @@ export interface Button2Props
  * <Button2 type="Secondary" size="Large">Large Button</Button2>
  */
 const Button2 = React.forwardRef<HTMLButtonElement, Button2Props>(
-  ({ className, type, size, icon, state, iconElement, loading, children, disabled, ...props }, ref) => {
+  ({ className, variant, size, icon, state, iconElement, loading, children, disabled, type, ...props }, ref) => {
     const isDisabled = disabled || state === "Disabled" || loading
 
     return (
       <button
-        className={cn(button2Variants({ type, size, icon, state, className }))}
+        className={cn(button2Variants({ variant, size, icon, state, className }))}
         ref={ref}
         disabled={isDisabled}
+        type={type}
         {...props}
       >
         {icon === "Left" && iconElement && <span className="mr-2">{iconElement}</span>}

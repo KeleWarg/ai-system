@@ -189,8 +189,8 @@ export function createDefaultTheme(): Omit<Theme, 'id' | 'created_at' | 'updated
       input: '214.3 31.8% 91.4%',
       ring: '222.2 84% 4.9%',
     },
-    typography: {},
-    spacing: {},
+    typography: undefined,
+    spacing: undefined,
     radius: '0.5rem',
     is_active: true,
   }

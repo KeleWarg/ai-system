@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { revalidatePath } from 'next/cache'
 import fs from 'fs/promises'
 import path from 'path'
@@ -9,7 +9,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await createClient()
+    const supabase = await createServerSupabaseClient()
     const { id } = await params
 
     // Check authentication
@@ -23,12 +23,12 @@ export async function DELETE(
 
     // Check if user is admin
     const { data: profile } = await supabase
-      .from('profiles')
+      .from('users')
       .select('role')
       .eq('id', user.id)
       .single()
 
-    if (!profile || profile.role !== 'admin') {
+    if (!profile || (profile as { role: string }).role !== 'admin') {
       return NextResponse.json(
         { error: 'Forbidden - Admin access required' },
         { status: 403 }
@@ -49,6 +49,8 @@ export async function DELETE(
       )
     }
 
+    const comp = component as { slug: string; name: string }
+
     // Delete from database
     const { error: deleteError } = await supabase
       .from('components')
@@ -66,7 +68,7 @@ export async function DELETE(
     // Delete from file system
     try {
       const registryDir = path.join(process.cwd(), 'components', 'registry')
-      const componentFile = path.join(registryDir, `${component.slug}.tsx`)
+      const componentFile = path.join(registryDir, `${comp.slug}.tsx`)
       
       // Check if file exists before deleting
       try {
@@ -82,13 +84,13 @@ export async function DELETE(
       let indexContent = await fs.readFile(indexPath, 'utf-8')
       
       // Get component name (capitalize first letter of slug)
-      const componentName = component.slug
+      const componentName = comp.slug
         .split('-')
         .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join('')
       
       // Remove the export line
-      const exportLine = `export { ${componentName} } from './${component.slug}'`
+      const exportLine = `export { ${componentName} } from './${comp.slug}'`
       indexContent = indexContent
         .split('\n')
         .filter(line => !line.includes(exportLine))
@@ -102,7 +104,7 @@ export async function DELETE(
       const metaContent = await fs.readFile(metaPath, 'utf-8')
       const metadata = JSON.parse(metaContent)
       
-      delete metadata[component.slug]
+      delete metadata[comp.slug]
       
       await fs.writeFile(metaPath, JSON.stringify(metadata, null, 2), 'utf-8')
       console.log(`✅ Updated _meta.json`)
@@ -116,11 +118,11 @@ export async function DELETE(
     // Revalidate relevant pages
     revalidatePath('/admin/components')
     revalidatePath('/docs/components')
-    revalidatePath(`/docs/components/${component.slug}`)
+    revalidatePath(`/docs/components/${comp.slug}`)
 
     return NextResponse.json({
       success: true,
-      message: `Component "${component.name}" deleted successfully`,
+      message: `Component "${comp.name}" deleted successfully`,
     })
   } catch (error) {
     console.error('Delete component error:', error)
@@ -136,7 +138,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await createClient()
+    const supabase = await createServerSupabaseClient()
     const { id } = await params
     const body = await request.json()
 
@@ -151,12 +153,12 @@ export async function PATCH(
 
     // Check if user is admin or editor
     const { data: profile } = await supabase
-      .from('profiles')
+      .from('users')
       .select('role')
       .eq('id', user.id)
       .single()
 
-    if (!profile || !['admin', 'editor'].includes(profile.role)) {
+    if (!profile || !['admin', 'editor'].includes((profile as { role: string }).role)) {
       return NextResponse.json(
         { error: 'Forbidden - Admin or editor access required' },
         { status: 403 }
@@ -164,12 +166,13 @@ export async function PATCH(
     }
 
     // Update component
+    const updateData = {
+      ...(body as Record<string, unknown>),
+      updated_at: new Date().toISOString(),
+    }
     const { data, error } = await supabase
       .from('components')
-      .update({
-        ...body,
-        updated_at: new Date().toISOString(),
-      })
+      .update(updateData as never)
       .eq('id', id)
       .select()
       .single()
@@ -185,8 +188,8 @@ export async function PATCH(
     // Revalidate relevant pages
     revalidatePath('/admin/components')
     revalidatePath('/docs/components')
-    if (data.slug) {
-      revalidatePath(`/docs/components/${data.slug}`)
+    if (data && (data as { slug?: string }).slug) {
+      revalidatePath(`/docs/components/${(data as { slug: string }).slug}`)
     }
 
     return NextResponse.json(data)

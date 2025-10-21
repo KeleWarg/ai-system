@@ -1,12 +1,11 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
+import type { ComponentType, ReactElement } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Eye, Code, Copy, Check, AlertCircle } from 'lucide-react'
-import dynamic from 'next/dynamic'
-import type { ComponentType } from 'react'
 
 interface ComponentPreviewRealProps {
   slug: string
@@ -28,15 +27,15 @@ export function ComponentPreviewReal({
   const [previewMode, setPreviewMode] = useState<'preview' | 'code'>('preview')
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [DynamicComponent, setDynamicComponent] = useState<ComponentType<any> | null>(null)
+  const [DynamicComponent, setDynamicComponent] = useState<ComponentType<Record<string, unknown>> | null>(null)
 
   useEffect(() => {
     // Dynamically import the component from the registry
     async function loadComponent() {
       try {
         console.log(`Loading component: ${slug}`)
-        const module = await import(`@/components/registry/${slug}`)
-        const Component = module[componentName] || module.default
+        const componentModule = await import(`@/components/registry/${slug}`)
+        const Component = componentModule[componentName] || componentModule.default
         
         if (!Component) {
           throw new Error(`Component ${componentName} not found in module`)
@@ -63,7 +62,7 @@ export function ComponentPreviewReal({
   const generateVariantExamples = () => {
     if (!variants || !DynamicComponent) return null
 
-    const examples: JSX.Element[] = []
+    const examples: ReactElement[] = []
 
     // Show type variants
     if (variants.type && variants.type.length > 0) {

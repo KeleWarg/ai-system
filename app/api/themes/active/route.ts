@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     }
 
     // Only admins can change active theme
-    if (currentUser.dbUser?.role !== 'admin') {
+    if ((currentUser.dbUser as { role?: string } | null)?.role !== 'admin') {
       return NextResponse.json(
         { error: 'Unauthorized - Admin access required' },
         { status: 403 }
