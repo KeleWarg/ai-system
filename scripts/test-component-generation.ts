@@ -138,8 +138,8 @@ test('AI integration maps spec colors to theme tokens', () => {
 
 // Test 17: AI integration instructs to use theme classes
 test('AI integration enforces theme class usage', () => {
-  return fileContains('lib/ai/claude.ts', 'THEME TOKENS ONLY') &&
-         fileContains('lib/ai/claude.ts', 'text-foreground')
+  return fileContains('lib/ai/claude.ts', 'NO HEX COLORS') &&
+         fileContains('lib/ai/claude.ts', 'bg-primary')
 })
 
 // Test 18: Admin components page links to new component
@@ -153,10 +153,10 @@ test('Admin components page has proper empty state', () => {
   return fileContains('app/admin/components/page.tsx', 'Upload a PNG spec sheet')
 })
 
-// Test 20: Components can be viewed from admin page
+// Test 20: Components can be managed from admin page (Preview/Edit/Delete via ComponentActions)
 test('Admin components page links to component view', () => {
-  return fileContains('app/admin/components/page.tsx', '/docs/components/') &&
-         fileContains('app/admin/components/page.tsx', 'View')
+  return fileContains('app/admin/components/page.tsx', 'ComponentActions') &&
+         fileContains('app/admin/components/page.tsx', 'componentSlug')
 })
 
 // Print results
