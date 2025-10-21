@@ -30,18 +30,6 @@ export function ComponentPreviewReal({
   const [DynamicComponent, setDynamicComponent] = useState<ComponentType<Record<string, unknown>> | null>(null)
 
   useEffect(() => {
-    // Check if running on Vercel (read-only filesystem)
-    const isVercel = typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
-    
-    if (isVercel) {
-      // On Vercel: Can't dynamically import from filesystem
-      // Show code-only view
-      console.log('⚠️  Running on Vercel - live preview not available')
-      setError('Live preview not available in production. Component code is shown below.')
-      return
-    }
-
-    // Local development: Dynamically import the component from the registry
     async function loadComponent() {
       try {
         console.log(`Loading component: ${slug}`)
@@ -53,10 +41,21 @@ export function ComponentPreviewReal({
         }
         
         setDynamicComponent(() => Component)
+        setError(null) // Clear any errors on successful load
         console.log(`✅ Component ${componentName} loaded successfully`)
       } catch (err) {
         console.error(`Failed to load component ${componentName}:`, err)
-        setError(`Failed to load component: ${err instanceof Error ? err.message : 'Unknown error'}`)
+        
+        // Check if we're on Vercel production
+        const isProduction = typeof window !== 'undefined' && 
+          (window.location.hostname.includes('vercel.app') || 
+           window.location.hostname.includes('your-domain.com'))
+        
+        if (isProduction) {
+          setError('💡 This component was generated after deployment. Live preview will be available after the next git commit + deploy. Copy the code below to use it in your project.')
+        } else {
+          setError(`Failed to load component: ${err instanceof Error ? err.message : 'Unknown error'}`)
+        }
       }
     }
 

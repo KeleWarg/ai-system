@@ -152,7 +152,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           await loadThemes()
         }
       )
-      .subscribe()
+      .subscribe((status) => {
+        if (status === 'CHANNEL_ERROR') {
+          console.warn('⚠️ Realtime connection failed. Theme updates will require page refresh.')
+          console.warn('To fix: Enable Realtime in Supabase Dashboard → Database → Replication')
+        } else if (status === 'SUBSCRIBED') {
+          console.log('✅ Realtime theme updates enabled')
+        }
+      })
 
     return () => {
       supabase.removeChannel(channel)

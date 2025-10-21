@@ -81,6 +81,14 @@ export async function POST(req: NextRequest) {
     }
     
     // Insert component
+    // Ensure installation is an object (database expects JSONB)
+    let installationData: Record<string, unknown> = {}
+    if (typeof installation === 'string') {
+      installationData = { steps: installation }
+    } else if (installation && typeof installation === 'object') {
+      installationData = installation
+    }
+    
     const componentData = {
       name,
       slug,
@@ -91,7 +99,7 @@ export async function POST(req: NextRequest) {
       variants: variants || {},
       props: props || {},
       prompts: prompts || { basic: [], advanced: [], useCases: [] },
-      installation: installation || '',
+      installation: installationData,
       theme_id: theme_id || null,
       created_by: user.id,
     }
@@ -104,8 +112,9 @@ export async function POST(req: NextRequest) {
     
     if (error) {
       console.error('Database error:', error)
+      console.error('Component data sent:', JSON.stringify(componentData, null, 2))
       return NextResponse.json(
-        { error: 'Failed to save component', details: error.message },
+        { error: 'Failed to save component', details: error.message, hint: error.hint || '' },
         { status: 500 }
       )
     }
