@@ -77,6 +77,9 @@ function generatePreviewHTML(componentCode: string, variants: Record<string, str
         .join('\n    ')
     : ''
 
+  // Strip import statements and prepare code for browser
+  const cleanedCode = stripImportsFromCode(componentCode)
+
   // Generate demo instances based on variants
   const demoInstances = generateDemoInstances(componentName, variants)
 
@@ -239,8 +242,8 @@ function generatePreviewHTML(componentCode: string, variants: Record<string, str
       };
     }
     
-    // Component code
-    ${componentCode}
+    // Component code (imports stripped, using mocked dependencies)
+    ${cleanedCode}
     
     // Demo App
     function PreviewApp() {
@@ -342,5 +345,61 @@ function generateDemoInstances(componentName: string, variants: Record<string, s
   }
 
   return sections.join('\n')
+}
+
+/**
+ * Strip import statements and TypeScript types from component code
+ * Makes the code compatible with Babel in the browser
+ */
+function stripImportsFromCode(code: string): string {
+  let cleaned = code
+
+  // Remove all import statements (including multiline)
+  cleaned = cleaned.replace(/import\s+(?:type\s+)?(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)\s+from\s+['"][^'"]*['"];?/g, (match) => {
+    return `// ${match.trim().replace(/\n/g, ' ')}`
+  })
+
+  // Remove interface and type definitions (comment them out)
+  cleaned = cleaned.replace(/(export\s+)?interface\s+\w+[\s\S]*?\{[\s\S]*?\n\}/g, (match) => {
+    return `/* ${match} */`
+  })
+
+  cleaned = cleaned.replace(/(export\s+)?type\s+\w+\s*=[\s\S]*?;/g, (match) => {
+    return `// ${match.trim()}`
+  })
+
+  // Remove type annotations from React.forwardRef
+  cleaned = cleaned.replace(
+    /React\.forwardRef<([^,]+),\s*([^>]+)>/g,
+    'React.forwardRef'
+  )
+
+  // Remove type annotations from function parameters
+  cleaned = cleaned.replace(/\(\s*\{([^}]+)\}\s*:\s*[^)]+\)/g, (match) => {
+    // Extract just the parameter names
+    const paramsMatch = match.match(/\{([^}]+)\}/)
+    if (paramsMatch) {
+      return `({ ${paramsMatch[1]} })`
+    }
+    return match
+  })
+
+  // Remove return type annotations
+  cleaned = cleaned.replace(/\)\s*:\s*[^{]+{/g, ') {')
+
+  // Remove variable type annotations
+  cleaned = cleaned.replace(/const\s+(\w+)\s*:\s*[^=]+=\s*/g, 'const $1 = ')
+
+  // Remove 'as' type assertions
+  cleaned = cleaned.replace(/\s+as\s+\w+/g, '')
+
+  // Clean up typeof in cva calls (keep the typeof, just remove VariantProps wrapper)
+  // This is already handled in the code since cva is mocked
+
+  // Clean up multiple spaces and newlines
+  cleaned = cleaned.replace(/\n{3,}/g, '\n\n')
+  cleaned = cleaned.replace(/\s{2,}/g, ' ')
+
+  return cleaned
 }
 
