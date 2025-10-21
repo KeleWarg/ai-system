@@ -36,10 +36,27 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // ⚠️ VERCEL LIMITATION: Filesystem is read-only in production
+    // Skip file writes on Vercel, component code is stored in database
+    const isVercel = process.env.VERCEL === '1'
+    
+    if (isVercel) {
+      console.log('⚠️  Skipping file write on Vercel (read-only filesystem)')
+      console.log('📦 Component code stored in database only')
+      
+      return NextResponse.json({
+        success: true,
+        message: 'Component saved to database (Vercel production)',
+        slug,
+        componentName,
+        vercelMode: true,
+      })
+    }
+
+    // Local development: Write component file
     const registryPath = join(process.cwd(), 'components', 'registry')
     const componentPath = join(registryPath, `${slug}.tsx`)
     
-    // Write component file
     await writeFile(componentPath, code, 'utf-8')
     console.log(`✅ Component written to: ${componentPath}`)
 

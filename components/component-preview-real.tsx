@@ -30,7 +30,18 @@ export function ComponentPreviewReal({
   const [DynamicComponent, setDynamicComponent] = useState<ComponentType<Record<string, unknown>> | null>(null)
 
   useEffect(() => {
-    // Dynamically import the component from the registry
+    // Check if running on Vercel (read-only filesystem)
+    const isVercel = typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
+    
+    if (isVercel) {
+      // On Vercel: Can't dynamically import from filesystem
+      // Show code-only view
+      console.log('⚠️  Running on Vercel - live preview not available')
+      setError('Live preview not available in production. Component code is shown below.')
+      return
+    }
+
+    // Local development: Dynamically import the component from the registry
     async function loadComponent() {
       try {
         console.log(`Loading component: ${slug}`)

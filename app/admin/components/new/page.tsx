@@ -269,6 +269,15 @@ export default function NewComponentPage() {
         }
         
         const component = await saveRes.json()
+        
+        // Show success message with git instructions
+        if (typeof window !== 'undefined') {
+          const isLocal = window.location.hostname === 'localhost'
+          if (isLocal && !writeRes.ok) {
+            alert(`✅ Component created successfully!\n\n⚠️ IMPORTANT: To see this component in production:\n1. Commit the new file: git add components/registry/${slug}.tsx\n2. Push to GitHub: git push\n3. Vercel will auto-deploy\n\nLocal preview available now at /docs/components/${component.slug}`)
+          }
+        }
+        
         router.push(`/docs/components/${component.slug}`)
       } catch (dbError) {
         // Re-throw DB errors after rollback attempt
