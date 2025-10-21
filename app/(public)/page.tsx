@@ -8,7 +8,8 @@ export default function HomePage() {
     <div className="flex min-h-screen flex-col">
       {/* Hero Section */}
       <section className="w-full flex flex-col items-center gap-4 px-6 pb-8 pt-6 md:py-10">
-        <div className="flex max-w-[980px] flex-col items-center gap-4 text-center">
+        <div className="mx-auto max-w-[1440px] flex flex-col items-center gap-4 text-center">
+          <div className="flex max-w-[980px] flex-col items-center gap-4 text-center">
           <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl lg:leading-[1.1]">
             AI-Powered Design System
           </h1>
@@ -29,12 +30,13 @@ export default function HomePage() {
               </Button>
             </Link>
           </div>
+          </div>
         </div>
       </section>
 
       {/* Features Section */}
       <section className="w-full py-8 px-6 md:py-12 md:px-12 lg:py-24 lg:px-24">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto max-w-[1440px] grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader>
               <Palette className="h-10 w-10 text-primary mb-2" />
@@ -87,7 +89,8 @@ export default function HomePage() {
 
       {/* CTA Section */}
       <section className="w-full py-8 px-6 md:py-12 lg:py-24">
-        <div className="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center">
+        <div className="mx-auto max-w-[1440px] flex flex-col items-center justify-center gap-4">
+          <div className="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center">
           <h2 className="font-bold text-3xl leading-[1.1] sm:text-3xl md:text-5xl">
             Start Building Today
           </h2>
@@ -101,6 +104,7 @@ export default function HomePage() {
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
+          </div>
         </div>
       </section>
     </div>
