@@ -14,7 +14,7 @@ interface ExtractedData {
   category: string
   variants?: Record<string, string[]>
   colors?: string[]
-  spacing?: Record<string, string>
+  spacing?: string[]
 }
 
 interface Theme {
@@ -25,10 +25,22 @@ interface Theme {
   spacing?: Record<string, string>
 }
 
+interface ValidationAnalysis {
+  hasRequiredVariants: boolean
+  missingVariants: string[]
+  hasCorrectSpacing: boolean
+  spacingIssues: string[]
+  hasThemeColors: boolean
+  colorIssues: string[]
+  overallMatch: number
+  recommendations: string[]
+}
+
 export default function NewComponentPage() {
   const router = useRouter()
   const [uploading, setUploading] = useState(false)
   const [generating, setGenerating] = useState(false)
+  const [validating, setValidating] = useState(false)
   const [saving, setSaving] = useState(false)
   const [extractedData, setExtractedData] = useState<ExtractedData | null>(null)
   const [generatedCode, setGeneratedCode] = useState('')
@@ -36,6 +48,8 @@ export default function NewComponentPage() {
   const [themes, setThemes] = useState<Theme[]>([])
   const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null)
   const [error, setError] = useState('')
+  const [validation, setValidation] = useState<ValidationAnalysis | null>(null)
+  const [showValidation, setShowValidation] = useState(false)
   
   // Load themes on mount
   useEffect(() => {
@@ -119,12 +133,40 @@ export default function NewComponentPage() {
       
       const { code } = await codeRes.json()
       setGeneratedCode(code)
+      
+      // Automatically validate the generated component
+      await validateComponent(code, extractedData)
     } catch (error) {
       console.error('Generation failed:', error)
       const errorMessage = error instanceof Error ? error.message : 'Failed to generate component. Please try again.'
       setError(errorMessage)
     } finally {
       setGenerating(false)
+    }
+  }
+  
+  const validateComponent = async (code: string, spec: ExtractedData) => {
+    setValidating(true)
+    try {
+      const res = await fetch('/api/ai/validate-component', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          componentCode: code,
+          spec,
+        }),
+      })
+      
+      if (res.ok) {
+        const data = await res.json()
+        setValidation(data.analysis)
+        setShowValidation(true)
+        console.log('✅ Validation complete:', data.analysis)
+      }
+    } catch (error) {
+      console.error('Validation failed:', error)
+    } finally {
+      setValidating(false)
     }
   }
   
@@ -141,8 +183,8 @@ export default function NewComponentPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: componentName,
-            description: extractedData.description,
+            componentName: componentName,
+            componentCode: generatedCode,
             variants: extractedData.variants,
           }),
         }),
@@ -150,9 +192,8 @@ export default function NewComponentPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: componentName,
-            code: generatedCode,
-            variants: extractedData.variants,
+            componentName: componentName,
+            componentCode: generatedCode,
           }),
         }),
       ])
@@ -189,6 +230,28 @@ export default function NewComponentPage() {
       }
       
       const component = await saveRes.json()
+      
+      // Write component to file system (shadcn approach)
+      const writeRes = await fetch('/api/registry/write', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          slug: component.slug,
+          code: generatedCode,
+          componentName: componentName,
+          variants: extractedData.variants || {},
+        }),
+      })
+      
+      if (!writeRes.ok) {
+        const errorData = await writeRes.json().catch(() => ({}))
+        console.error('Failed to write component file:', errorData)
+        // Don't throw - component is already saved to DB
+        setError('Component saved to database but failed to write file. It may not render correctly.')
+      } else {
+        console.log('✅ Component written to file system')
+      }
+      
       router.push(`/docs/components/${component.slug}`)
     } catch (error) {
       console.error('Save failed:', error)
@@ -377,6 +440,67 @@ export default function NewComponentPage() {
               </Button>
             </div>
           </Card>
+          
+          {/* Validation Results */}
+          {showValidation && validation && (
+            <Card className={`p-6 border-2 ${
+              validation.overallMatch >= 90 
+                ? 'border-green-500 bg-green-50 dark:bg-green-950/20' 
+                : validation.overallMatch >= 75
+                ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-950/20'
+                : 'border-red-500 bg-red-50 dark:bg-red-950/20'
+            }`}>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-semibold flex items-center gap-2">
+                    {validation.overallMatch >= 90 ? '✅' : validation.overallMatch >= 75 ? '⚠️' : '❌'}
+                    Spec Validation
+                  </h2>
+                  <div className="text-3xl font-bold">
+                    {validation.overallMatch}/100
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4">
+                  <div className={`p-3 rounded ${validation.hasRequiredVariants ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                    <div className="text-sm font-medium">Variants</div>
+                    <div className="text-xs">{validation.hasRequiredVariants ? 'All present' : `${validation.missingVariants.length} missing`}</div>
+                  </div>
+                  <div className={`p-3 rounded ${validation.hasCorrectSpacing ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                    <div className="text-sm font-medium">Spacing</div>
+                    <div className="text-xs">{validation.hasCorrectSpacing ? 'Matches spec' : `${validation.spacingIssues.length} issues`}</div>
+                  </div>
+                  <div className={`p-3 rounded ${validation.hasThemeColors ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                    <div className="text-sm font-medium">Colors</div>
+                    <div className="text-xs">{validation.hasThemeColors ? 'Theme tokens' : `${validation.colorIssues.length} issues`}</div>
+                  </div>
+                </div>
+                
+                {validation.recommendations.length > 0 && (
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-sm">Recommendations:</h3>
+                    <ul className="list-disc list-inside text-sm space-y-1">
+                      {validation.recommendations.map((rec, i) => (
+                        <li key={i} className="text-muted-foreground">{rec}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                {validation.overallMatch < 90 && (
+                  <div className="text-xs text-muted-foreground bg-white dark:bg-background p-3 rounded border">
+                    <strong>💡 Tip:</strong> For better results, try regenerating or manually adjust the code to match the spec sheet measurements.
+                  </div>
+                )}
+              </div>
+            </Card>
+          )}
+          
+          {validating && (
+            <div className="text-center text-sm text-muted-foreground">
+              Validating component against spec sheet...
+            </div>
+          )}
           
           <div className="flex gap-4">
             <Button

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
 
 interface ComponentPayload {
   name: string
@@ -20,7 +20,7 @@ interface ComponentPayload {
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createServerSupabaseClient()
     
     // Check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser()

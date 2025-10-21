@@ -4,6 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CodeBlockEnhanced } from '@/components/code-block-enhanced'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { ComponentPreviewReal } from '@/components/component-preview-real'
 import { Package, Layers, Code2 } from 'lucide-react'
 
 export default async function ComponentDetailPage({
@@ -41,8 +43,12 @@ export default async function ComponentDetailPage({
       <Separator />
 
       {/* Tabs */}
-      <Tabs defaultValue="code" className="space-y-6">
-        <TabsList className="grid w-full max-w-md grid-cols-4">
+      <Tabs defaultValue="preview" className="space-y-6">
+        <TabsList className="grid w-full max-w-lg grid-cols-5">
+          <TabsTrigger value="preview" className="gap-2">
+            <Layers className="h-4 w-4" />
+            Preview
+          </TabsTrigger>
           <TabsTrigger value="code" className="gap-2">
             <Code2 className="h-4 w-4" />
             Code
@@ -58,6 +64,32 @@ export default async function ComponentDetailPage({
             <TabsTrigger value="installation">Install</TabsTrigger>
           )}
         </TabsList>
+
+        {/* Preview Tab */}
+        <TabsContent value="preview" className="space-y-4">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Component Preview
+            </h2>
+            <p className="text-muted-foreground">
+              Real component rendering using Next.js dynamic imports.
+            </p>
+          </div>
+          
+          <ComponentPreviewReal 
+            slug={component.slug}
+            componentName={component.name}
+            componentCode={component.code}
+            variants={component.variants as Record<string, string[]>}
+            description={component.description}
+            spacing={[
+              "Base height: 40px, Padding: 12px 16px",
+              "Large height: 48px, Padding: 14px 20px",
+              "Small height: 32px, Padding: 8px 12px",
+              "Icon spacing: 8px gap"
+            ]}
+          />
+        </TabsContent>
 
         {/* Code Tab */}
         <TabsContent value="code" className="space-y-4">
@@ -201,7 +233,7 @@ export default async function ComponentDetailPage({
                   component.installation.dependencies.length > 0 && (
                     <div>
                       <h3 className="font-medium mb-2">Dependencies</h3>
-                      <CodeBlock
+                      <CodeBlockEnhanced
                         code={`npm install ${component.installation.dependencies.join(' ')}`}
                         language="bash"
                       />
@@ -211,7 +243,7 @@ export default async function ComponentDetailPage({
                   component.installation.devDependencies.length > 0 && (
                     <div>
                       <h3 className="font-medium mb-2">Dev Dependencies</h3>
-                      <CodeBlock
+                      <CodeBlockEnhanced
                         code={`npm install -D ${component.installation.devDependencies.join(' ')}`}
                         language="bash"
                       />

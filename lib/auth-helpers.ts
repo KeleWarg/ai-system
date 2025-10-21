@@ -51,7 +51,18 @@ export async function getCurrentUser() {
     return null
   }
 
-  const dbUser = await getUser(user.id)
+  // Get user from database using server client
+  const { data: dbUser, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', user.id)
+    .single()
+
+  if (error) {
+    console.error('Error fetching user:', error)
+    return null
+  }
+
   return { user, dbUser }
 }
 

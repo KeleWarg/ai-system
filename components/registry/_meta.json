@@ -1,0 +1,52 @@
+{
+  "components": [
+    {
+      "slug": "button",
+      "name": "Button",
+      "variants": {
+        "variant": [
+          "default",
+          "secondary",
+          "ghost",
+          "white"
+        ],
+        "size": [
+          "default",
+          "sm",
+          "lg"
+        ]
+      },
+      "addedAt": "2025-01-21T00:00:00.000Z"
+    },
+    {
+      "slug": "button2",
+      "name": "Button2",
+      "variants": {
+        "type": [
+          "Primary",
+          "Secondary",
+          "Ghost",
+          "White"
+        ],
+        "icon": [
+          "None",
+          "Left",
+          "Right"
+        ],
+        "state": [
+          "Enabled",
+          "Hover",
+          "Focused",
+          "Pressed",
+          "Disabled"
+        ],
+        "size": [
+          "Base",
+          "Large",
+          "Small"
+        ]
+      },
+      "addedAt": "2025-10-21T01:16:07.848Z"
+    }
+  ]
+}

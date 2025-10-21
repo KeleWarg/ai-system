@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Plus, Box } from 'lucide-react'
 import Link from 'next/link'
+import { ComponentActions } from '@/components/component-actions'
 
 export default async function ComponentsPage() {
   await requireAuth()
@@ -47,7 +48,7 @@ export default async function ComponentsPage() {
           {components.map((component) => (
             <Card key={component.id} className="p-6">
               <div className="flex items-start justify-between">
-                <div>
+                <div className="flex-1">
                   <h3 className="font-semibold text-lg">{component.name}</h3>
                   <p className="text-sm text-muted-foreground mt-1">
                     {component.description}
@@ -56,13 +57,16 @@ export default async function ComponentsPage() {
                     <span className="text-xs bg-accent px-2 py-1 rounded">
                       {component.category}
                     </span>
+                    <span className="text-xs bg-muted px-2 py-1 rounded">
+                      {component.slug}
+                    </span>
                   </div>
                 </div>
-                <Link href={`/docs/components/${component.slug}`}>
-                  <Button variant="outline" size="sm">
-                    View
-                  </Button>
-                </Link>
+                <ComponentActions 
+                  componentId={component.id}
+                  componentName={component.name}
+                  componentSlug={component.slug}
+                />
               </div>
             </Card>
           ))}

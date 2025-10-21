@@ -76,7 +76,14 @@ IMPORTANT - Color Mapping:
   }
 
   const spacingInfo = params.spacing?.length 
-    ? `\n\nSpacing/Sizing: ${params.spacing.join(', ')}`
+    ? `\n\n⚠️ CRITICAL - EXACT SPACING REQUIREMENTS (MUST MATCH):
+${params.spacing.map(s => `• ${s}`).join('\n')}
+
+VALIDATION RULES:
+- Use EXACT pixel values from spec sheet
+- Map to closest Tailwind classes (h-8=32px, h-9=36px, h-10=40px, h-11=44px, h-12=48px)
+- If exact match not available, use arbitrary values: h-[40px], p-[12px]
+- Test all size variants have correct heights`
     : ''
 
   const prompt = `Generate a professional React component with TypeScript for a design system.
@@ -91,11 +98,11 @@ ${variantsText}
 Props:
 ${propsText}${themeInfo}${spacingInfo}
 
-Requirements:
+⚠️ CRITICAL REQUIREMENTS (Component will be validated):
 1. Use TypeScript with proper types
 2. Use class-variance-authority (cva) for variant management
 3. Use Tailwind CSS classes with THEME TOKENS ONLY (bg-primary, text-foreground, NOT hex colors)
-4. Follow shadcn/ui patterns
+4. Follow shadcn/ui patterns EXACTLY
 5. Include proper prop validation
 6. Make it accessible (ARIA attributes)
 7. Use React.forwardRef for ref forwarding
@@ -105,12 +112,20 @@ Requirements:
    - Neutral colors → bg-muted, text-muted-foreground
    - Borders → border-border
    - Backgrounds → bg-background, bg-card
-10. Include JSDoc comments
+10. MATCH EXACT SPACING from spec sheet (use h-[40px] if needed)
+11. Include ALL variants specified (${Object.keys(params.variants || {}).join(', ')})
+12. Include JSDoc comments with examples
+
+VALIDATION: Component will be checked against spec sheet. Ensure:
+✓ All variants present
+✓ Exact spacing matches
+✓ Theme colors only (no #hex)
+✓ Proper TypeScript types
 
 Return ONLY the component code, no explanations.`
 
   const message = await anthropic.messages.create({
-    model: 'claude-3-5-sonnet-20241022',
+    model: 'claude-sonnet-4-20250514', // Claude 4.5 Sonnet - latest version
     max_tokens: 2000,
     messages: [
       {
@@ -190,7 +205,7 @@ Return as JSON in this exact format:
 Return ONLY valid JSON, no markdown or explanations.`
 
   const message = await anthropic.messages.create({
-    model: 'claude-3-5-sonnet-20241022',
+    model: 'claude-sonnet-4-20250514', // Claude 4.5 Sonnet - latest version
     max_tokens: 1500,
     messages: [
       {
@@ -279,7 +294,7 @@ Return as JSON in this exact format:
 Return ONLY valid JSON, no markdown or explanations.`
 
   const message = await anthropic.messages.create({
-    model: 'claude-3-5-sonnet-20241022',
+    model: 'claude-sonnet-4-20250514', // Claude 4.5 Sonnet - latest version
     max_tokens: 2000,
     messages: [
       {
@@ -346,7 +361,7 @@ Return as JSON in this exact format:
 Return ONLY valid JSON, no markdown or explanations.`
 
   const message = await anthropic.messages.create({
-    model: 'claude-3-5-sonnet-20241022',
+    model: 'claude-sonnet-4-20250514', // Claude 4.5 Sonnet - latest version
     max_tokens: 1500,
     messages: [
       {
