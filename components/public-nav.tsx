@@ -18,7 +18,7 @@ export function PublicNav() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="w-full flex h-14 items-center px-6">
+      <div className="container flex h-14 items-center">
         <Link href="/" className="flex items-center gap-2 mr-6">
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <Box className="h-4 w-4" />
