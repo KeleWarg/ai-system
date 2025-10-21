@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { name, description, category, variants, props } = body
+    const { name, description, category, variants, props, theme, colors, spacing } = body
 
     // Validate required fields
     if (!name || !description || !category) {
@@ -39,6 +39,9 @@ export async function POST(request: Request) {
       category,
       variants,
       props,
+      theme,
+      colors,
+      spacing,
     })
 
     return NextResponse.json({ code })

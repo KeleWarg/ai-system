@@ -374,13 +374,32 @@ Return ONLY valid JSON, no markdown or explanations.`
     throw new Error('No text content in response')
   }
 
-  // Extract JSON from response
+  // Extract JSON from response - try multiple patterns
   let jsonText = textContent.text.trim()
-  const jsonMatch = jsonText.match(/```json\n([\s\S]*?)```/)
-  if (jsonMatch) {
-    jsonText = jsonMatch[1]
+
+  console.log('Raw Claude response for spec extraction:', jsonText)
+
+  // Try to extract from markdown code blocks (with or without json tag)
+  const codeBlockPatterns = [
+    /```json\s*\n([\s\S]*?)```/,
+    /```\s*\n([\s\S]*?)```/,
+    /```json\s*([\s\S]*?)```/,
+  ]
+
+  for (const pattern of codeBlockPatterns) {
+    const match = jsonText.match(pattern)
+    if (match) {
+      jsonText = match[1].trim()
+      break
+    }
   }
 
-  return JSON.parse(jsonText)
+  // Try to parse the JSON
+  try {
+    return JSON.parse(jsonText)
+  } catch (parseError) {
+    console.error('Failed to parse JSON from Claude response:', jsonText)
+    throw new Error(`Failed to parse JSON response: ${parseError instanceof Error ? parseError.message : 'Unknown error'}. Response was: ${jsonText.substring(0, 200)}`)
+  }
 }
 

@@ -23,13 +23,25 @@ export interface Typography {
   letterSpacing?: Record<string, string>
 }
 
+export interface Spacing {
+  '2xs': string
+  xs: string
+  sm: string
+  md: string
+  lg: string
+  xl: string
+  '2xl': string
+  '3xl': string
+  '4xl': string
+}
+
 export interface Theme {
   id: string
   name: string
   slug: string
   colors: Record<string, string> // Hex colors
   typography?: Typography
-  spacing?: Record<string, unknown>
+  spacing?: Spacing
   radius?: string
   is_active: boolean
   created_at: string

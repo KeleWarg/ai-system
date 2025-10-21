@@ -27,12 +27,15 @@ export function ThemeForm({ theme }: ThemeFormProps) {
     colors: theme?.colors || DEFAULT_COLORS,
     typography: theme?.typography || DEFAULT_TYPOGRAPHY,
     spacing: theme?.spacing || {
-      xs: '0.5rem',
-      sm: '0.75rem',
-      md: '1rem',
-      lg: '1.5rem',
-      xl: '2rem',
-      '2xl': '3rem',
+      '2xs': '2px',
+      xs: '4px',
+      sm: '8px',
+      md: '12px',
+      lg: '16px',
+      xl: '24px',
+      '2xl': '32px',
+      '3xl': '40px',
+      '4xl': '48px',
     },
     radius: theme?.radius || '0.5rem',
     is_active: theme?.is_active || false,
@@ -433,13 +436,16 @@ export function ThemeForm({ theme }: ThemeFormProps) {
       <Card>
         <CardHeader>
           <CardTitle>Spacing Scale</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Define spacing values in pixels for consistent layout
+          </p>
         </CardHeader>
         <CardContent>
           <div className="grid gap-3 sm:grid-cols-3">
-            {['xs', 'sm', 'md', 'lg', 'xl', '2xl'].map((size) => (
+            {['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'].map((size) => (
               <div key={size}>
-                <Label htmlFor={`spacing-${size}`} className="text-xs text-muted-foreground">
-                  {size}
+                <Label htmlFor={`spacing-${size}`} className="text-xs font-medium">
+                  spacing-{size}
                 </Label>
                 <Input
                   id={`spacing-${size}`}
@@ -453,7 +459,7 @@ export function ThemeForm({ theme }: ThemeFormProps) {
                       },
                     })
                   }
-                  placeholder="e.g., 1rem"
+                  placeholder="e.g., 12px"
                 />
               </div>
             ))}

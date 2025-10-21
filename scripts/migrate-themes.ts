@@ -76,12 +76,15 @@ const defaultTypography = {
 }
 
 const defaultSpacing = {
-  xs: '0.5rem',
-  sm: '0.75rem',
-  md: '1rem',
-  lg: '1.5rem',
-  xl: '2rem',
-  '2xl': '3rem',
+  '2xs': '2px',
+  xs: '4px',
+  sm: '8px',
+  md: '12px',
+  lg: '16px',
+  xl: '24px',
+  '2xl': '32px',
+  '3xl': '40px',
+  '4xl': '48px',
 }
 
 // Import default hex colors

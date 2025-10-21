@@ -78,7 +78,8 @@ export default function NewComponentPage() {
       })
       
       if (!res.ok) {
-        throw new Error('Failed to extract spec sheet')
+        const errorData = await res.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Failed to extract spec sheet')
       }
       
       const data = await res.json()
@@ -86,7 +87,8 @@ export default function NewComponentPage() {
       setComponentName(data.name || '')
     } catch (error) {
       console.error('Upload failed:', error)
-      setError('Failed to extract spec sheet. Please try again.')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to extract spec sheet. Please try again.'
+      setError(errorMessage)
     } finally {
       setUploading(false)
     }
@@ -111,14 +113,16 @@ export default function NewComponentPage() {
       })
       
       if (!codeRes.ok) {
-        throw new Error('Failed to generate component')
+        const errorData = await codeRes.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Failed to generate component')
       }
       
       const { code } = await codeRes.json()
       setGeneratedCode(code)
     } catch (error) {
       console.error('Generation failed:', error)
-      setError('Failed to generate component. Please try again.')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to generate component. Please try again.'
+      setError(errorMessage)
     } finally {
       setGenerating(false)
     }
@@ -154,7 +158,8 @@ export default function NewComponentPage() {
       ])
       
       if (!promptsRes.ok || !docsRes.ok) {
-        throw new Error('Failed to generate documentation')
+        const errorData = await (promptsRes.ok ? docsRes : promptsRes).json().catch(() => ({}))
+        throw new Error(errorData.error || 'Failed to generate documentation')
       }
       
       const prompts = await promptsRes.json()
@@ -179,14 +184,16 @@ export default function NewComponentPage() {
       })
       
       if (!saveRes.ok) {
-        throw new Error('Failed to save component')
+        const errorData = await saveRes.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Failed to save component')
       }
       
       const component = await saveRes.json()
       router.push(`/docs/components/${component.slug}`)
     } catch (error) {
       console.error('Save failed:', error)
-      setError('Failed to save component. Please try again.')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save component. Please try again.'
+      setError(errorMessage)
     } finally {
       setSaving(false)
     }

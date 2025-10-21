@@ -13,17 +13,6 @@ export async function POST(request: Request) {
       )
     }
 
-    const body = await request.json()
-    const { imageBase64, imageMediaType } = body
-
-    // Validate required fields
-    if (!imageBase64 || !imageMediaType) {
-      return NextResponse.json(
-        { error: 'Missing required fields: imageBase64, imageMediaType' },
-        { status: 400 }
-      )
-    }
-
     // Check API key
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
@@ -32,9 +21,25 @@ export async function POST(request: Request) {
       )
     }
 
+    // Parse FormData
+    const formData = await request.formData()
+    const imageFile = formData.get('image') as File
+    
+    if (!imageFile) {
+      return NextResponse.json(
+        { error: 'No image file provided' },
+        { status: 400 }
+      )
+    }
+
+    // Convert file to base64
+    const arrayBuffer = await imageFile.arrayBuffer()
+    const base64 = Buffer.from(arrayBuffer).toString('base64')
+    const imageMediaType = imageFile.type
+
     // Extract spec from image
     const spec = await extractSpecFromImage({
-      imageBase64,
+      imageBase64: base64,
       imageMediaType,
     })
 
