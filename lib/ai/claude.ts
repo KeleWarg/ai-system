@@ -402,13 +402,16 @@ export async function extractSpecFromImage(
 }> {
   const prompt = `⚠️ CRITICAL: Analyze this design specification image and extract EXACT component specifications.
 
+🎯 PRIORITY: If the spec sheet has LABELED measurements and values, use those EXACT numbers.
+   Do NOT estimate or approximate when explicit values are shown.
+
 🎯 EXTRACTION REQUIREMENTS (Be extremely precise):
 
 1. Component name (as shown in spec)
 2. Brief description of what the component does
 3. Category (MUST be one of: buttons, inputs, navigation, feedback, data-display, overlays, other)
 
-4. Variants - Extract ALL visible variants with their EXACT names:
+4. Variants - Extract ALL visible variants with their EXACT names (read labels if present):
    - variant/type: ["primary", "secondary", "ghost", "outline", etc.]
    - size: ["small", "medium", "large", "xl", etc.]
    - state: ["default", "hover", "focus", "active", "disabled", "loading"]
@@ -416,7 +419,8 @@ export async function extractSpecFromImage(
    - ANY other variant dimensions you see
 
 5. Colors - Extract EXACT HEX VALUES (not descriptions):
-   ⚠️ CRITICAL: Use actual hex codes from the image
+   ⚠️ CRITICAL: If hex codes are LABELED in the spec, copy them EXACTLY as written.
+   If not labeled, identify the hex values from the colors shown.
    Format: "Purpose: #HEXCODE" (e.g., "Primary background: #3B82F6")
    Extract:
    - Background colors for each variant
@@ -427,7 +431,9 @@ export async function extractSpecFromImage(
    - Disabled state colors
 
 6. Spacing/Sizing - Extract EXACT PIXEL VALUES (not vague terms):
-   ⚠️ CRITICAL: Measure and report actual pixel dimensions
+   ⚠️ CRITICAL: If measurements are LABELED in the spec (e.g., "40px", "16px padding"), 
+   copy those EXACT numbers. Do NOT round or approximate labeled values.
+   If not labeled, carefully measure from the visual.
    Extract:
    - Component heights (e.g., "Default height: 40px", "Small height: 32px")
    - Horizontal padding (e.g., "Horizontal padding: 16px")
@@ -438,9 +444,11 @@ export async function extractSpecFromImage(
    - Min width if specified
 
 7. Typography - Extract EXACT specifications:
+   ⚠️ CRITICAL: Read labeled font specs directly from the image.
    - Font size (e.g., "Base: 14px", "Small: 12px")
-   - Font weight (e.g., "Medium: 500", "Bold: 600")
+   - Font weight (e.g., "Medium: 500", "Bold: 600")  
    - Line height (e.g., "Line height: 20px")
+   - Font family if specified
 
 8. Border & Shadow specifications:
    - Border width (e.g., "Border: 1px")
