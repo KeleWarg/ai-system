@@ -284,7 +284,7 @@ async function runValidation() {
   for (const [test, result] of Object.entries(results)) {
     console.log(`\n${result.message}`)
     if (result.details) {
-      result.details.forEach(detail => console.log(`  ${detail}`))
+      result.details.forEach((detail: string) => console.log(`  ${detail}`))
     }
   }
   
