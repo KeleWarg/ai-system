@@ -172,7 +172,7 @@ export default function TestColorsPage() {
         <ul className="text-sm space-y-1 text-fg-caption">
           <li>• This page validates all {EXPECTED_TOKENS.length} color tokens are defined in CSS</li>
           <li>• Run this AFTER implementing the 60+ token system</li>
-          <li>• All tokens should show as "Valid" with green badges</li>
+          <li>• All tokens should show as &quot;Valid&quot; with green badges</li>
           <li>• If any are missing, check <code className="text-xs bg-white dark:bg-black px-1 py-0.5 rounded">app/globals.css</code></li>
           <li>• If any are invalid format, ensure values are HSL format: <code className="text-xs bg-white dark:bg-black px-1 py-0.5 rounded">H S% L%</code></li>
         </ul>

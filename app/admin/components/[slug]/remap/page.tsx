@@ -341,7 +341,7 @@ export default function StyleRemapPage({ params }: StyleRemapPageProps) {
             <Palette className="h-16 w-16 mx-auto mb-4 text-fg-caption/50" />
             <h3 className="text-lg font-semibold mb-2">No Color Styles Detected</h3>
             <p className="text-fg-caption">
-              This component doesn't use any color classes (bg, text, border, etc.)
+              This component doesn&apos;t use any color classes (bg, text, border, etc.)
             </p>
           </Card>
         ) : (
