@@ -1,200 +1,110 @@
-// Semantic color system with default values
+/**
+ * Tailwind-compatible color system using HSL format
+ * Format: "H S% L%" (e.g., "240 5.9% 10%" for a dark blue)
+ * These map directly to CSS variables that Tailwind classes use
+ */
 export const DEFAULT_COLORS = {
-  // Primary Button
-  'primary-bg': '#3B82F6',
-  'primary-text': '#FFFFFF',
-  'primary-icon': '#FFFFFF',
-  'primary-hover-bg': '#2563EB',
-  'primary-pressed-bg': '#1D4ED8',
-  'primary-disabled-bg': '#93C5FD',
-  'focused-border': '#3B82F6',
-
-  // Secondary Button
-  'secondary-bg': '#F3F4F6',
-  'secondary-border': '#E5E7EB',
-  'secondary-text': '#1F2937',
-  'secondary-icon': '#1F2937',
-  'secondary-hover-bg': '#E5E7EB',
-  'secondary-pressed-bg': '#D1D5DB',
-  'secondary-disabled-bg': '#F9FAFB',
-
-  // Ghost Button
-  'ghost-bg': 'transparent',
-  'ghost-text': '#1F2937',
-  'ghost-icon': '#1F2937',
-  'ghost-hover-bg': '#F3F4F6',
-  'ghost-pressed-bg': '#E5E7EB',
-  'ghost-disabled-bg': 'transparent',
-
-  // Background
-  'bg-white': '#FFFFFF',
-  'bg-neutral-subtle': '#F9FAFB',
-  'bg-neutral-light': '#F3F4F6',
-  'bg-neutral': '#E5E7EB',
-  'bg-accent': '#FEF3C7',
-  'bg-accent-mid': '#FDE68A',
-  'bg-brand-subtle': '#EFF6FF',
-  'bg-table': '#FFFFFF',
-  'bg-secondary': '#F3F4F6',
-  'bg-brand-light': '#DBEAFE',
-  'bg-brand-mid': '#93C5FD',
-  'bg-brand': '#3B82F6',
-  'bg-neutral-mid': '#9CA3AF',
-  'bg-neutral-strong': '#4B5563',
-  'bg-header': '#1F2937',
-  'bg-superlative': '#10B981',
-  'bg-button': '#3B82F6',
-
-  // Foreground
-  'fg-heading': '#111827',
-  'fg-body': '#374151',
-  'fg-link-secondary': '#6B7280',
-  'fg-caption': '#9CA3AF',
-  'fg-stroke-ui': '#D1D5DB',
-  'fg-link': '#3B82F6',
-  'fg-stroke-ui-inverse': '#4B5563',
-  'fg-heading-inverse': '#FFFFFF',
-  'fg-body-inverse': '#F3F4F6',
-  'fg-caption-inverse': '#D1D5DB',
-  'fg-table-border': '#E5E7EB',
-  'fg-stroke-default': '#D1D5DB',
-  'fg-divider': '#E5E7EB',
-  'fg-stroke-inverse': '#4B5563',
-  'fg-stroke-dark-inverse': '#1F2937',
-  'fg-feedback-error': '#EF4444',
-  'fg-feedback-warning': '#F59E0B',
-  'fg-feedback-success': '#10B981',
-
-  // Superlative
-  'superlative-primary': '#3B82F6',
-  'superlative-secondary': '#10B981',
+  // Base colors
+  'background': '0 0% 100%',           // White
+  'foreground': '240 10% 3.9%',        // Near black
+  
+  // Card colors
+  'card': '0 0% 100%',                 // White
+  'card-foreground': '240 10% 3.9%',   // Near black
+  
+  // Popover colors
+  'popover': '0 0% 100%',              // White
+  'popover-foreground': '240 10% 3.9%', // Near black
+  
+  // Primary colors (main brand color - default: blue)
+  'primary': '221 83% 53%',            // Blue #3B82F6
+  'primary-foreground': '0 0% 98%',    // White
+  'primary-hover': '221 83% 45%',      // Darker blue hover
+  
+  // Secondary colors (muted, subtle)
+  'secondary': '240 4.8% 95.9%',       // Light gray
+  'secondary-foreground': '240 5.9% 10%', // Dark gray
+  'secondary-hover': '240 4.8% 90%',   // Slightly darker gray
+  
+  // Muted colors (backgrounds, disabled states)
+  'muted': '240 4.8% 95.9%',           // Light gray
+  'muted-foreground': '240 3.8% 46.1%', // Mid gray
+  
+  // Accent colors (highlights, badges)
+  'accent': '240 4.8% 95.9%',          // Light gray
+  'accent-foreground': '240 5.9% 10%', // Dark gray
+  
+  // Destructive colors (errors, delete actions)
+  'destructive': '0 84.2% 60.2%',      // Red
+  'destructive-foreground': '0 0% 98%', // White
+  'destructive-hover': '0 84.2% 50%',  // Darker red
+  
+  // Border colors
+  'border': '240 5.9% 90%',            // Light gray border
+  'input': '240 5.9% 90%',             // Input border
+  'ring': '240 5.9% 10%',              // Focus ring (dark)
 } as const
 
 export const COLOR_CATEGORIES = {
-  'Primary Button': [
-    'primary-bg',
-    'primary-text',
-    'primary-icon',
-    'primary-hover-bg',
-    'primary-pressed-bg',
-    'primary-disabled-bg',
-    'focused-border',
+  'Base': [
+    'background',
+    'foreground',
   ],
-  'Secondary Button': [
-    'secondary-bg',
-    'secondary-border',
-    'secondary-text',
-    'secondary-icon',
-    'secondary-hover-bg',
-    'secondary-pressed-bg',
-    'secondary-disabled-bg',
+  'Primary (Brand)': [
+    'primary',
+    'primary-foreground',
+    'primary-hover',
   ],
-  'Ghost Button': [
-    'ghost-bg',
-    'ghost-text',
-    'ghost-icon',
-    'ghost-hover-bg',
-    'ghost-pressed-bg',
-    'ghost-disabled-bg',
+  'Secondary': [
+    'secondary',
+    'secondary-foreground',
+    'secondary-hover',
   ],
-  'Background': [
-    'bg-white',
-    'bg-neutral-subtle',
-    'bg-neutral-light',
-    'bg-neutral',
-    'bg-accent',
-    'bg-accent-mid',
-    'bg-brand-subtle',
-    'bg-table',
-    'bg-secondary',
-    'bg-brand-light',
-    'bg-brand-mid',
-    'bg-brand',
-    'bg-neutral-mid',
-    'bg-neutral-strong',
-    'bg-header',
-    'bg-superlative',
-    'bg-button',
+  'Muted': [
+    'muted',
+    'muted-foreground',
   ],
-  'Foreground': [
-    'fg-heading',
-    'fg-body',
-    'fg-link-secondary',
-    'fg-caption',
-    'fg-stroke-ui',
-    'fg-link',
-    'fg-stroke-ui-inverse',
-    'fg-heading-inverse',
-    'fg-body-inverse',
-    'fg-caption-inverse',
-    'fg-table-border',
-    'fg-stroke-default',
-    'fg-divider',
-    'fg-stroke-inverse',
-    'fg-stroke-dark-inverse',
-    'fg-feedback-error',
-    'fg-feedback-warning',
-    'fg-feedback-success',
+  'Accent': [
+    'accent',
+    'accent-foreground',
   ],
-  'Superlative': ['superlative-primary', 'superlative-secondary'],
+  'Destructive (Error)': [
+    'destructive',
+    'destructive-foreground',
+    'destructive-hover',
+  ],
+  'UI Elements': [
+    'card',
+    'card-foreground',
+    'popover',
+    'popover-foreground',
+    'border',
+    'input',
+    'ring',
+  ],
 } as const
 
 export const COLOR_LABELS: Record<string, string> = {
-  'primary-bg': 'Primary Background',
-  'primary-text': 'Primary Text',
-  'primary-icon': 'Primary Icon',
-  'primary-hover-bg': 'Primary Hover',
-  'primary-pressed-bg': 'Primary Pressed',
-  'primary-disabled-bg': 'Primary Disabled',
-  'focused-border': 'Focused Border',
-  'secondary-bg': 'Secondary Background',
-  'secondary-border': 'Secondary Border',
-  'secondary-text': 'Secondary Text',
-  'secondary-icon': 'Secondary Icon',
-  'secondary-hover-bg': 'Secondary Hover',
-  'secondary-pressed-bg': 'Secondary Pressed',
-  'secondary-disabled-bg': 'Secondary Disabled',
-  'ghost-bg': 'Ghost Background',
-  'ghost-text': 'Ghost Text',
-  'ghost-icon': 'Ghost Icon',
-  'ghost-hover-bg': 'Ghost Hover',
-  'ghost-pressed-bg': 'Ghost Pressed',
-  'ghost-disabled-bg': 'Ghost Disabled',
-  'bg-white': 'White',
-  'bg-neutral-subtle': 'Neutral Subtle',
-  'bg-neutral-light': 'Neutral Light',
-  'bg-neutral': 'Neutral',
-  'bg-accent': 'Accent',
-  'bg-accent-mid': 'Accent Mid',
-  'bg-brand-subtle': 'Brand Subtle',
-  'bg-table': 'Table',
-  'bg-secondary': 'Secondary',
-  'bg-brand-light': 'Brand Light',
-  'bg-brand-mid': 'Brand Mid',
-  'bg-brand': 'Brand',
-  'bg-neutral-mid': 'Neutral Mid',
-  'bg-neutral-strong': 'Neutral Strong',
-  'bg-header': 'Header',
-  'bg-superlative': 'Superlative',
-  'bg-button': 'Button',
-  'fg-heading': 'Heading',
-  'fg-body': 'Body',
-  'fg-link-secondary': 'Link Secondary',
-  'fg-caption': 'Caption',
-  'fg-stroke-ui': 'Stroke UI',
-  'fg-link': 'Link',
-  'fg-stroke-ui-inverse': 'Stroke UI Inverse',
-  'fg-heading-inverse': 'Heading Inverse',
-  'fg-body-inverse': 'Body Inverse',
-  'fg-caption-inverse': 'Caption Inverse',
-  'fg-table-border': 'Table Border',
-  'fg-stroke-default': 'Stroke Default',
-  'fg-divider': 'Divider',
-  'fg-stroke-inverse': 'Stroke Inverse',
-  'fg-stroke-dark-inverse': 'Stroke Dark Inverse',
-  'fg-feedback-error': 'Error',
-  'fg-feedback-warning': 'Warning',
-  'fg-feedback-success': 'Success',
-  'superlative-primary': 'Primary',
-  'superlative-secondary': 'Secondary',
+  'background': 'Background',
+  'foreground': 'Foreground Text',
+  'card': 'Card Background',
+  'card-foreground': 'Card Text',
+  'popover': 'Popover Background',
+  'popover-foreground': 'Popover Text',
+  'primary': 'Primary (Brand)',
+  'primary-foreground': 'Primary Text',
+  'primary-hover': 'Primary Hover',
+  'secondary': 'Secondary Background',
+  'secondary-foreground': 'Secondary Text',
+  'secondary-hover': 'Secondary Hover',
+  'muted': 'Muted Background',
+  'muted-foreground': 'Muted Text',
+  'accent': 'Accent Background',
+  'accent-foreground': 'Accent Text',
+  'destructive': 'Destructive (Error)',
+  'destructive-foreground': 'Destructive Text',
+  'destructive-hover': 'Destructive Hover',
+  'border': 'Border',
+  'input': 'Input Border',
+  'ring': 'Focus Ring',
 }

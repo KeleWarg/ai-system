@@ -13,6 +13,7 @@ import {
   Loader2
 } from 'lucide-react'
 import { Button } from './ui/button'
+import { ThemeSwitcherAdmin } from './theme-switcher-admin'
 
 const navigation = [
   {
@@ -85,6 +86,11 @@ export function AdminSidebar() {
           )
         })}
       </nav>
+
+      {/* Theme Switcher */}
+      <div className="border-t border-border p-4">
+        <ThemeSwitcherAdmin />
+      </div>
 
       {/* User section */}
       <div className="border-t border-border p-4">

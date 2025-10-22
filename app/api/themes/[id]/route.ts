@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { updateTheme, deleteTheme } from '@/lib/db/themes'
 import { getCurrentUser } from '@/lib/auth-helpers'
-import { createClient } from '@/lib/supabase'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
 
 // GET single theme
 export async function GET(
@@ -10,7 +10,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const supabase = createClient()
+    const supabase = await createServerSupabaseClient()
     
     const { data, error } = await supabase
       .from('themes')

@@ -1,8 +1,8 @@
-import { createClient } from '@/lib/supabase'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
 import type { User } from '@/lib/supabase'
 
 export async function getUser(id: string) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
     .from('users')
     .select('*')
@@ -18,7 +18,7 @@ export async function getUser(id: string) {
 }
 
 export async function getCurrentUser() {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) return null
@@ -27,7 +27,7 @@ export async function getCurrentUser() {
 }
 
 export async function getUserByEmail(email: string) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
     .from('users')
     .select('*')
@@ -43,7 +43,7 @@ export async function getUserByEmail(email: string) {
 }
 
 export async function updateUserRole(id: string, role: 'admin' | 'editor') {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
     .from('users')
     .update({ role } as never)

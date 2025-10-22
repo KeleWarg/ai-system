@@ -47,9 +47,9 @@
           "white"
         ],
         "size": [
-          "small",
           "base",
-          "large"
+          "large",
+          "small"
         ],
         "state": [
           "enabled",
@@ -64,7 +64,7 @@
           "right"
         ]
       },
-      "addedAt": "2025-10-22T00:49:13.517Z"
+      "addedAt": "2025-10-22T01:14:02.215Z"
     }
   ]
 }

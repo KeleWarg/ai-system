@@ -78,9 +78,9 @@ export function ComponentPreviewReal({
               Variants
             </h3>
             <div className="flex flex-wrap gap-3">
-              {typeVariants.map((variant) => (
-                <DynamicComponent key={variant} variant={variant}>
-                  {variant}
+              {typeVariants.map((typeVariant) => (
+                <DynamicComponent key={typeVariant} type={typeVariant}>
+                  {typeVariant}
                 </DynamicComponent>
               ))}
             </div>

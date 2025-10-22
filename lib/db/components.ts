@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
 import type { Component } from '@/lib/supabase'
 
 export async function getComponents(options?: {
@@ -7,7 +7,7 @@ export async function getComponents(options?: {
   category?: string
   search?: string
 }) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const page = options?.page || 1
   const limit = options?.limit || 50
   const offset = (page - 1) * limit
@@ -61,7 +61,7 @@ export async function getComponents(options?: {
 }
 
 export async function getComponentsByCategory(category: string) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
     .from('components')
     .select('*')
@@ -77,7 +77,7 @@ export async function getComponentsByCategory(category: string) {
 }
 
 export async function getComponentBySlug(slug: string) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
     .from('components')
     .select('*')
@@ -93,7 +93,7 @@ export async function getComponentBySlug(slug: string) {
 }
 
 export async function createComponent(component: Omit<Component, 'id' | 'created_at' | 'updated_at'>) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
     .from('components')
     .insert(component as never)
@@ -109,7 +109,7 @@ export async function createComponent(component: Omit<Component, 'id' | 'created
 }
 
 export async function updateComponent(id: string, updates: Partial<Omit<Component, 'id' | 'created_at' | 'updated_at'>>) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
     .from('components')
     .update(updates as never)
@@ -126,7 +126,7 @@ export async function updateComponent(id: string, updates: Partial<Omit<Componen
 }
 
 export async function deleteComponent(id: string) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { error } = await supabase
     .from('components')
     .delete()
@@ -141,7 +141,7 @@ export async function deleteComponent(id: string) {
 }
 
 export async function searchComponents(query: string) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
     .from('components')
     .select('*')

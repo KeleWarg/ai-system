@@ -57,14 +57,17 @@ export function ThemeForm({ theme }: ThemeFormProps) {
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || 'Failed to save theme')
+        console.error('API Error Response:', error)
+        const errorMessage = error.details || error.error || 'Failed to save theme'
+        throw new Error(errorMessage)
       }
 
       router.push('/admin/themes')
       router.refresh()
     } catch (error) {
       console.error('Error saving theme:', error)
-      alert(error instanceof Error ? error.message : 'Failed to save theme')
+      const message = error instanceof Error ? error.message : 'Failed to save theme'
+      alert(`Error: ${message}`)
     } finally {
       setLoading(false)
     }

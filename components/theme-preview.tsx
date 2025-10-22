@@ -21,10 +21,10 @@ export function ThemePreview({ themes }: ThemePreviewProps) {
 
     const root = document.documentElement
 
-    // Apply colors (hex format)
+    // Apply colors (HSL format)
     if (selectedTheme.colors) {
       Object.entries(selectedTheme.colors).forEach(([key, value]) => {
-        root.style.setProperty(`--color-${key}`, String(value))
+        root.style.setProperty(`--${key}`, String(value))
       })
     }
 
@@ -77,7 +77,7 @@ export function ThemePreview({ themes }: ThemePreviewProps) {
       if (activeTheme) {
         if (activeTheme.colors) {
           Object.entries(activeTheme.colors).forEach(([key, value]) => {
-            root.style.setProperty(`--color-${key}`, String(value))
+            root.style.setProperty(`--${key}`, String(value))
           })
         }
         if (activeTheme.typography) {
@@ -241,7 +241,7 @@ export function ThemePreview({ themes }: ThemePreviewProps) {
                   <div
                     className="h-16 rounded-md border shadow-sm"
                     style={{
-                      backgroundColor: String(value)
+                      backgroundColor: `hsl(${value})`
                     }}
                   />
                   <p className="text-xs font-medium capitalize truncate">

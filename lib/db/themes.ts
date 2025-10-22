@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
 import type { Theme } from '@/lib/supabase'
 
 export async function getThemes(options?: {
@@ -6,7 +6,7 @@ export async function getThemes(options?: {
   limit?: number
   search?: string
 }) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const page = options?.page || 1
   const limit = options?.limit || 50
   const offset = (page - 1) * limit
@@ -55,7 +55,7 @@ export async function getThemes(options?: {
 }
 
 export async function getActiveTheme() {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
     .from('themes')
     .select('*')
@@ -71,7 +71,7 @@ export async function getActiveTheme() {
 }
 
 export async function getThemeBySlug(slug: string) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
     .from('themes')
     .select('*')
@@ -87,7 +87,7 @@ export async function getThemeBySlug(slug: string) {
 }
 
 export async function createTheme(theme: Omit<Theme, 'id' | 'created_at' | 'updated_at'>) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
     .from('themes')
     .insert(theme as never)
@@ -103,7 +103,7 @@ export async function createTheme(theme: Omit<Theme, 'id' | 'created_at' | 'upda
 }
 
 export async function updateTheme(id: string, updates: Partial<Omit<Theme, 'id' | 'created_at' | 'updated_at'>>) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
     .from('themes')
     .update(updates as never)
@@ -120,7 +120,7 @@ export async function updateTheme(id: string, updates: Partial<Omit<Theme, 'id' 
 }
 
 export async function deleteTheme(id: string) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { error } = await supabase
     .from('themes')
     .delete()
@@ -135,7 +135,7 @@ export async function deleteTheme(id: string) {
 }
 
 export async function setActiveTheme(id: string) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   
   // First, deactivate all themes
   await supabase

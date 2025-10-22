@@ -4,7 +4,18 @@ import { createClient } from '@/lib/supabase'
 import { useState, useEffect } from 'react'
 import type { User } from '@supabase/supabase-js'
 import type { User as DBUser } from '@/lib/supabase'
-import { getUser } from '@/lib/db/users'
+
+async function fetchUserData() {
+  try {
+    const response = await fetch('/api/auth/me')
+    if (!response.ok) return { user: null, dbUser: null }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Error fetching user data:', error)
+    return { user: null, dbUser: null }
+  }
+}
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
@@ -14,17 +25,11 @@ export function useAuth() {
   useEffect(() => {
     const supabase = createClient()
 
-    // Get initial user
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    // Get initial user data
+    fetchUserData().then(({ user, dbUser }) => {
       setUser(user)
-      if (user) {
-        getUser(user.id).then((dbUser) => {
-          setDbUser(dbUser)
-          setLoading(false)
-        })
-      } else {
-        setLoading(false)
-      }
+      setDbUser(dbUser)
+      setLoading(false)
     })
 
     // Listen for auth changes
@@ -33,7 +38,10 @@ export function useAuth() {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        getUser(session.user.id).then(setDbUser)
+        // Fetch updated db user data after auth change
+        fetchUserData().then(({ dbUser }) => {
+          setDbUser(dbUser)
+        })
       } else {
         setDbUser(null)
       }

@@ -25,6 +25,7 @@
   --text-7xl: 4.5rem;
 
   /* Color definitions - Tailwind v4 format */
+  /* Tailwind v4 classes like bg-primary will use --color-* variables */
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --color-card: hsl(var(--card));
