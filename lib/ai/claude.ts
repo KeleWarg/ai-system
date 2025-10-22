@@ -237,7 +237,7 @@ export async function generateUsagePrompts(
         .join('\n')
     : 'No variants'
 
-  const prompt = `Given this React component, generate helpful AI prompts that users can use to generate similar components or variations.
+  const prompt = `Given this React component, generate installation and usage instructions for developers who want to use this component in their project.
 
 Component Name: ${params.componentName}
 
@@ -249,21 +249,30 @@ ${params.componentCode}
 Variants:
 ${variantsText}
 
+IMPORTANT: These prompts should be practical instructions that guarantee the component will work when installed in a user's project. Include:
+- Import statements with the exact component name
+- Example usage with actual props
+- How to install from this design system library
+
 Generate prompts in the following categories:
 
-1. Basic Prompts (3-5 simple prompts for common use cases)
-2. Advanced Prompts (3-5 complex prompts for advanced customization)
-3. Use Cases (3-5 real-world scenarios with prompts and expected output)
+1. Basic Prompts (3-5 simple usage examples with import and basic props)
+   Example: "Import {${params.componentName}} from '@/components/ui/${params.componentName.toLowerCase()}' and use <${params.componentName} variant='primary'>Click me</${params.componentName}>"
+
+2. Advanced Prompts (3-5 advanced usage examples with multiple variants and props)
+   Example: "Use ${params.componentName} with leftIcon prop: <${params.componentName} variant='secondary' leftIcon={<Icon />}>Button text</${params.componentName}>"
+
+3. Use Cases (3-5 real-world scenarios with complete code examples)
 
 Return as JSON in this exact format:
 {
-  "basic": ["prompt 1", "prompt 2", ...],
-  "advanced": ["prompt 1", "prompt 2", ...],
+  "basic": ["instruction 1", "instruction 2", ...],
+  "advanced": ["instruction 1", "instruction 2", ...],
   "useCases": [
     {
       "scenario": "Description of use case",
-      "prompt": "AI prompt for this scenario",
-      "output": "Expected result description"
+      "prompt": "Complete code example with imports",
+      "output": "What the result looks like"
     },
     ...
   ]
