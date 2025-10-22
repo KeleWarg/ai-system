@@ -1,110 +1,219 @@
 /**
- * Tailwind-compatible color system using HSL format
+ * Comprehensive color system with 60+ tokens matching design spec sheets
  * Format: "H S% L%" (e.g., "240 5.9% 10%" for a dark blue)
  * These map directly to CSS variables that Tailwind classes use
  */
+
 export const DEFAULT_COLORS = {
-  // Base colors
-  'background': '0 0% 100%',           // White
-  'foreground': '240 10% 3.9%',        // Near black
+  // Button / Primary (7 tokens) - Health SEM Theme
+  'primary-bg': '168 11% 45%',
+  'primary-text': '0 0% 100%',
+  'primary-icon': '0 0% 100%',
+  'primary-hover-bg': '168 17% 33%',
+  'primary-pressed-bg': '167 21% 30%',
+  'primary-disabled-bg': '168 11% 45%',
+  'focused-border': '202 84% 73%',
   
-  // Card colors
-  'card': '0 0% 100%',                 // White
-  'card-foreground': '240 10% 3.9%',   // Near black
+  // Button / Secondary (7 tokens)
+  'secondary-bg': '160 13% 95%',
+  'secondary-border': '168 11% 45%',
+  'secondary-text': '168 11% 45%',
+  'secondary-icon': '167 21% 30%',
+  'secondary-hover-bg': '168 28% 86%',
+  'secondary-pressed-bg': '167 16% 67%',
+  'secondary-disabled-bg': '160 13% 95%',
   
-  // Popover colors
-  'popover': '0 0% 100%',              // White
-  'popover-foreground': '240 10% 3.9%', // Near black
+  // Button / Ghost (6 tokens)
+  'ghost-bg': '0 0% 100% / 0',
+  'ghost-text': '167 21% 30%',
+  'ghost-icon': '167 21% 30%',
+  'ghost-hover-bg': '168 28% 86%',
+  'ghost-pressed-bg': '167 16% 67%',
+  'ghost-disabled-bg': '219 21% 87%',
   
-  // Primary colors (main brand color - default: blue)
-  'primary': '221 83% 53%',            // Blue #3B82F6
-  'primary-foreground': '0 0% 98%',    // White
-  'primary-hover': '221 83% 45%',      // Darker blue hover
+  // Background (17 tokens)
+  'bg-white': '0 0% 100%',
+  'bg-neutral-subtle': '225 22% 96%',
+  'bg-neutral-light': '214 23% 94%',
+  'bg-neutral': '216 22% 91%',
+  'bg-accent': '40 14% 96%',
+  'bg-accent-mid': '39 100% 92%',
+  'bg-brand-subtle': '160 13% 95%',
+  'bg-table': '160 13% 95%',
+  'bg-secondary': '168 28% 86%',
+  'bg-brand-light': '168 28% 86%',
+  'bg-brand-mid': '167 16% 67%',
+  'bg-brand': '168 11% 45%',
+  'bg-neutral-mid': '218 9% 24%',
+  'bg-neutral-strong': '220 9% 19%',
+  'bg-header': '214 10% 13%',
+  'bg-superlative': '25 86% 50%',
+  'bg-button': '168 11% 45%',
   
-  // Secondary colors (muted, subtle)
-  'secondary': '240 4.8% 95.9%',       // Light gray
-  'secondary-foreground': '240 5.9% 10%', // Dark gray
-  'secondary-hover': '240 4.8% 90%',   // Slightly darker gray
+  // Foreground (18 tokens)
+  'fg-heading': '214 10% 13%',
+  'fg-body': '218 9% 24%',
+  'fg-link-secondary': '218 9% 24%',
+  'fg-caption': '214 10% 42%',
+  'fg-stroke-ui': '213 12% 55%',
+  'fg-link': '168 11% 45%',
+  'fg-stroke-ui-inverse': '219 21% 87%',
+  'fg-heading-inverse': '0 0% 100%',
+  'fg-body-inverse': '225 22% 96%',
+  'fg-caption-inverse': '219 21% 87%',
+  'fg-table-border': '217 20% 79%',
+  'fg-stroke-default': '217 20% 79%',
+  'fg-divider': '219 21% 87%',
+  'fg-stroke-inverse': '0 0% 100%',
+  'fg-stroke-dark-inverse': '218 9% 24%',
+  'fg-feedback-error': '12 84% 50%',
+  'fg-feedback-warning': '37 100% 61%',
+  'fg-feedback-success': '169 82% 25%',
   
-  // Muted colors (backgrounds, disabled states)
-  'muted': '240 4.8% 95.9%',           // Light gray
-  'muted-foreground': '240 3.8% 46.1%', // Mid gray
-  
-  // Accent colors (highlights, badges)
-  'accent': '240 4.8% 95.9%',          // Light gray
-  'accent-foreground': '240 5.9% 10%', // Dark gray
-  
-  // Destructive colors (errors, delete actions)
-  'destructive': '0 84.2% 60.2%',      // Red
-  'destructive-foreground': '0 0% 98%', // White
-  'destructive-hover': '0 84.2% 50%',  // Darker red
-  
-  // Border colors
-  'border': '240 5.9% 90%',            // Light gray border
-  'input': '240 5.9% 90%',             // Input border
-  'ring': '240 5.9% 10%',              // Focus ring (dark)
+  // Superlative (2 tokens)
+  'superlative-primary': '25 86% 50%',
+  'superlative-secondary': '168 11% 45%',
 } as const
 
 export const COLOR_CATEGORIES = {
-  'Base': [
-    'background',
-    'foreground',
+  'Button / Primary': [
+    'primary-bg',
+    'primary-text',
+    'primary-icon',
+    'primary-hover-bg',
+    'primary-pressed-bg',
+    'primary-disabled-bg',
+    'focused-border',
   ],
-  'Primary (Brand)': [
-    'primary',
-    'primary-foreground',
-    'primary-hover',
+  'Button / Secondary': [
+    'secondary-bg',
+    'secondary-border',
+    'secondary-text',
+    'secondary-icon',
+    'secondary-hover-bg',
+    'secondary-pressed-bg',
+    'secondary-disabled-bg',
   ],
-  'Secondary': [
-    'secondary',
-    'secondary-foreground',
-    'secondary-hover',
+  'Button / Ghost': [
+    'ghost-bg',
+    'ghost-text',
+    'ghost-icon',
+    'ghost-hover-bg',
+    'ghost-pressed-bg',
+    'ghost-disabled-bg',
   ],
-  'Muted': [
-    'muted',
-    'muted-foreground',
+  'Background': [
+    'bg-white',
+    'bg-neutral-subtle',
+    'bg-neutral-light',
+    'bg-neutral',
+    'bg-accent',
+    'bg-accent-mid',
+    'bg-brand-subtle',
+    'bg-table',
+    'bg-secondary',
+    'bg-brand-light',
+    'bg-brand-mid',
+    'bg-brand',
+    'bg-neutral-mid',
+    'bg-neutral-strong',
+    'bg-header',
+    'bg-superlative',
+    'bg-button',
   ],
-  'Accent': [
-    'accent',
-    'accent-foreground',
+  'Foreground': [
+    'fg-heading',
+    'fg-body',
+    'fg-link-secondary',
+    'fg-caption',
+    'fg-stroke-ui',
+    'fg-link',
+    'fg-stroke-ui-inverse',
+    'fg-heading-inverse',
+    'fg-body-inverse',
+    'fg-caption-inverse',
+    'fg-table-border',
+    'fg-stroke-default',
+    'fg-divider',
+    'fg-stroke-inverse',
+    'fg-stroke-dark-inverse',
+    'fg-feedback-error',
+    'fg-feedback-warning',
+    'fg-feedback-success',
   ],
-  'Destructive (Error)': [
-    'destructive',
-    'destructive-foreground',
-    'destructive-hover',
-  ],
-  'UI Elements': [
-    'card',
-    'card-foreground',
-    'popover',
-    'popover-foreground',
-    'border',
-    'input',
-    'ring',
+  'Superlative': [
+    'superlative-primary',
+    'superlative-secondary',
   ],
 } as const
 
 export const COLOR_LABELS: Record<string, string> = {
-  'background': 'Background',
-  'foreground': 'Foreground Text',
-  'card': 'Card Background',
-  'card-foreground': 'Card Text',
-  'popover': 'Popover Background',
-  'popover-foreground': 'Popover Text',
-  'primary': 'Primary (Brand)',
-  'primary-foreground': 'Primary Text',
-  'primary-hover': 'Primary Hover',
-  'secondary': 'Secondary Background',
-  'secondary-foreground': 'Secondary Text',
-  'secondary-hover': 'Secondary Hover',
-  'muted': 'Muted Background',
-  'muted-foreground': 'Muted Text',
-  'accent': 'Accent Background',
-  'accent-foreground': 'Accent Text',
-  'destructive': 'Destructive (Error)',
-  'destructive-foreground': 'Destructive Text',
-  'destructive-hover': 'Destructive Hover',
-  'border': 'Border',
-  'input': 'Input Border',
-  'ring': 'Focus Ring',
+  // Button / Primary
+  'primary-bg': 'Primary Button Background',
+  'primary-text': 'Primary Button Text',
+  'primary-icon': 'Primary Button Icon',
+  'primary-hover-bg': 'Primary Button Hover',
+  'primary-pressed-bg': 'Primary Button Pressed',
+  'primary-disabled-bg': 'Primary Button Disabled',
+  'focused-border': 'Focus Ring Border',
+  
+  // Button / Secondary
+  'secondary-bg': 'Secondary Button Background',
+  'secondary-border': 'Secondary Button Border',
+  'secondary-text': 'Secondary Button Text',
+  'secondary-icon': 'Secondary Button Icon',
+  'secondary-hover-bg': 'Secondary Button Hover',
+  'secondary-pressed-bg': 'Secondary Button Pressed',
+  'secondary-disabled-bg': 'Secondary Button Disabled',
+  
+  // Button / Ghost
+  'ghost-bg': 'Ghost Button Background',
+  'ghost-text': 'Ghost Button Text',
+  'ghost-icon': 'Ghost Button Icon',
+  'ghost-hover-bg': 'Ghost Button Hover',
+  'ghost-pressed-bg': 'Ghost Button Pressed',
+  'ghost-disabled-bg': 'Ghost Button Disabled',
+  
+  // Background
+  'bg-white': 'White Background',
+  'bg-neutral-subtle': 'Subtle Neutral Background',
+  'bg-neutral-light': 'Light Neutral Background',
+  'bg-neutral': 'Neutral Background',
+  'bg-accent': 'Accent Background (Light)',
+  'bg-accent-mid': 'Accent Background (Mid)',
+  'bg-brand-subtle': 'Subtle Brand Background',
+  'bg-table': 'Table Background',
+  'bg-secondary': 'Secondary Surface Background',
+  'bg-brand-light': 'Light Brand Background',
+  'bg-brand-mid': 'Mid Brand Background',
+  'bg-brand': 'Brand Background',
+  'bg-neutral-mid': 'Mid Neutral Background',
+  'bg-neutral-strong': 'Strong Neutral Background',
+  'bg-header': 'Header Background',
+  'bg-superlative': 'Superlative/Highlight Background',
+  'bg-button': 'Default Button Background',
+  
+  // Foreground
+  'fg-heading': 'Heading Text',
+  'fg-body': 'Body Text',
+  'fg-link-secondary': 'Secondary Link',
+  'fg-caption': 'Caption Text',
+  'fg-stroke-ui': 'UI Element Stroke',
+  'fg-link': 'Primary Link',
+  'fg-stroke-ui-inverse': 'UI Stroke (on dark)',
+  'fg-heading-inverse': 'Heading (on dark)',
+  'fg-body-inverse': 'Body Text (on dark)',
+  'fg-caption-inverse': 'Caption (on dark)',
+  'fg-table-border': 'Table Border',
+  'fg-stroke-default': 'Default Stroke',
+  'fg-divider': 'Divider Line',
+  'fg-stroke-inverse': 'Stroke (on dark)',
+  'fg-stroke-dark-inverse': 'Dark Stroke (on dark)',
+  'fg-feedback-error': 'Error Message',
+  'fg-feedback-warning': 'Warning Message',
+  'fg-feedback-success': 'Success Message',
+  
+  // Superlative
+  'superlative-primary': 'Primary Highlight',
+  'superlative-secondary': 'Secondary Highlight',
 }

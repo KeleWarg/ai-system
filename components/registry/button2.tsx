@@ -6,14 +6,14 @@ import { cn } from "@/lib/utils"
  * Button2 component variants using class-variance-authority
  */
 const button2Variants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focused-border focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        Primary: "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90 active:bg-primary/80",
-        Secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 focus:bg-secondary/80 active:bg-secondary/70",
-        Ghost: "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground active:bg-accent/80",
-        White: "bg-background text-foreground border border-border hover:bg-muted focus:bg-muted active:bg-muted/80",
+        Primary: "bg-primary-bg text-primary-text hover:bg-primary-bg/90 focus:bg-primary-bg/90 active:bg-primary-bg/80",
+        Secondary: "bg-secondary-bg border border-secondary-border text-secondary-text hover:bg-secondary-hover-bg focus:bg-secondary-hover-bg active:bg-secondary-pressed-bg",
+        Ghost: "hover:bg-ghost-hover-bg hover:text-ghost-text focus:bg-ghost-hover-bg focus:text-ghost-text active:bg-ghost-pressed-bg",
+        White: "bg-bg-white text-fg-body border border-fg-stroke-ui hover:bg-bg-neutral focus:bg-bg-neutral active:bg-bg-neutral/80",
       },
       size: {
         Small: "h-8 px-3 text-xs",

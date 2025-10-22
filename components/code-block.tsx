@@ -20,9 +20,9 @@ export function CodeBlock({ code, filename }: CodeBlockProps) {
   }
 
   return (
-    <div className="relative rounded-lg border border-border bg-muted/50">
+    <div className="relative rounded-lg border border-fg-stroke-ui bg-bg-neutral/50">
       {filename && (
-        <div className="flex items-center justify-between border-b border-border px-4 py-2 text-sm text-muted-foreground">
+        <div className="flex items-center justify-between border-b border-fg-stroke-ui px-4 py-2 text-sm text-fg-caption">
           <span>{filename}</span>
         </div>
       )}

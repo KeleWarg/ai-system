@@ -101,7 +101,7 @@ export function ComponentPreviewDynamic({
       if (variantTypes.length > 0) {
         examples.push(
           <div key="variants" className="space-y-3">
-            <h4 className="text-xs font-semibold text-muted-foreground uppercase">Variants</h4>
+            <h4 className="text-xs font-semibold text-fg-caption uppercase">Variants</h4>
             <div className="flex flex-wrap gap-3">
               {variantTypes.map((variant) => (
                 <Component key={variant} variant={variant}>
@@ -118,7 +118,7 @@ export function ComponentPreviewDynamic({
     if (variants?.size) {
       examples.push(
         <div key="sizes" className="space-y-3">
-          <h4 className="text-xs font-semibold text-muted-foreground uppercase">Sizes</h4>
+          <h4 className="text-xs font-semibold text-fg-caption uppercase">Sizes</h4>
           <div className="flex flex-wrap items-center gap-3">
             {variants.size.map((size) => (
               <Component key={size} size={size}>
@@ -145,7 +145,7 @@ export function ComponentPreviewDynamic({
   return (
     <div className="space-y-4">
       {description && (
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <p className="text-sm text-fg-caption">{description}</p>
       )}
 
       {/* Mode Tabs */}
@@ -154,8 +154,8 @@ export function ComponentPreviewDynamic({
           onClick={() => setPreviewMode('preview')}
           className={`px-4 py-2 text-sm font-medium transition-colors ${
             previewMode === 'preview'
-              ? 'text-foreground border-b-2 border-primary'
-              : 'text-muted-foreground hover:text-foreground'
+              ? 'text-fg-body border-b-2 border-primary'
+              : 'text-fg-caption hover:text-fg-body'
           }`}
         >
           <Eye className="inline-block w-4 h-4 mr-2" />
@@ -165,8 +165,8 @@ export function ComponentPreviewDynamic({
           onClick={() => setPreviewMode('code')}
           className={`px-4 py-2 text-sm font-medium transition-colors ${
             previewMode === 'code'
-              ? 'text-foreground border-b-2 border-primary'
-              : 'text-muted-foreground hover:text-foreground'
+              ? 'text-fg-body border-b-2 border-primary'
+              : 'text-fg-caption hover:text-fg-body'
           }`}
         >
           <Code className="inline-block w-4 h-4 mr-2" />
@@ -183,7 +183,7 @@ export function ComponentPreviewDynamic({
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
               </div>
             ) : error ? (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
+              <div className="flex items-center gap-2 text-sm text-fg-caption py-4">
                 <AlertCircle className="w-4 h-4" />
                 {error}
               </div>
@@ -216,7 +216,7 @@ export function ComponentPreviewDynamic({
             </Button>
           </CardHeader>
           <CardContent>
-            <pre className="text-xs overflow-x-auto bg-muted p-4 rounded-lg">
+            <pre className="text-xs overflow-x-auto bg-bg-neutral p-4 rounded-lg">
               <code>{componentCode}</code>
             </pre>
           </CardContent>

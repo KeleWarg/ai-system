@@ -254,7 +254,7 @@ export function extractMappingIssues(
       return
     }
     
-    // Pattern: "Use theme color tokens (bg-primary, text-foreground) instead of direct colors"
+    // Pattern: "Use theme color tokens (bg-primary-bg, text-fg-body) instead of direct colors"
     if (rec.toLowerCase().includes('color token')) {
       issues.push({
         id: `color-tokens-${index}`,
@@ -366,13 +366,13 @@ function generateColorOptions(theme: Theme): string[] {
   const options: string[] = []
   
   // Background colors
-  options.push('bg-primary', 'bg-secondary', 'bg-accent', 'bg-muted', 'bg-background')
+  options.push('bg-primary-bg', 'bg-secondary', 'bg-accent', 'bg-bg-neutral', 'bg-bg-white')
   
   // Text colors
-  options.push('text-foreground', 'text-primary', 'text-secondary', 'text-muted-foreground')
+  options.push('text-fg-body', 'text-primary', 'text-secondary', 'text-fg-caption')
   
   // Border colors
-  options.push('border-border', 'border-primary', 'border-secondary')
+  options.push('border-fg-stroke-ui', 'border-primary', 'border-secondary')
   
   return options
 }

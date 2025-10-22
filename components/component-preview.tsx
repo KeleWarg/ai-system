@@ -158,16 +158,16 @@ export function ComponentPreview({ componentCode, componentName, variants, descr
         {previewMode === 'preview' ? (
           <div className="space-y-6">
             {description && (
-              <p className="text-muted-foreground">{description}</p>
+              <p className="text-fg-caption">{description}</p>
             )}
             
             {error ? (
-              <div className="border border-destructive rounded-lg p-8 bg-destructive/5">
+              <div className="border border-destructive rounded-lg p-8 bg-fg-feedback-error/5">
                 <div className="flex items-center gap-3 mb-4">
-                  <AlertCircle className="h-5 w-5 text-destructive" />
-                  <h3 className="text-lg font-semibold text-destructive">Preview Error</h3>
+                  <AlertCircle className="h-5 w-5 text-fg-feedback-error" />
+                  <h3 className="text-lg font-semibold text-fg-feedback-error">Preview Error</h3>
                 </div>
-                <p className="text-sm text-muted-foreground mb-4">{error}</p>
+                <p className="text-sm text-fg-caption mb-4">{error}</p>
                 <Button onClick={handleRefresh} variant="outline" size="sm" className="gap-2">
                   <RefreshCw className="h-4 w-4" />
                   Retry
@@ -175,15 +175,15 @@ export function ComponentPreview({ componentCode, componentName, variants, descr
               </div>
             ) : (
               <>
-                <div className="border rounded-lg overflow-hidden bg-background">
-                  <div className="flex items-center justify-between px-4 py-2 bg-muted border-b">
+                <div className="border rounded-lg overflow-hidden bg-bg-white">
+                  <div className="flex items-center justify-between px-4 py-2 bg-bg-neutral border-b">
                     <div className="flex items-center gap-2">
                       <div className="flex gap-1.5">
                         <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50"></div>
                         <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50"></div>
                         <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"></div>
                       </div>
-                      <span className="text-xs font-medium text-muted-foreground ml-2">Live Preview</span>
+                      <span className="text-xs font-medium text-fg-caption ml-2">Live Preview</span>
                     </div>
                     <Button onClick={handleRefresh} variant="ghost" size="sm" className="h-7 gap-2">
                       <RefreshCw className="h-3 w-3" />
@@ -228,10 +228,10 @@ export function ComponentPreview({ componentCode, componentName, variants, descr
                       />
                       {/* Fallback: Show raw HTML preview */}
                       <details className="mt-2">
-                        <summary className="text-xs text-muted-foreground cursor-pointer">
+                        <summary className="text-xs text-fg-caption cursor-pointer">
                           View Raw HTML (Debug)
                         </summary>
-                        <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-auto max-h-40">
+                        <pre className="mt-2 p-2 bg-bg-neutral rounded text-xs overflow-auto max-h-40">
                           {previewHtml.substring(0, 500)}...
                         </pre>
                       </details>
@@ -246,7 +246,7 @@ export function ComponentPreview({ componentCode, componentName, variants, descr
                 {/* Debug Info */}
                 <div className="text-xs bg-gray-50 dark:bg-gray-900 p-3 rounded border">
                   <strong>Debug Info:</strong>
-                  <ul className="mt-1 space-y-1 text-muted-foreground font-mono">
+                  <ul className="mt-1 space-y-1 text-fg-caption font-mono">
                     <li>Preview HTML length: {previewHtml?.length || 0} chars</li>
                     <li>Component code length: {componentCode?.length || 0} chars</li>
                     <li>Variants: {JSON.stringify(variants)}</li>
@@ -261,7 +261,7 @@ export function ComponentPreview({ componentCode, componentName, variants, descr
                       <span className="text-blue-600 dark:text-blue-400">📐</span>
                       <div className="flex-1">
                         <strong className="text-blue-900 dark:text-blue-200">Spec Sheet Measurements:</strong>
-                        <ul className="list-disc list-inside mt-1 space-y-0.5 text-muted-foreground">
+                        <ul className="list-disc list-inside mt-1 space-y-0.5 text-fg-caption">
                           {spacing.map((spec, i) => (
                             <li key={i}>{spec}</li>
                           ))}
@@ -298,13 +298,13 @@ export function ComponentPreview({ componentCode, componentName, variants, descr
             </div>
             
             <div className="relative">
-              <pre className="bg-muted rounded-lg p-4 text-sm overflow-x-auto">
+              <pre className="bg-bg-neutral rounded-lg p-4 text-sm overflow-x-auto">
                 <code>{componentCode}</code>
               </pre>
             </div>
             
             {error && (
-              <div className="text-sm text-destructive bg-destructive/10 p-3 rounded">
+              <div className="text-sm text-fg-feedback-error bg-fg-feedback-error/10 p-3 rounded">
                 <strong>Error:</strong> {error}
               </div>
             )}

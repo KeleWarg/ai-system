@@ -34,9 +34,9 @@ export function ThemeSwitcher() {
           />
           
           {/* Dropdown */}
-          <div className="absolute right-0 mt-2 w-56 z-50 rounded-md border border-border bg-popover shadow-lg">
+          <div className="absolute right-0 mt-2 w-56 z-50 rounded-md border border-fg-stroke-ui bg-bg-white shadow-lg">
             <div className="p-2">
-              <div className="px-2 py-1.5 text-sm font-semibold text-muted-foreground">
+              <div className="px-2 py-1.5 text-sm font-semibold text-fg-caption">
                 Select Theme
               </div>
               <div className="space-y-1 mt-1">
@@ -47,15 +47,15 @@ export function ThemeSwitcher() {
                       await setActiveTheme(t.id)
                       setIsOpen(false)
                     }}
-                    className="w-full flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground transition-colors text-left"
+                    className="w-full flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-bg-accent hover:text-fg-body transition-colors text-left"
                   >
                     <div
-                      className="h-4 w-4 rounded-full border border-border flex-shrink-0"
-                      style={{ backgroundColor: `hsl(${t.colors.primary})` }}
+                      className="h-4 w-4 rounded-full border border-fg-stroke-ui flex-shrink-0"
+                      style={{ backgroundColor: `hsl(${t.colors['primary-bg']})` }}
                     />
                     <span className="flex-1">{t.name}</span>
                     {theme?.id === t.id && (
-                      <Check className="h-4 w-4 text-primary" />
+                      <Check className="h-4 w-4 text-primary-bg" />
                     )}
                   </button>
                 ))}

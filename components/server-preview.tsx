@@ -97,7 +97,7 @@ export function ServerPreview({ code, variants, componentName }: ServerPreviewPr
   
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8 text-muted-foreground">
+      <div className="flex items-center justify-center p-8 text-fg-caption">
         <div className="animate-pulse">Loading preview...</div>
       </div>
     )
@@ -105,7 +105,7 @@ export function ServerPreview({ code, variants, componentName }: ServerPreviewPr
   
   if (error) {
     return (
-      <div className="flex items-start gap-2 text-destructive text-xs p-3 bg-destructive/10 rounded-lg">
+      <div className="flex items-start gap-2 text-fg-feedback-error text-xs p-3 bg-fg-feedback-error/10 rounded-lg">
         <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
         <div>
           <p className="font-medium">Preview unavailable</p>
@@ -120,7 +120,7 @@ export function ServerPreview({ code, variants, componentName }: ServerPreviewPr
   
   if (!Component) {
     return (
-      <div className="text-xs text-muted-foreground">
+      <div className="text-xs text-fg-caption">
         No component loaded
       </div>
     )
@@ -145,7 +145,7 @@ export function ServerPreview({ code, variants, componentName }: ServerPreviewPr
     <div className="space-y-4">
       {firstValues.slice(0, 3).map((firstValue) => (
         <div key={firstValue} className="space-y-2">
-          <div className="text-xs font-medium text-muted-foreground capitalize">
+          <div className="text-xs font-medium text-fg-caption capitalize">
             {firstVariant}: {firstValue}
           </div>
           <div className="flex flex-wrap gap-2">

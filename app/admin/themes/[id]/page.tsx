@@ -33,7 +33,7 @@ export default async function EditThemePage({
     <div className="flex flex-col gap-6 p-8 max-w-4xl mx-auto">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Edit Theme</h1>
-        <p className="text-muted-foreground mt-1">
+        <p className="text-fg-caption mt-1">
           Update theme colors, typography, and settings
         </p>
       </div>

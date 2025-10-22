@@ -25,29 +25,76 @@
   --text-7xl: 4.5rem;
 
   /* Color definitions - Tailwind v4 format */
-  /* Tailwind v4 classes like bg-primary will use --color-* variables */
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
-  --color-card: hsl(var(--card));
-  --color-card-foreground: hsl(var(--card-foreground));
-  --color-popover: hsl(var(--popover));
-  --color-popover-foreground: hsl(var(--popover-foreground));
-  --color-primary: hsl(var(--primary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
-  --color-primary-hover: hsl(var(--primary-hover));
-  --color-secondary: hsl(var(--secondary));
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
-  --color-secondary-hover: hsl(var(--secondary-hover));
-  --color-muted: hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
-  --color-destructive: hsl(var(--destructive));
-  --color-destructive-foreground: hsl(var(--destructive-foreground));
-  --color-destructive-hover: hsl(var(--destructive-hover));
-  --color-border: hsl(var(--border));
-  --color-input: hsl(var(--input));
-  --color-ring: hsl(var(--ring));
+  /* Tailwind v4 classes like bg-primary-bg will use --color-* variables */
+  
+  /* Button / Primary */
+  --color-primary-bg: hsl(var(--primary-bg));
+  --color-primary-text: hsl(var(--primary-text));
+  --color-primary-icon: hsl(var(--primary-icon));
+  --color-primary-hover-bg: hsl(var(--primary-hover-bg));
+  --color-primary-pressed-bg: hsl(var(--primary-pressed-bg));
+  --color-primary-disabled-bg: hsl(var(--primary-disabled-bg));
+  --color-focused-border: hsl(var(--focused-border));
+  
+  /* Button / Secondary */
+  --color-secondary-bg: hsl(var(--secondary-bg));
+  --color-secondary-border: hsl(var(--secondary-border));
+  --color-secondary-text: hsl(var(--secondary-text));
+  --color-secondary-icon: hsl(var(--secondary-icon));
+  --color-secondary-hover-bg: hsl(var(--secondary-hover-bg));
+  --color-secondary-pressed-bg: hsl(var(--secondary-pressed-bg));
+  --color-secondary-disabled-bg: hsl(var(--secondary-disabled-bg));
+  
+  /* Button / Ghost */
+  --color-ghost-bg: hsl(var(--ghost-bg));
+  --color-ghost-text: hsl(var(--ghost-text));
+  --color-ghost-icon: hsl(var(--ghost-icon));
+  --color-ghost-hover-bg: hsl(var(--ghost-hover-bg));
+  --color-ghost-pressed-bg: hsl(var(--ghost-pressed-bg));
+  --color-ghost-disabled-bg: hsl(var(--ghost-disabled-bg));
+  
+  /* Background */
+  --color-bg-white: hsl(var(--bg-white));
+  --color-bg-neutral-subtle: hsl(var(--bg-neutral-subtle));
+  --color-bg-neutral-light: hsl(var(--bg-neutral-light));
+  --color-bg-neutral: hsl(var(--bg-neutral));
+  --color-bg-accent: hsl(var(--bg-accent));
+  --color-bg-accent-mid: hsl(var(--bg-accent-mid));
+  --color-bg-brand-subtle: hsl(var(--bg-brand-subtle));
+  --color-bg-table: hsl(var(--bg-table));
+  --color-bg-secondary: hsl(var(--bg-secondary));
+  --color-bg-brand-light: hsl(var(--bg-brand-light));
+  --color-bg-brand-mid: hsl(var(--bg-brand-mid));
+  --color-bg-brand: hsl(var(--bg-brand));
+  --color-bg-neutral-mid: hsl(var(--bg-neutral-mid));
+  --color-bg-neutral-strong: hsl(var(--bg-neutral-strong));
+  --color-bg-header: hsl(var(--bg-header));
+  --color-bg-superlative: hsl(var(--bg-superlative));
+  --color-bg-button: hsl(var(--bg-button));
+  
+  /* Foreground */
+  --color-fg-heading: hsl(var(--fg-heading));
+  --color-fg-body: hsl(var(--fg-body));
+  --color-fg-link-secondary: hsl(var(--fg-link-secondary));
+  --color-fg-caption: hsl(var(--fg-caption));
+  --color-fg-stroke-ui: hsl(var(--fg-stroke-ui));
+  --color-fg-link: hsl(var(--fg-link));
+  --color-fg-stroke-ui-inverse: hsl(var(--fg-stroke-ui-inverse));
+  --color-fg-heading-inverse: hsl(var(--fg-heading-inverse));
+  --color-fg-body-inverse: hsl(var(--fg-body-inverse));
+  --color-fg-caption-inverse: hsl(var(--fg-caption-inverse));
+  --color-fg-table-border: hsl(var(--fg-table-border));
+  --color-fg-stroke-default: hsl(var(--fg-stroke-default));
+  --color-fg-divider: hsl(var(--fg-divider));
+  --color-fg-stroke-inverse: hsl(var(--fg-stroke-inverse));
+  --color-fg-stroke-dark-inverse: hsl(var(--fg-stroke-dark-inverse));
+  --color-fg-feedback-error: hsl(var(--fg-feedback-error));
+  --color-fg-feedback-warning: hsl(var(--fg-feedback-warning));
+  --color-fg-feedback-success: hsl(var(--fg-feedback-success));
+  
+  /* Superlative */
+  --color-superlative-primary: hsl(var(--superlative-primary));
+  --color-superlative-secondary: hsl(var(--superlative-secondary));
 
   /* Border radius */
   --radius-lg: var(--radius);
@@ -57,64 +104,87 @@
 
 /* CSS Variables for dynamic theming */
 :root {
-  --background: 0 0% 100%;
-  --foreground: 240 10% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 240 10% 3.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 3.9%;
-  --primary: 240 5.9% 10%;
-  --primary-foreground: 0 0% 98%;
-  --primary-hover: 240 5.9% 20%;
-  --secondary: 240 4.8% 95.9%;
-  --secondary-foreground: 240 5.9% 10%;
-  --secondary-hover: 240 4.8% 90%;
-  --muted: 240 4.8% 95.9%;
-  --muted-foreground: 240 3.8% 46.1%;
-  --accent: 240 4.8% 95.9%;
-  --accent-foreground: 240 5.9% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 0 0% 98%;
-  --destructive-hover: 0 84.2% 50%;
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
-  --ring: 240 5.9% 10%;
+  /* Button / Primary - Health SEM Theme */
+  --primary-bg: 168 11% 45%;
+  --primary-text: 0 0% 100%;
+  --primary-icon: 0 0% 100%;
+  --primary-hover-bg: 168 17% 33%;
+  --primary-pressed-bg: 167 21% 30%;
+  --primary-disabled-bg: 168 11% 45%;
+  --focused-border: 202 84% 73%;
+  
+  /* Button / Secondary */
+  --secondary-bg: 160 13% 95%;
+  --secondary-border: 168 11% 45%;
+  --secondary-text: 168 11% 45%;
+  --secondary-icon: 167 21% 30%;
+  --secondary-hover-bg: 168 28% 86%;
+  --secondary-pressed-bg: 167 16% 67%;
+  --secondary-disabled-bg: 160 13% 95%;
+  
+  /* Button / Ghost */
+  --ghost-bg: 0 0% 100% / 0;
+  --ghost-text: 167 21% 30%;
+  --ghost-icon: 167 21% 30%;
+  --ghost-hover-bg: 168 28% 86%;
+  --ghost-pressed-bg: 167 16% 67%;
+  --ghost-disabled-bg: 219 21% 87%;
+  
+  /* Background */
+  --bg-white: 0 0% 100%;
+  --bg-neutral-subtle: 225 22% 96%;
+  --bg-neutral-light: 214 23% 94%;
+  --bg-neutral: 216 22% 91%;
+  --bg-accent: 40 14% 96%;
+  --bg-accent-mid: 39 100% 92%;
+  --bg-brand-subtle: 160 13% 95%;
+  --bg-table: 160 13% 95%;
+  --bg-secondary: 168 28% 86%;
+  --bg-brand-light: 168 28% 86%;
+  --bg-brand-mid: 167 16% 67%;
+  --bg-brand: 168 11% 45%;
+  --bg-neutral-mid: 218 9% 24%;
+  --bg-neutral-strong: 220 9% 19%;
+  --bg-header: 214 10% 13%;
+  --bg-superlative: 25 86% 50%;
+  --bg-button: 168 11% 45%;
+  
+  /* Foreground */
+  --fg-heading: 214 10% 13%;
+  --fg-body: 218 9% 24%;
+  --fg-link-secondary: 218 9% 24%;
+  --fg-caption: 214 10% 42%;
+  --fg-stroke-ui: 213 12% 55%;
+  --fg-link: 168 11% 45%;
+  --fg-stroke-ui-inverse: 219 21% 87%;
+  --fg-heading-inverse: 0 0% 100%;
+  --fg-body-inverse: 225 22% 96%;
+  --fg-caption-inverse: 219 21% 87%;
+  --fg-table-border: 217 20% 79%;
+  --fg-stroke-default: 217 20% 79%;
+  --fg-divider: 219 21% 87%;
+  --fg-stroke-inverse: 0 0% 100%;
+  --fg-stroke-dark-inverse: 218 9% 24%;
+  --fg-feedback-error: 12 84% 50%;
+  --fg-feedback-warning: 37 100% 61%;
+  --fg-feedback-success: 169 82% 25%;
+  
+  /* Superlative */
+  --superlative-primary: 25 86% 50%;
+  --superlative-secondary: 168 11% 45%;
+  
+  /* Other */
   --radius: 0.5rem;
-}
-
-.dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --primary: 0 0% 98%;
-  --primary-foreground: 240 5.9% 10%;
-  --primary-hover: 0 0% 85%;
-  --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
-  --secondary-hover: 240 3.7% 25%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --destructive-hover: 0 62.8% 40%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: 240 4.9% 83.9%;
 }
 
 @layer base {
   * {
-    border-color: hsl(var(--border));
+    border-color: hsl(var(--fg-stroke-ui));
   }
   
   body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
+    background-color: hsl(var(--bg-white));
+    color: hsl(var(--fg-body));
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   
@@ -174,14 +244,14 @@
   
   /* Selection color */
   ::selection {
-    background-color: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--primary-bg));
+    color: hsl(var(--primary-text));
   }
   
   /* Focus visible improvements */
   :focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));
+    box-shadow: 0 0 0 2px hsl(var(--bg-white)), 0 0 0 4px hsl(var(--focused-border));
   }
   
   /* Scrollbar styling */
@@ -195,20 +265,11 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--border));
+    background-color: hsl(var(--fg-stroke-ui));
     border-radius: 0.5rem;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground));
-  }
-  
-  /* Dark mode scrollbar */
-  .dark ::-webkit-scrollbar-thumb {
-    background-color: hsl(240 3.7% 15.9%);
-  }
-  
-  .dark ::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(240 5% 26%);
+    background-color: hsl(var(--fg-stroke-default));
   }
 }

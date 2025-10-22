@@ -157,7 +157,7 @@ export function VisualParameterEditor({
   const scoreImprovement = previewScore - validation.overallMatch
   
   return (
-    <Card className="border-border">
+    <Card className="border-fg-stroke-ui">
       <CardHeader className="border-b">
         <div className="flex items-start justify-between">
           <div>
@@ -196,13 +196,13 @@ export function VisualParameterEditor({
         </div>
         
         {/* Score Preview */}
-        <div className="flex items-center justify-between mt-4 p-4 bg-muted rounded-lg">
+        <div className="flex items-center justify-between mt-4 p-4 bg-bg-neutral rounded-lg">
           <div>
-            <span className="text-sm text-muted-foreground">Current Score:</span>
+            <span className="text-sm text-fg-caption">Current Score:</span>
             <span className="ml-2 text-2xl font-bold">{validation.overallMatch}/100</span>
           </div>
           <div className="text-right">
-            <span className="text-sm text-muted-foreground">Preview Score:</span>
+            <span className="text-sm text-fg-caption">Preview Score:</span>
             <div className="flex items-center gap-2">
               <span className="text-2xl font-bold text-green-600 dark:text-green-400">
                 {previewScore}/100
@@ -230,7 +230,7 @@ export function VisualParameterEditor({
             {/* Variant Issues */}
             {variantIssues.length > 0 && (
               <div className="space-y-4">
-                <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                <h3 className="font-semibold text-sm text-fg-caption uppercase tracking-wide">
                   Variant Options ({variantIssues.length})
                 </h3>
                 {variantIssues.map((issue) => (
@@ -251,7 +251,7 @@ export function VisualParameterEditor({
             {/* Spacing Issues */}
             {spacingIssues.length > 0 && (
               <div className="space-y-4">
-                <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                <h3 className="font-semibold text-sm text-fg-caption uppercase tracking-wide">
                   Spacing & Sizing ({spacingIssues.length})
                 </h3>
                 {spacingIssues.map((issue) => (
@@ -271,7 +271,7 @@ export function VisualParameterEditor({
             {/* Color Issues */}
             {colorIssues.length > 0 && (
               <div className="space-y-4">
-                <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                <h3 className="font-semibold text-sm text-fg-caption uppercase tracking-wide">
                   Colors ({colorIssues.length})
                 </h3>
                 {colorIssues.map((issue) => (
@@ -291,7 +291,7 @@ export function VisualParameterEditor({
             {/* Typography (Advanced Mode) */}
             {typographyIssues.length > 0 && mode === 'advanced' && (
               <div className="space-y-4">
-                <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                <h3 className="font-semibold text-sm text-fg-caption uppercase tracking-wide">
                   Typography ({typographyIssues.length})
                 </h3>
                 {typographyIssues.map((issue) => (

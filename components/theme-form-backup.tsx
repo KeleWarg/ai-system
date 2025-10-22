@@ -171,7 +171,7 @@ export function ThemeForm({ theme }: ThemeFormProps) {
               placeholder="e.g., ocean-blue"
               required
             />
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-fg-caption mt-1">
               URL-friendly identifier (lowercase, hyphens only)
             </p>
           </div>
@@ -184,7 +184,7 @@ export function ThemeForm({ theme }: ThemeFormProps) {
               onChange={(e) => setFormData({ ...formData, radius: e.target.value })}
               placeholder="e.g., 0.5rem"
             />
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-fg-caption mt-1">
               Default border radius for components (e.g., 0.5rem, 8px)
             </p>
           </div>
@@ -265,7 +265,7 @@ export function ThemeForm({ theme }: ThemeFormProps) {
                       onChange={(e) => updateFont(index, { url: e.target.value })}
                       placeholder="https://fonts.googleapis.com/..."
                     />
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-fg-caption mt-1">
                       Google Fonts URL or custom @font-face URL
                     </p>
                   </div>
@@ -280,7 +280,7 @@ export function ThemeForm({ theme }: ThemeFormProps) {
             <div className="grid gap-3 sm:grid-cols-2">
               {['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl'].map((size) => (
                 <div key={size}>
-                  <Label htmlFor={`fontSize-${size}`} className="text-xs text-muted-foreground">
+                  <Label htmlFor={`fontSize-${size}`} className="text-xs text-fg-caption">
                     {size}
                   </Label>
                   <Input
@@ -316,7 +316,7 @@ export function ThemeForm({ theme }: ThemeFormProps) {
           <div className="grid gap-3 sm:grid-cols-3">
             {['xs', 'sm', 'md', 'lg', 'xl', '2xl'].map((size) => (
               <div key={size}>
-                <Label htmlFor={`spacing-${size}`} className="text-xs text-muted-foreground">
+                <Label htmlFor={`spacing-${size}`} className="text-xs text-fg-caption">
                   {size}
                 </Label>
                 <Input
@@ -343,7 +343,7 @@ export function ThemeForm({ theme }: ThemeFormProps) {
       <Card>
         <CardHeader>
           <CardTitle>Colors (Hex Format)</CardTitle>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-fg-caption">
             Use hex format (#000000) or &quot;transparent&quot;
           </p>
         </CardHeader>

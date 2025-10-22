@@ -145,7 +145,7 @@ ${analysis.recommendations.map((r, i) => `${i + 1}. ${r}`).join('\n')}
 1. Fix ALL issues listed above
 2. Keep the same component structure (using cva, forwardRef, etc.)
 3. Maintain TypeScript types and interfaces
-4. Use theme tokens (bg-primary, text-foreground) instead of hardcoded colors
+4. Use theme tokens (bg-primary-bg, text-fg-body) instead of hardcoded colors
 5. Match spacing values EXACTLY from spec sheet (use Tailwind classes or arbitrary values like h-[40px])
 6. Include ALL required variants from the spec
 7. Keep the component export name the same: export const ${spec.name}

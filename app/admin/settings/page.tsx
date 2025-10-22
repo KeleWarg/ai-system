@@ -8,7 +8,7 @@ export default async function SettingsPage() {
     <div className="flex flex-col gap-6 p-8 max-w-4xl mx-auto">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground mt-1">
+        <p className="text-fg-caption mt-1">
           Configure your design system settings
         </p>
       </div>
@@ -18,7 +18,7 @@ export default async function SettingsPage() {
           <CardTitle>Coming Soon</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-fg-caption">
             Settings page will be available in future updates.
           </p>
         </CardContent>

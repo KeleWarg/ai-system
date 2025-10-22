@@ -102,25 +102,90 @@ export function convertSpecColorsToHSL(colors: string[]): Record<string, string>
       const hex = `#${match[2]}`
       const hsl = hexToHSL(hex)
       
-      // Map common purposes to theme token names
+      // Map common purposes to exact theme token names (60+ tokens)
       const purposeMap: Record<string, string> = {
-        'primary background': 'primary',
-        'primary bg': 'primary',
-        'primary text': 'primary-foreground',
-        'primary foreground': 'primary-foreground',
-        'secondary background': 'secondary',
-        'secondary bg': 'secondary',
-        'secondary text': 'secondary-foreground',
-        'background': 'background',
-        'foreground': 'foreground',
-        'text': 'foreground',
-        'border': 'border',
-        'border color': 'border',
-        'muted background': 'muted',
-        'muted': 'muted',
-        'accent': 'accent',
-        'destructive': 'destructive',
-        'error': 'destructive',
+        // Button Primary
+        'primary background': 'primary-bg',
+        'primary bg': 'primary-bg',
+        'primary button': 'primary-bg',
+        'primary text': 'primary-text',
+        'primary foreground': 'primary-text',
+        'primary icon': 'primary-icon',
+        'primary hover': 'primary-hover-bg',
+        'primary hover background': 'primary-hover-bg',
+        'primary pressed': 'primary-pressed-bg',
+        'primary pressed background': 'primary-pressed-bg',
+        'primary disabled': 'primary-disabled-bg',
+        'primary disabled background': 'primary-disabled-bg',
+        
+        // Button Secondary
+        'secondary background': 'secondary-bg',
+        'secondary bg': 'secondary-bg',
+        'secondary button': 'secondary-bg',
+        'secondary border': 'secondary-border',
+        'secondary text': 'secondary-text',
+        'secondary foreground': 'secondary-text',
+        'secondary icon': 'secondary-icon',
+        'secondary hover': 'secondary-hover-bg',
+        'secondary hover background': 'secondary-hover-bg',
+        'secondary pressed': 'secondary-pressed-bg',
+        'secondary disabled': 'secondary-disabled-bg',
+        
+        // Button Ghost
+        'ghost background': 'ghost-bg',
+        'ghost bg': 'ghost-bg',
+        'ghost text': 'ghost-text',
+        'ghost icon': 'ghost-icon',
+        'ghost hover': 'ghost-hover-bg',
+        'ghost pressed': 'ghost-pressed-bg',
+        'ghost disabled': 'ghost-disabled-bg',
+        
+        // Focus
+        'focus ring': 'focused-border',
+        'focus border': 'focused-border',
+        'focused border': 'focused-border',
+        
+        // Backgrounds
+        'white background': 'bg-white',
+        'bg white': 'bg-white',
+        'neutral subtle': 'bg-neutral-subtle',
+        'neutral light': 'bg-neutral-light',
+        'neutral background': 'bg-neutral',
+        'accent background': 'bg-accent',
+        'brand background': 'bg-brand',
+        'brand subtle': 'bg-brand-subtle',
+        'brand light': 'bg-brand-light',
+        'table background': 'bg-table',
+        'header background': 'bg-header',
+        
+        // Foregrounds
+        'heading': 'fg-heading',
+        'heading text': 'fg-heading',
+        'body text': 'fg-body',
+        'body': 'fg-body',
+        'caption': 'fg-caption',
+        'link': 'fg-link',
+        'link text': 'fg-link',
+        'error text': 'fg-feedback-error',
+        'error': 'fg-feedback-error',
+        'warning text': 'fg-feedback-warning',
+        'warning': 'fg-feedback-warning',
+        'success text': 'fg-feedback-success',
+        'success': 'fg-feedback-success',
+        
+        // Borders/Strokes
+        'border': 'fg-stroke-ui',
+        'border color': 'fg-stroke-ui',
+        'divider': 'fg-divider',
+        'stroke': 'fg-stroke-ui',
+        
+        // Legacy fallbacks
+        'background': 'bg-white',
+        'foreground': 'fg-body',
+        'text': 'fg-body',
+        'muted': 'bg-neutral',
+        'accent': 'bg-accent',
+        'destructive': 'fg-feedback-error',
       }
       
       const tokenName = purposeMap[purpose] || purpose.replace(/\s+/g, '-')

@@ -453,7 +453,7 @@ export default function NewComponentPage() {
     <div className="max-w-4xl mx-auto space-y-8 p-8">
       <div>
         <h1 className="text-3xl font-bold">Create Component</h1>
-        <p className="text-muted-foreground mt-1">
+        <p className="text-fg-caption mt-1">
           Upload a PNG spec sheet to generate a new component
         </p>
       </div>
@@ -476,7 +476,7 @@ export default function NewComponentPage() {
             const theme = themes.find(t => t.id === e.target.value)
             setSelectedTheme(theme || null)
           }}
-          className="w-full px-3 py-2 border border-border rounded-md bg-background"
+          className="w-full px-3 py-2 border border-fg-stroke-ui rounded-md bg-bg-white"
         >
           {themes.map(theme => (
             <option key={theme.id} value={theme.id}>
@@ -484,7 +484,7 @@ export default function NewComponentPage() {
             </option>
           ))}
         </select>
-        <p className="text-sm text-muted-foreground mt-2">
+        <p className="text-sm text-fg-caption mt-2">
           Generated components will use this theme&apos;s color tokens
         </p>
       </Card>
@@ -508,7 +508,7 @@ export default function NewComponentPage() {
             <div className="text-lg font-medium mb-2">
               {uploading ? 'Extracting spec data...' : 'Upload Spec Sheet'}
             </div>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm text-fg-caption">
               PNG, JPG, or WebP (max 10MB)
             </div>
           </label>
@@ -540,7 +540,7 @@ export default function NewComponentPage() {
             
             <div>
               <Label>Description</Label>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-2 text-sm text-fg-caption">
                 {extractedData.description || 'No description extracted'}
               </p>
             </div>
@@ -555,7 +555,7 @@ export default function NewComponentPage() {
             {extractedData.variants && Object.keys(extractedData.variants).length > 0 && (
               <div>
                 <Label>Variants</Label>
-                <pre className="mt-2 p-3 bg-muted rounded text-sm overflow-x-auto">
+                <pre className="mt-2 p-3 bg-bg-neutral rounded text-sm overflow-x-auto">
                   {JSON.stringify(extractedData.variants, null, 2)}
                 </pre>
               </div>
@@ -565,7 +565,7 @@ export default function NewComponentPage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <Label>Detected Colors</Label>
-                  <span className="text-xs text-muted-foreground">Hex → HSL (for themes)</span>
+                  <span className="text-xs text-fg-caption">Hex → HSL (for themes)</span>
                 </div>
                 <div className="mt-2 space-y-2">
                   {extractedData.colors.map((colorEntry: string, i: number) => {
@@ -584,27 +584,27 @@ export default function NewComponentPage() {
                     return (
                       <div
                         key={i}
-                        className="flex items-center justify-between gap-3 px-3 py-2 border border-border rounded bg-muted/30"
+                        className="flex items-center justify-between gap-3 px-3 py-2 border border-fg-stroke-ui rounded bg-bg-neutral/30"
                       >
                         <div className="flex items-center gap-3 flex-1">
                           <div
-                            className="w-8 h-8 rounded border border-border flex-shrink-0"
+                            className="w-8 h-8 rounded border border-fg-stroke-ui flex-shrink-0"
                             style={{ backgroundColor: hexColor }}
                           />
                           <div className="flex-1 min-w-0">
                             <div className="text-sm font-medium truncate">{purpose}</div>
-                            <div className="text-xs text-muted-foreground font-mono">{hexColor}</div>
+                            <div className="text-xs text-fg-caption font-mono">{hexColor}</div>
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-xs text-muted-foreground">HSL:</div>
+                          <div className="text-xs text-fg-caption">HSL:</div>
                           <div className="text-xs font-mono font-semibold">{hslColor}</div>
                         </div>
                       </div>
                     )
                   })}
                 </div>
-                <p className="text-xs text-muted-foreground mt-2">
+                <p className="text-xs text-fg-caption mt-2">
                   💡 Use the HSL values when creating/updating themes
                 </p>
               </div>
@@ -630,13 +630,13 @@ export default function NewComponentPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-semibold">Component Preview</h2>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm text-fg-caption mt-1">
                   Real component rendering using Next.js dynamic imports
                 </p>
               </div>
             </div>
             
-            <div className="bg-muted/50 p-8 rounded-lg min-h-[300px]">
+            <div className="bg-bg-neutral/50 p-8 rounded-lg min-h-[300px]">
               <InlineComponentPreview
                 code={generatedCode}
                 variants={extractedData?.variants}
@@ -654,7 +654,7 @@ export default function NewComponentPage() {
             </div>
             
             <div className="relative">
-              <pre className="p-4 bg-muted rounded text-sm overflow-x-auto max-h-96 overflow-y-auto">
+              <pre className="p-4 bg-bg-neutral rounded text-sm overflow-x-auto max-h-96 overflow-y-auto">
                 <code>{generatedCode}</code>
               </pre>
               <Button
@@ -710,7 +710,7 @@ export default function NewComponentPage() {
                     <h3 className="font-semibold text-sm">Recommendations:</h3>
                     <ul className="list-disc list-inside text-sm space-y-1">
                       {validation.recommendations.map((rec, i) => (
-                        <li key={i} className="text-muted-foreground">{rec}</li>
+                        <li key={i} className="text-fg-caption">{rec}</li>
                       ))}
                     </ul>
                   </div>
@@ -718,7 +718,7 @@ export default function NewComponentPage() {
                 
                 {validation.overallMatch < 90 && (
                   <div className="space-y-3">
-                    <div className="text-xs text-muted-foreground bg-white dark:bg-background p-3 rounded border">
+                    <div className="text-xs text-fg-caption bg-white dark:bg-bg-white p-3 rounded border">
                       <strong>⚠️ Validation Issues Detected</strong>
                       <p className="mt-1">The generated component doesn&apos;t fully match the spec sheet. You have options:</p>
                     </div>
@@ -778,7 +778,7 @@ export default function NewComponentPage() {
                   </Button>
                 </div>
                 
-                <div className="text-sm text-muted-foreground bg-white dark:bg-background p-3 rounded">
+                <div className="text-sm text-fg-caption bg-white dark:bg-bg-white p-3 rounded">
                   <strong>Changes Applied:</strong>
                   <ul className="list-disc list-inside mt-2 space-y-1">
                     {validation?.missingVariants.length ? (
@@ -795,7 +795,7 @@ export default function NewComponentPage() {
                 
                 <div className="max-h-[400px] overflow-y-auto">
                   <Label>Fixed Code Preview:</Label>
-                  <pre className="mt-2 p-4 bg-muted rounded text-xs overflow-x-auto">
+                  <pre className="mt-2 p-4 bg-bg-neutral rounded text-xs overflow-x-auto">
                     {suggestedFix}
                   </pre>
                 </div>
@@ -854,12 +854,12 @@ export default function NewComponentPage() {
                   </Button>
                 </div>
                 
-                <div className="text-sm text-muted-foreground bg-white dark:bg-background p-3 rounded">
+                <div className="text-sm text-fg-caption bg-white dark:bg-bg-white p-3 rounded">
                   <strong>💡 Edit Tips:</strong>
                   <ul className="list-disc list-inside mt-2 space-y-1 text-xs">
                     <li>Match spacing values exactly from the spec sheet</li>
                     <li>Ensure all variants are present in the cva() configuration</li>
-                    <li>Use theme tokens (bg-primary, text-foreground) instead of hex colors</li>
+                    <li>Use theme tokens (bg-primary-bg, text-fg-body) instead of hex colors</li>
                     <li>Check Tailwind class names for typos</li>
                   </ul>
                 </div>
@@ -869,7 +869,7 @@ export default function NewComponentPage() {
                   <textarea
                     value={generatedCode}
                     onChange={(e) => setGeneratedCode(e.target.value)}
-                    className="mt-2 w-full h-[500px] p-4 font-mono text-xs border rounded bg-background"
+                    className="mt-2 w-full h-[500px] p-4 font-mono text-xs border rounded bg-bg-white"
                     spellCheck={false}
                   />
                 </div>
@@ -900,7 +900,7 @@ export default function NewComponentPage() {
           )}
           
           {validating && (
-            <div className="text-center text-sm text-muted-foreground">
+            <div className="text-center text-sm text-fg-caption">
               Validating component against spec sheet...
             </div>
           )}

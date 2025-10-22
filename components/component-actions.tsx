@@ -92,7 +92,7 @@ export function ComponentActions({
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            className="text-destructive focus:text-destructive cursor-pointer"
+            className="text-fg-feedback-error focus:text-fg-feedback-error cursor-pointer"
             onSelect={(e) => {
               e.preventDefault()
               setShowDeleteDialog(true)

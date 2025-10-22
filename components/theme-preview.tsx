@@ -105,12 +105,12 @@ export function ThemePreview({ themes }: ThemePreviewProps) {
   if (themes.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-12 text-center">
-        <div className="rounded-full bg-muted p-4">
-          <Palette className="h-8 w-8 text-muted-foreground" />
+        <div className="rounded-full bg-bg-neutral p-4">
+          <Palette className="h-8 w-8 text-fg-caption" />
         </div>
         <div className="space-y-2">
           <h3 className="text-lg font-semibold">No themes yet</h3>
-          <p className="text-sm text-muted-foreground max-w-sm">
+          <p className="text-sm text-fg-caption max-w-sm">
             Themes will appear here once they&apos;re created in the admin panel.
           </p>
         </div>
@@ -123,7 +123,7 @@ export function ThemePreview({ themes }: ThemePreviewProps) {
       {/* Header */}
       <div className="space-y-6">
         <div className="flex items-center gap-2">
-          <Palette className="h-5 w-5 text-primary" />
+          <Palette className="h-5 w-5 text-primary-bg" />
           <Badge variant="secondary" className="text-xs">
             {themes.length} {themes.length === 1 ? 'Theme' : 'Themes'}
           </Badge>
@@ -132,7 +132,7 @@ export function ThemePreview({ themes }: ThemePreviewProps) {
           <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">
             Pick a Theme. Make it yours.
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl">
+          <p className="text-lg text-fg-caption max-w-2xl">
             Try our hand-picked themes. Click to preview how components adapt to different styles in real-time.
           </p>
         </div>
@@ -146,8 +146,8 @@ export function ThemePreview({ themes }: ThemePreviewProps) {
               className={cn(
                 'px-4 py-2 rounded-md text-sm font-medium transition-all',
                 selectedTheme?.id === theme.id
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted hover:bg-muted/80'
+                  ? 'bg-primary-bg text-primary-text'
+                  : 'bg-bg-neutral hover:bg-bg-neutral/80'
               )}
             >
               {theme.name}
@@ -169,12 +169,12 @@ export function ThemePreview({ themes }: ThemePreviewProps) {
         {/* Sample Components Grid */}
         <div className="grid gap-6 md:grid-cols-2">
           {/* Card Example */}
-          <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6 space-y-4">
+          <div className="rounded-lg border bg-bg-white text-fg-body shadow-sm p-6 space-y-4">
             <div className="space-y-2">
               <h3 className="text-2xl font-semibold leading-none tracking-tight">
                 Card Component
               </h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-fg-caption">
                 This is how cards will look with the selected theme.
               </p>
             </div>
@@ -186,16 +186,16 @@ export function ThemePreview({ themes }: ThemePreviewProps) {
           </div>
 
           {/* Stats Card */}
-          <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6 space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+          <div className="rounded-lg border bg-bg-white text-fg-body shadow-sm p-6 space-y-2">
+            <p className="text-sm font-medium text-fg-caption">Total Revenue</p>
             <p className="text-3xl font-bold">$15,231.89</p>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-primary font-medium">+20.1%</span> from last month
+            <p className="text-xs text-fg-caption">
+              <span className="text-primary-bg font-medium">+20.1%</span> from last month
             </p>
           </div>
 
           {/* Buttons Showcase */}
-          <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6 space-y-4">
+          <div className="rounded-lg border bg-bg-white text-fg-body shadow-sm p-6 space-y-4">
             <h3 className="font-semibold">Button Variants</h3>
             <div className="flex flex-wrap gap-2">
               <Button variant="default">Default</Button>
@@ -207,7 +207,7 @@ export function ThemePreview({ themes }: ThemePreviewProps) {
           </div>
 
           {/* Badge Examples */}
-          <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6 space-y-4">
+          <div className="rounded-lg border bg-bg-white text-fg-body shadow-sm p-6 space-y-4">
             <h3 className="font-semibold">Badges</h3>
             <div className="flex flex-wrap gap-2">
               <Badge>Default</Badge>
@@ -218,13 +218,13 @@ export function ThemePreview({ themes }: ThemePreviewProps) {
           </div>
 
           {/* Alert Example */}
-          <div className="md:col-span-2 rounded-lg border bg-card text-card-foreground shadow-sm p-6 space-y-3">
+          <div className="md:col-span-2 rounded-lg border bg-bg-white text-fg-body shadow-sm p-6 space-y-3">
             <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-primary" />
+              <Check className="h-4 w-4 text-primary-bg" />
               <h4 className="font-semibold">Theme Applied Successfully</h4>
             </div>
-            <p className="text-sm text-muted-foreground">
-              All components are now using the <span className="font-medium text-foreground">{selectedTheme?.name}</span> theme.
+            <p className="text-sm text-fg-caption">
+              All components are now using the <span className="font-medium text-fg-body">{selectedTheme?.name}</span> theme.
               Notice how colors, spacing, borders, and typography have adapted to match.
             </p>
           </div>
@@ -233,45 +233,92 @@ export function ThemePreview({ themes }: ThemePreviewProps) {
         {/* Theme Details */}
         <div className="grid gap-6 md:grid-cols-2">
           {/* Color Palette */}
-          <div className="rounded-lg border bg-card p-6 space-y-4">
+          <div className="rounded-lg border bg-bg-white p-6 space-y-4">
             <h3 className="font-semibold">Color Palette</h3>
-            <div className="grid grid-cols-3 gap-3">
-              {selectedTheme?.colors && Object.entries(selectedTheme.colors).slice(0, 9).map(([name, value]) => (
-                <div key={name} className="space-y-2">
-                  <div
-                    className="h-16 rounded-md border shadow-sm"
-                    style={{
-                      backgroundColor: `hsl(${value})`
-                    }}
-                  />
-                  <p className="text-xs font-medium capitalize truncate">
-                    {name.replace(/-/g, ' ')}
-                  </p>
+            <div className="space-y-3">
+              {/* Primary Colors */}
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-fg-caption">Primary</p>
+                <div className="flex gap-2">
+                  {selectedTheme?.colors && ['primary-bg', 'primary-hover-bg', 'primary-pressed-bg'].map((token) => {
+                    const value = (selectedTheme.colors as Record<string, string>)[token]
+                    if (!value) return null
+                    return (
+                      <div
+                        key={token}
+                        className="h-12 w-12 rounded-md border shadow-sm flex-shrink-0"
+                        style={{ backgroundColor: `hsl(${value})` }}
+                        title={token}
+                      />
+                    )
+                  })}
                 </div>
-              ))}
+              </div>
+              
+              {/* Background Colors */}
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-fg-caption">Backgrounds</p>
+                <div className="flex gap-2">
+                  {selectedTheme?.colors && ['bg-white', 'bg-neutral', 'bg-accent', 'bg-brand'].map((token) => {
+                    const value = (selectedTheme.colors as Record<string, string>)[token]
+                    if (!value) return null
+                    return (
+                      <div
+                        key={token}
+                        className="h-12 w-12 rounded-md border shadow-sm flex-shrink-0"
+                        style={{ backgroundColor: `hsl(${value})` }}
+                        title={token}
+                      />
+                    )
+                  })}
+                </div>
+              </div>
+              
+              {/* Text Colors */}
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-fg-caption">Text</p>
+                <div className="flex gap-2">
+                  {selectedTheme?.colors && ['fg-heading', 'fg-body', 'fg-caption'].map((token) => {
+                    const value = (selectedTheme.colors as Record<string, string>)[token]
+                    if (!value) return null
+                    return (
+                      <div
+                        key={token}
+                        className="h-12 w-12 rounded-md border shadow-sm flex-shrink-0"
+                        style={{ backgroundColor: `hsl(${value})` }}
+                        title={token}
+                      />
+                    )
+                  })}
+                </div>
+              </div>
+              
+              <p className="text-xs text-fg-caption pt-2">
+                {selectedTheme?.colors ? Object.keys(selectedTheme.colors).length : 0} color tokens
+              </p>
             </div>
           </div>
 
           {/* Theme Properties */}
-          <div className="rounded-lg border bg-card p-6 space-y-4">
+          <div className="rounded-lg border bg-bg-white p-6 space-y-4">
             <h3 className="font-semibold">Theme Properties</h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Border Radius:</span>
+                <span className="text-fg-caption">Border Radius:</span>
                 <span className="font-mono">{selectedTheme?.radius || '0.5rem'}</span>
               </div>
               {selectedTheme?.typography && (
                 <>
                   {(selectedTheme.typography as any).fonts && (selectedTheme.typography as any).fonts[0] && (
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Primary Font:</span>
+                      <span className="text-fg-caption">Primary Font:</span>
                       <span className="font-mono text-xs">
                         {(selectedTheme.typography as any).fonts[0].family}
                       </span>
                     </div>
                   )}
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Fonts Count:</span>
+                    <span className="text-fg-caption">Fonts Count:</span>
                     <span className="font-mono">
                       {(selectedTheme.typography as any).fonts?.length || 0}
                     </span>
@@ -280,7 +327,7 @@ export function ThemePreview({ themes }: ThemePreviewProps) {
               )}
               {selectedTheme?.spacing && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Base Spacing:</span>
+                  <span className="text-fg-caption">Base Spacing:</span>
                   <span className="font-mono">
                     {(selectedTheme.spacing as any).md || '1rem'}
                   </span>
@@ -291,9 +338,9 @@ export function ThemePreview({ themes }: ThemePreviewProps) {
         </div>
 
         {/* Info */}
-        <div className="rounded-lg bg-muted/50 p-6">
+        <div className="rounded-lg bg-bg-neutral/50 p-6">
           <h3 className="font-semibold mb-2">About Themes</h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-fg-caption">
             Themes define the complete visual appearance of all components including colors, typography,
             spacing, and border styles. The preview above updates in real-time to show how your entire
             design system adapts to different themes.

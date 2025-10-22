@@ -63,16 +63,40 @@ export async function generateComponentCode(
 Theme Name: ${params.theme.name}
 Detected Colors in Spec: ${params.colors.join(', ')}
 
-IMPORTANT - Color Mapping:
-- Map detected colors to appropriate theme tokens from this theme:
-  * primary: ${params.theme.colors.primary || 'Main brand color'}
-  * secondary: ${params.theme.colors.secondary || 'Secondary actions'}
-  * accent: ${params.theme.colors.accent || 'Highlighted elements'}
-  * muted: ${params.theme.colors.muted || 'Subtle backgrounds'}
-  * destructive: ${params.theme.colors.destructive || 'Error states'}
-- NEVER use hardcoded hex colors like #3B82F6
-- ALWAYS use Tailwind theme classes like bg-primary, text-foreground, border-border
-- Example: If spec shows blue button, use bg-primary NOT bg-blue-500`
+CRITICAL - EXACT THEME TOKEN NAMES:
+
+Available Theme Tokens (USE THESE EXACT NAMES):
+
+Button States:
+- PRIMARY: bg-primary-bg, text-primary-text, [icon:primary-icon], hover:bg-primary-hover-bg, active:bg-primary-pressed-bg, disabled:bg-primary-disabled-bg
+- SECONDARY: bg-secondary-bg, border-secondary-border, text-secondary-text, [icon:secondary-icon], hover:bg-secondary-hover-bg, active:bg-secondary-pressed-bg
+- GHOST: bg-ghost-bg, text-ghost-text, [icon:ghost-icon], hover:bg-ghost-hover-bg, active:bg-ghost-pressed-bg
+- FOCUS: ring-focused-border (for focus rings)
+
+Backgrounds:
+- bg-white, bg-neutral-subtle, bg-neutral-light, bg-neutral, bg-brand-subtle, bg-brand-light, bg-brand-mid, bg-brand
+- bg-accent, bg-accent-mid, bg-secondary, bg-table, bg-header, bg-superlative, bg-button
+
+Foregrounds/Text:
+- text-fg-heading, text-fg-body, text-fg-caption, text-fg-link
+- text-fg-heading-inverse, text-fg-body-inverse (for dark backgrounds)
+- text-fg-feedback-error, text-fg-feedback-warning, text-fg-feedback-success
+
+Strokes/Borders:
+- border-fg-stroke-ui, border-fg-divider, border-fg-table-border
+
+⚠️ CRITICAL RULES:
+1. NEVER use generic names like "bg-primary-bg" or "text-primary" 
+2. ALWAYS use EXACT token names: "bg-primary-bg", "text-primary-text"
+3. NEVER use hardcoded colors like #3B82F6 or bg-blue-500
+4. Button primary variant = bg-primary-bg + text-primary-text
+5. Button secondary variant = bg-secondary + border-secondary-border + text-secondary-text
+6. Button ghost variant = bg-ghost-bg + text-ghost-text
+
+EXAMPLE Button Variants:
+primary: "bg-primary-bg text-primary-text hover:bg-primary-hover-bg active:bg-primary-pressed-bg disabled:bg-primary-disabled-bg"
+secondary: "bg-secondary border border-secondary-border text-secondary-text hover:bg-secondary-hover-bg"
+ghost: "bg-ghost-bg text-ghost-text hover:bg-ghost-hover-bg"`
   }
 
   const spacingInfo = params.spacing?.length 
@@ -153,14 +177,14 @@ ${propsText}${themeInfo}${spacingInfo}
 
 5. COLOR MAPPING (NO HEX COLORS ALLOWED):
    ✓ Map spec colors to theme tokens:
-     • Primary/Brand → bg-primary, text-primary-foreground
-     • Secondary → bg-secondary, text-secondary-foreground
-     • Neutral/Gray → bg-muted, text-muted-foreground
-     • Borders → border-border
-     • Hover states → hover:bg-primary/90
+     • Primary/Brand → bg-primary-bg, text-primary-text
+     • Secondary → bg-secondary, text-fg-body
+     • Neutral/Gray → bg-bg-neutral, text-fg-caption
+     • Borders → border-fg-stroke-ui
+     • Hover states → hover:bg-primary-bg/90
      • Disabled → opacity-50, cursor-not-allowed
    ✓ NEVER use: bg-blue-500, #3B82F6, rgb()
-   ✓ ALWAYS use: bg-primary, text-foreground
+   ✓ ALWAYS use: bg-primary-bg, text-fg-body
 
 6. SHADCN/UI PATTERNS:
    ✓ Use React.forwardRef for ref forwarding

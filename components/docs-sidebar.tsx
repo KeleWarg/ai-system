@@ -56,8 +56,8 @@ export function DocsSidebar({ components }: DocsSidebarProps) {
               <Link
                 href="/"
                 className={cn(
-                  "group flex items-center rounded-md px-2 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-                  pathname === "/" ? "bg-accent" : "transparent"
+                  "group flex items-center rounded-md px-2 py-2 text-sm font-medium hover:bg-bg-accent hover:text-fg-body",
+                  pathname === "/" ? "bg-bg-accent" : "transparent"
                 )}
               >
                 <Home className="mr-2 h-4 w-4" />
@@ -66,8 +66,8 @@ export function DocsSidebar({ components }: DocsSidebarProps) {
               <Link
                 href="/docs/components"
                 className={cn(
-                  "group flex items-center rounded-md px-2 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-                  pathname === "/docs/components" ? "bg-accent" : "transparent"
+                  "group flex items-center rounded-md px-2 py-2 text-sm font-medium hover:bg-bg-accent hover:text-fg-body",
+                  pathname === "/docs/components" ? "bg-bg-accent" : "transparent"
                 )}
               >
                 <Package className="mr-2 h-4 w-4" />
@@ -76,8 +76,8 @@ export function DocsSidebar({ components }: DocsSidebarProps) {
               <Link
                 href="/docs/themes"
                 className={cn(
-                  "group flex items-center rounded-md px-2 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-                  pathname.startsWith("/docs/themes") ? "bg-accent" : "transparent"
+                  "group flex items-center rounded-md px-2 py-2 text-sm font-medium hover:bg-bg-accent hover:text-fg-body",
+                  pathname.startsWith("/docs/themes") ? "bg-bg-accent" : "transparent"
                 )}
               >
                 <Palette className="mr-2 h-4 w-4" />
@@ -100,10 +100,10 @@ export function DocsSidebar({ components }: DocsSidebarProps) {
                     key={component.id}
                     href={`/docs/components/${component.slug}`}
                     className={cn(
-                      "group flex items-center rounded-md px-2 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors",
+                      "group flex items-center rounded-md px-2 py-2 text-sm hover:bg-bg-accent hover:text-fg-body transition-colors",
                       pathname === `/docs/components/${component.slug}`
-                        ? "bg-accent font-medium"
-                        : "transparent text-muted-foreground"
+                        ? "bg-bg-accent font-medium"
+                        : "transparent text-fg-caption"
                     )}
                   >
                     {component.name}
@@ -114,7 +114,7 @@ export function DocsSidebar({ components }: DocsSidebarProps) {
           ))}
 
           {components.length === 0 && (
-            <div className="px-2 text-sm text-muted-foreground">
+            <div className="px-2 text-sm text-fg-caption">
               No components yet. Create some in the admin panel!
             </div>
           )}

@@ -18,7 +18,7 @@ export default async function ThemesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Themes</h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-fg-caption mt-1">
             Manage your design system themes and color palettes
           </p>
         </div>

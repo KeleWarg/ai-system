@@ -24,7 +24,7 @@ interface StyleMatch {
 interface StyleMapping {
   original: string // e.g., "bg-blue-500"
   themeToken: string // e.g., "primary"
-  newClass: string // e.g., "bg-primary"
+  newClass: string // e.g., "bg-primary-bg"
 }
 
 export default function StyleRemapPage({ params }: StyleRemapPageProps) {
@@ -279,7 +279,7 @@ export default function StyleRemapPage({ params }: StyleRemapPageProps) {
           </Button>
           <div>
             <h1 className="text-3xl font-bold">Remap Styles</h1>
-            <p className="text-muted-foreground">
+            <p className="text-fg-caption">
               Map hardcoded colors to theme tokens
             </p>
           </div>
@@ -296,10 +296,10 @@ export default function StyleRemapPage({ params }: StyleRemapPageProps) {
       {/* Active Theme */}
       <Card className="p-6">
         <div className="flex items-center gap-4 mb-4">
-          <Palette className="h-8 w-8 text-primary" />
+          <Palette className="h-8 w-8 text-primary-bg" />
           <div>
             <h2 className="text-lg font-semibold">{theme.name}</h2>
-            <p className="text-sm text-muted-foreground">Active Theme</p>
+            <p className="text-sm text-fg-caption">Active Theme</p>
           </div>
         </div>
         
@@ -307,7 +307,7 @@ export default function StyleRemapPage({ params }: StyleRemapPageProps) {
           {Object.entries(theme.colors).slice(0, 12).map(([name, hsl]) => (
             <div key={name} className="flex items-center gap-2">
               <div
-                className="w-10 h-10 rounded-md border border-border shadow-sm"
+                className="w-10 h-10 rounded-md border border-fg-stroke-ui shadow-sm"
                 style={{ backgroundColor: `hsl(${hsl})` }}
               />
               <span className="text-xs font-mono">{name}</span>
@@ -321,7 +321,7 @@ export default function StyleRemapPage({ params }: StyleRemapPageProps) {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold">{component.name}</h2>
-            <p className="text-sm text-muted-foreground">{component.description}</p>
+            <p className="text-sm text-fg-caption">{component.description}</p>
           </div>
           <Badge variant="outline">{component.category}</Badge>
         </div>
@@ -331,16 +331,16 @@ export default function StyleRemapPage({ params }: StyleRemapPageProps) {
       <div className="space-y-4">
         <div>
           <h2 className="text-xl font-semibold">Component Color Styles</h2>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-sm text-fg-caption mt-1">
             {detectedStyles.length} color style{detectedStyles.length !== 1 ? 's' : ''} detected (includes both theme tokens and hardcoded values)
           </p>
         </div>
         
         {detectedStyles.length === 0 ? (
           <Card className="p-12 text-center">
-            <Palette className="h-16 w-16 mx-auto mb-4 text-muted-foreground/50" />
+            <Palette className="h-16 w-16 mx-auto mb-4 text-fg-caption/50" />
             <h3 className="text-lg font-semibold mb-2">No Color Styles Detected</h3>
-            <p className="text-muted-foreground">
+            <p className="text-fg-caption">
               This component doesn't use any color classes (bg, text, border, etc.)
             </p>
           </Card>
@@ -352,12 +352,12 @@ export default function StyleRemapPage({ params }: StyleRemapPageProps) {
                   {/* Current Style */}
                   <div className="flex items-center gap-4 flex-1">
                     <div
-                      className="w-16 h-16 rounded-lg border-2 border-border shadow-sm flex-shrink-0"
+                      className="w-16 h-16 rounded-lg border-2 border-fg-stroke-ui shadow-sm flex-shrink-0"
                       style={{ backgroundColor: getColorPreview(style.value, theme) }}
                     />
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <code className="text-sm font-mono bg-muted px-3 py-1.5 rounded-md">
+                        <code className="text-sm font-mono bg-bg-neutral px-3 py-1.5 rounded-md">
                           {style.fullMatch}
                         </code>
                         {Object.keys(theme.colors).includes(style.value) ? (
@@ -370,14 +370,14 @@ export default function StyleRemapPage({ params }: StyleRemapPageProps) {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-fg-caption">
                         Current class
                       </p>
                     </div>
                   </div>
                   
                   {/* Arrow */}
-                  <ArrowRight className="h-6 w-6 text-muted-foreground flex-shrink-0" />
+                  <ArrowRight className="h-6 w-6 text-fg-caption flex-shrink-0" />
                   
                   {/* Theme Token Selector */}
                   <div className="flex items-center gap-4 flex-1">
@@ -389,7 +389,7 @@ export default function StyleRemapPage({ params }: StyleRemapPageProps) {
                         id={`mapping-${index}`}
                         value={mappings[style.fullMatch]}
                         onChange={(e) => updateMapping(style.fullMatch, e.target.value)}
-                        className="w-full px-3 py-2 border border-border rounded-md text-sm bg-background"
+                        className="w-full px-3 py-2 border border-fg-stroke-ui rounded-md text-sm bg-bg-white"
                       >
                         {Object.keys(theme.colors).map((tokenName) => (
                           <option key={tokenName} value={tokenName}>
@@ -400,7 +400,7 @@ export default function StyleRemapPage({ params }: StyleRemapPageProps) {
                     </div>
                     
                     <div
-                      className="w-16 h-16 rounded-lg border-2 border-border shadow-sm flex-shrink-0"
+                      className="w-16 h-16 rounded-lg border-2 border-fg-stroke-ui shadow-sm flex-shrink-0"
                       style={{
                         backgroundColor: `hsl(${theme.colors[mappings[style.fullMatch]]})`,
                       }}

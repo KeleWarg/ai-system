@@ -39,13 +39,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="min-h-screen flex items-center justify-center bg-bg-white">
       <div className="w-full max-w-md space-y-8 px-4">
         <div className="text-center">
           <h1 className="text-3xl font-bold tracking-tight">
             Admin Login
           </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="mt-2 text-sm text-fg-caption">
             Sign in to access the admin panel
           </p>
         </div>
@@ -67,7 +67,7 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                className="w-full px-3 py-2 border border-fg-stroke-ui rounded-md bg-bg-white focus:outline-none focus:ring-2 focus:ring-focused-border focus:border-transparent"
                 placeholder="you@example.com"
               />
             </div>
@@ -87,28 +87,28 @@ export default function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                className="w-full px-3 py-2 border border-fg-stroke-ui rounded-md bg-bg-white focus:outline-none focus:ring-2 focus:ring-focused-border focus:border-transparent"
                 placeholder="••••••••"
               />
             </div>
           </div>
 
           {error && (
-            <div className="rounded-md bg-destructive/10 border border-destructive/20 p-3">
-              <p className="text-sm text-destructive">{error}</p>
+            <div className="rounded-md bg-fg-feedback-error/10 border border-destructive/20 p-3">
+              <p className="text-sm text-fg-feedback-error">{error}</p>
             </div>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-text bg-primary-bg hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-focused-border disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
 
-        <div className="text-center text-sm text-muted-foreground">
+        <div className="text-center text-sm text-fg-caption">
           <p>AI-Powered Design System</p>
         </div>
       </div>

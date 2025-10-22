@@ -34,7 +34,7 @@ export default async function AdminComponentPreviewPage({
           </Link>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">{component.name}</h1>
-            <p className="text-muted-foreground mt-1">{component.description}</p>
+            <p className="text-fg-caption mt-1">{component.description}</p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -57,21 +57,21 @@ export default async function AdminComponentPreviewPage({
       <Card className="p-6">
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <span className="text-muted-foreground">Slug:</span>
+            <span className="text-fg-caption">Slug:</span>
             <span className="ml-2 font-mono">{component.slug}</span>
           </div>
           <div>
-            <span className="text-muted-foreground">Category:</span>
+            <span className="text-fg-caption">Category:</span>
             <span className="ml-2">{component.category}</span>
           </div>
           <div>
-            <span className="text-muted-foreground">Created:</span>
+            <span className="text-fg-caption">Created:</span>
             <span className="ml-2">
               {new Date(component.created_at).toLocaleDateString()}
             </span>
           </div>
           <div>
-            <span className="text-muted-foreground">Updated:</span>
+            <span className="text-fg-caption">Updated:</span>
             <span className="ml-2">
               {new Date(component.updated_at).toLocaleDateString()}
             </span>
@@ -108,7 +108,7 @@ export default async function AdminComponentPreviewPage({
       {component.variants && Object.keys(component.variants).length > 0 && (
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Variants</h2>
-          <pre className="p-4 bg-muted rounded text-sm overflow-x-auto">
+          <pre className="p-4 bg-bg-neutral rounded text-sm overflow-x-auto">
             {JSON.stringify(component.variants, null, 2)}
           </pre>
         </Card>

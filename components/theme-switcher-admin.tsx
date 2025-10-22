@@ -14,7 +14,7 @@ export function ThemeSwitcherAdmin() {
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <div className="flex items-center gap-2 text-sm text-fg-caption">
         <Palette className="h-4 w-4 animate-pulse" />
         <span>Loading themes...</span>
       </div>
@@ -27,7 +27,7 @@ export function ThemeSwitcherAdmin() {
 
   return (
     <div className="flex items-center gap-3">
-      <Palette className="h-4 w-4 text-muted-foreground" />
+      <Palette className="h-4 w-4 text-fg-caption" />
       <div className="flex items-center gap-2">
         <Label htmlFor="theme-select" className="text-sm font-normal">
           Theme:

@@ -6,12 +6,13 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { Loader2, Plus, X } from 'lucide-react'
+import { Loader2, Plus, X, Search, Copy, Check } from 'lucide-react'
 import { ColorPicker } from './color-picker'
 import type { Theme, ThemeFont, ResponsiveValue } from '@/lib/supabase'
 import { slugify } from '@/lib/utils'
 import { DEFAULT_COLORS, COLOR_CATEGORIES, COLOR_LABELS } from '@/lib/color-system'
 import { DEFAULT_TYPOGRAPHY, FONT_SIZE_KEYS, LINE_HEIGHT_KEYS, FONT_WEIGHT_KEYS, LETTER_SPACING_KEYS } from '@/lib/typography-system'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
 
 interface ThemeFormProps {
@@ -21,6 +22,8 @@ interface ThemeFormProps {
 export function ThemeForm({ theme }: ThemeFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [copiedToken, setCopiedToken] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     name: theme?.name || '',
     slug: theme?.slug || '',
@@ -88,6 +91,22 @@ export function ThemeForm({ theme }: ThemeFormProps) {
         ...formData.colors,
         [key]: value,
       },
+    })
+  }
+
+  const copyTokenValue = (tokenKey: string) => {
+    const value = (formData.colors as Record<string, string>)[tokenKey] || (DEFAULT_COLORS as Record<string, string>)[tokenKey]
+    navigator.clipboard.writeText(value)
+    setCopiedToken(tokenKey)
+    setTimeout(() => setCopiedToken(null), 2000)
+  }
+
+  const filterColorsBySearch = (colors: readonly string[]) => {
+    if (!searchQuery.trim()) return [...colors]
+    const query = searchQuery.toLowerCase()
+    return colors.filter(key => {
+      const label = (COLOR_LABELS as Record<string, string>)[key] || key
+      return key.toLowerCase().includes(query) || label.toLowerCase().includes(query)
     })
   }
 
@@ -209,7 +228,7 @@ export function ThemeForm({ theme }: ThemeFormProps) {
               placeholder="e.g., ocean-blue"
               required
             />
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-fg-caption mt-1">
               URL-friendly identifier (lowercase, hyphens only)
             </p>
           </div>
@@ -230,7 +249,7 @@ export function ThemeForm({ theme }: ThemeFormProps) {
       <Card>
         <CardHeader>
           <CardTitle>Typography</CardTitle>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-fg-caption">
             Configure fonts, sizes, line heights, weights, and letter spacing
           </p>
         </CardHeader>
@@ -321,7 +340,7 @@ export function ThemeForm({ theme }: ThemeFormProps) {
             {/* Font Sizes Tab */}
             <TabsContent value="sizes" className="space-y-4 mt-4">
               <div className="space-y-4">
-                <div className="grid grid-cols-4 gap-2 text-xs font-medium text-muted-foreground px-2">
+                <div className="grid grid-cols-4 gap-2 text-xs font-medium text-fg-caption px-2">
                   <div>Name</div>
                   <div>Desktop</div>
                   <div>Tablet</div>
@@ -359,7 +378,7 @@ export function ThemeForm({ theme }: ThemeFormProps) {
             {/* Line Height Tab */}
             <TabsContent value="lineHeight" className="space-y-4 mt-4">
               <div className="space-y-4">
-                <div className="grid grid-cols-4 gap-2 text-xs font-medium text-muted-foreground px-2">
+                <div className="grid grid-cols-4 gap-2 text-xs font-medium text-fg-caption px-2">
                   <div>Name</div>
                   <div>Desktop</div>
                   <div>Tablet</div>
@@ -439,7 +458,7 @@ export function ThemeForm({ theme }: ThemeFormProps) {
       <Card>
         <CardHeader>
           <CardTitle>Spacing Scale</CardTitle>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-fg-caption">
             Define spacing values in pixels for consistent layout
           </p>
         </CardHeader>
@@ -473,36 +492,94 @@ export function ThemeForm({ theme }: ThemeFormProps) {
       {/* Colors */}
       <Card>
         <CardHeader>
-          <CardTitle>Colors (HSL Format)</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Use HSL format (H S% L%) - Example: 221 83% 53%
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Colors (HSL Format)</CardTitle>
+              <p className="text-sm text-fg-caption mt-1">
+                Use HSL format (H S% L%) - Example: 221 83% 53%
+              </p>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-fg-caption">
+              <span className="font-medium">
+                {Object.keys(formData.colors).length} tokens
+              </span>
+            </div>
+          </div>
+          {/* Search */}
+          <div className="relative mt-4">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-fg-caption" />
+            <Input
+              type="text"
+              placeholder="Search color tokens (e.g., 'primary', 'button', 'hover')..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+            />
+          </div>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="Primary Button">
-            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-5">
-              {Object.keys(COLOR_CATEGORIES).map((category) => (
-                <TabsTrigger key={category} value={category} className="text-xs">
-                  {category}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-            {Object.entries(COLOR_CATEGORIES).map(([category, colors]) => (
-              <TabsContent key={category} value={category} className="space-y-4 mt-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {colors.map((colorKey) => (
-                    <ColorPicker
-                      key={colorKey}
-                      id={colorKey}
-                      label={COLOR_LABELS[colorKey] || colorKey}
-                      value={formData.colors[colorKey] || DEFAULT_COLORS[colorKey]}
-                      onChange={(value) => handleColorChange(colorKey, value)}
-                    />
-                  ))}
-                </div>
-              </TabsContent>
-            ))}
-          </Tabs>
+          <Accordion type="multiple" defaultValue={['Button / Primary', 'Background']} className="w-full">
+            {Object.entries(COLOR_CATEGORIES).map(([category, colors]) => {
+              const filteredColors = filterColorsBySearch(colors)
+              if (filteredColors.length === 0 && searchQuery.trim()) return null
+              
+              return (
+                <AccordionItem key={category} value={category}>
+                  <AccordionTrigger className="text-sm font-semibold hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <span>{category}</span>
+                      <span className="text-xs font-normal text-fg-caption">
+                        ({filteredColors.length}/{colors.length})
+                      </span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="grid gap-4 sm:grid-cols-2 pt-4">
+                      {filteredColors.map((colorKey) => (
+                        <div key={colorKey} className="relative">
+                          <ColorPicker
+                            id={colorKey}
+                            label={(COLOR_LABELS as Record<string, string>)[colorKey] || colorKey}
+                            value={(formData.colors as Record<string, string>)[colorKey] || (DEFAULT_COLORS as Record<string, string>)[colorKey]}
+                            onChange={(value) => handleColorChange(colorKey, value)}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute top-0 right-0 h-6 w-6 p-0"
+                            onClick={() => copyTokenValue(colorKey)}
+                            title="Copy HSL value"
+                          >
+                            {copiedToken === colorKey ? (
+                              <Check className="h-3 w-3 text-green-600" />
+                            ) : (
+                              <Copy className="h-3 w-3" />
+                            )}
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              )
+            })}
+          </Accordion>
+          {searchQuery.trim() && Object.entries(COLOR_CATEGORIES).every(([_, colors]) => filterColorsBySearch(colors).length === 0) && (
+            <div className="text-center py-8 text-fg-caption">
+              <Search className="h-12 w-12 mx-auto mb-3 opacity-50" />
+              <p className="text-sm">No color tokens match &quot;{searchQuery}&quot;</p>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="mt-2"
+                onClick={() => setSearchQuery('')}
+              >
+                Clear search
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 

@@ -18,7 +18,7 @@ export default async function ComponentsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Components</h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-fg-caption mt-1">
             Manage your design system components
           </p>
         </div>
@@ -48,14 +48,14 @@ export default async function ComponentsPage() {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <h3 className="font-semibold text-lg">{component.name}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-fg-caption mt-1">
                     {component.description}
                   </p>
                   <div className="flex gap-2 mt-3">
-                    <span className="text-xs bg-accent px-2 py-1 rounded">
+                    <span className="text-xs bg-bg-accent px-2 py-1 rounded">
                       {component.category}
                     </span>
-                    <span className="text-xs bg-muted px-2 py-1 rounded">
+                    <span className="text-xs bg-bg-neutral px-2 py-1 rounded">
                       {component.slug}
                     </span>
                   </div>

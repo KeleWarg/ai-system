@@ -13,7 +13,7 @@ export default function HomePage() {
           <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl lg:leading-[1.1]">
             AI-Powered Design System
           </h1>
-          <p className="max-w-[750px] text-lg text-muted-foreground sm:text-xl">
+          <p className="max-w-[750px] text-lg text-fg-caption sm:text-xl">
             Upload PNG spec sheets and let AI generate professional React components. 
             Beautiful, customizable, and production-ready.
           </p>
@@ -39,7 +39,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-[1440px] grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader>
-              <Palette className="h-10 w-10 text-primary mb-2" />
+              <Palette className="h-10 w-10 text-primary-bg mb-2" />
               <CardTitle>Theme System</CardTitle>
             </CardHeader>
             <CardContent>
@@ -51,7 +51,7 @@ export default function HomePage() {
 
           <Card>
             <CardHeader>
-              <Zap className="h-10 w-10 text-primary mb-2" />
+              <Zap className="h-10 w-10 text-primary-bg mb-2" />
               <CardTitle>AI Generation</CardTitle>
             </CardHeader>
             <CardContent>
@@ -63,7 +63,7 @@ export default function HomePage() {
 
           <Card>
             <CardHeader>
-              <Code className="h-10 w-10 text-primary mb-2" />
+              <Code className="h-10 w-10 text-primary-bg mb-2" />
               <CardTitle>Copy & Paste</CardTitle>
             </CardHeader>
             <CardContent>
@@ -75,7 +75,7 @@ export default function HomePage() {
 
           <Card>
             <CardHeader>
-              <Search className="h-10 w-10 text-primary mb-2" />
+              <Search className="h-10 w-10 text-primary-bg mb-2" />
               <CardTitle>Quick Search</CardTitle>
             </CardHeader>
             <CardContent>
@@ -94,7 +94,7 @@ export default function HomePage() {
           <h2 className="font-bold text-3xl leading-[1.1] sm:text-3xl md:text-5xl">
             Start Building Today
           </h2>
-          <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+          <p className="max-w-[85%] leading-normal text-fg-caption sm:text-lg sm:leading-7">
             Join the future of design systems. Create beautiful, accessible components
             powered by AI in minutes, not hours.
           </p>

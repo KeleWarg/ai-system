@@ -85,7 +85,7 @@ export function ThemeListItem({ theme }: ThemeListItemProps) {
           {Object.entries(theme.colors).slice(0, 8).map(([key, value]) => (
             <div
               key={key}
-              className="h-8 rounded border border-border"
+              className="h-8 rounded border border-fg-stroke-ui"
               style={{ backgroundColor: `hsl(${value})` }}
               title={key}
             />

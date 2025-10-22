@@ -74,7 +74,7 @@ export function ComponentPreviewReal({
       if (typeVariants.length > 0) {
         examples.push(
           <div key="type" className="space-y-4">
-            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+            <h3 className="text-sm font-semibold text-fg-caption uppercase tracking-wide">
               Variants
             </h3>
             <div className="flex flex-wrap gap-3">
@@ -93,7 +93,7 @@ export function ComponentPreviewReal({
     if (variants.size && variants.size.length > 0) {
       examples.push(
         <div key="size" className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+          <h3 className="text-sm font-semibold text-fg-caption uppercase tracking-wide">
             Sizes
           </h3>
           <div className="flex flex-wrap items-center gap-3">
@@ -111,14 +111,14 @@ export function ComponentPreviewReal({
     if (variants.state && variants.state.includes('disabled')) {
       examples.push(
         <div key="state" className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+          <h3 className="text-sm font-semibold text-fg-caption uppercase tracking-wide">
             States
           </h3>
           <div className="flex flex-wrap gap-3">
             <DynamicComponent>Default</DynamicComponent>
             <DynamicComponent disabled>Disabled</DynamicComponent>
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-fg-caption">
             Hover and focus states are interactive - try hovering over the components above
           </p>
         </div>
@@ -129,7 +129,7 @@ export function ComponentPreviewReal({
     if (variants.icon && (variants.icon.includes('left') || variants.icon.includes('right'))) {
       examples.push(
         <div key="icon" className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+          <h3 className="text-sm font-semibold text-fg-caption uppercase tracking-wide">
             With Icons
           </h3>
           <div className="flex flex-wrap gap-3">
@@ -219,17 +219,17 @@ export function ComponentPreviewReal({
       <CardContent>
         {previewMode === 'preview' ? (
           <div className="space-y-6">
-            {description && <p className="text-muted-foreground">{description}</p>}
+            {description && <p className="text-fg-caption">{description}</p>}
 
             {/* Iframe fallback preview for production */}
             {error ? (
-              <div className="border border-destructive rounded-lg p-8 bg-destructive/5">
+              <div className="border border-destructive rounded-lg p-8 bg-fg-feedback-error/5">
                 <div className="flex items-center gap-3 mb-4">
-                  <AlertCircle className="h-5 w-5 text-destructive" />
-                  <h3 className="text-lg font-semibold text-destructive">Preview Error</h3>
+                  <AlertCircle className="h-5 w-5 text-fg-feedback-error" />
+                  <h3 className="text-lg font-semibold text-fg-feedback-error">Preview Error</h3>
                 </div>
-                <p className="text-sm text-muted-foreground mb-4">{error}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-fg-caption mb-4">{error}</p>
+                <p className="text-xs text-fg-caption">
                   The component may not have been written to the file system correctly. Try regenerating it or view the code below.
                 </p>
               </div>
@@ -247,7 +247,7 @@ export function ComponentPreviewReal({
                       <span className="text-blue-600 dark:text-blue-400">📐</span>
                       <div className="flex-1">
                         <strong className="text-blue-900 dark:text-blue-200">Spec Sheet Measurements:</strong>
-                        <ul className="list-disc list-inside mt-1 space-y-0.5 text-muted-foreground">
+                        <ul className="list-disc list-inside mt-1 space-y-0.5 text-fg-caption">
                           {spacing.map((spec, i) => (
                             <li key={i}>{spec}</li>
                           ))}
@@ -283,7 +283,7 @@ export function ComponentPreviewReal({
             </div>
 
             <div className="relative">
-              <pre className="bg-muted rounded-lg p-4 text-sm overflow-x-auto max-h-96 overflow-y-auto">
+              <pre className="bg-bg-neutral rounded-lg p-4 text-sm overflow-x-auto max-h-96 overflow-y-auto">
                 <code>{componentCode}</code>
               </pre>
             </div>

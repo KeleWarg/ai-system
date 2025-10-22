@@ -3,7 +3,7 @@ export default function Loading() {
     <div className="flex items-center justify-center min-h-screen">
       <div className="flex flex-col items-center gap-4">
         <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-        <p className="text-sm text-muted-foreground">Loading...</p>
+        <p className="text-sm text-fg-caption">Loading...</p>
       </div>
     </div>
   )

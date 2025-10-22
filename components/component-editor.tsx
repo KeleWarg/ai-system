@@ -13,7 +13,7 @@ import dynamic from 'next/dynamic'
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center h-96 bg-muted rounded">
+    <div className="flex items-center justify-center h-96 bg-bg-neutral rounded">
       <Loader2 className="h-6 w-6 animate-spin" />
     </div>
   ),
@@ -137,10 +137,10 @@ export function ComponentEditor({ component }: ComponentEditorProps) {
       {component.variants && Object.keys(component.variants).length > 0 && (
         <Card className="p-6">
           <Label>Variants (Read-only)</Label>
-          <pre className="mt-2 p-4 bg-muted rounded text-sm overflow-x-auto">
+          <pre className="mt-2 p-4 bg-bg-neutral rounded text-sm overflow-x-auto">
             {JSON.stringify(component.variants, null, 2)}
           </pre>
-          <p className="text-xs text-muted-foreground mt-2">
+          <p className="text-xs text-fg-caption mt-2">
             Variants cannot be edited directly. Regenerate the component to update
             variants.
           </p>

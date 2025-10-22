@@ -14,7 +14,7 @@ export default async function ComponentsPage() {
       {/* Header */}
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-primary" />
+          <Sparkles className="h-5 w-5 text-primary-bg" />
           <Badge variant="secondary" className="text-xs">
             {components.length} Components
           </Badge>
@@ -22,7 +22,7 @@ export default async function ComponentsPage() {
         <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">
           Components
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl">
+        <p className="text-lg text-fg-caption max-w-2xl">
           Beautifully designed AI-generated components. Built with Radix UI and Tailwind CSS.
           Copy and paste into your apps.
         </p>
@@ -45,11 +45,11 @@ export default async function ComponentsPage() {
             <Link
               key={component.id}
               href={`/docs/components/${component.slug}`}
-              className="group relative flex flex-col rounded-lg border bg-card p-6 hover:border-primary transition-all hover:shadow-md"
+              className="group relative flex flex-col rounded-lg border bg-bg-white p-6 hover:border-primary transition-all hover:shadow-md"
             >
               <div className="space-y-3">
                 <div className="flex items-start justify-between">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-bg/10 text-primary-bg">
                     <Box className="h-5 w-5" />
                   </div>
                   <Badge variant="outline" className="text-xs">
@@ -60,7 +60,7 @@ export default async function ComponentsPage() {
                   <h3 className="font-semibold leading-none tracking-tight">
                     {component.name}
                   </h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
+                  <p className="text-sm text-fg-caption line-clamp-2">
                     {component.description || 'No description available'}
                   </p>
                 </div>
@@ -79,7 +79,7 @@ export default async function ComponentsPage() {
                   </div>
                 )}
               </div>
-              <div className="mt-auto pt-4 flex items-center text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="mt-auto pt-4 flex items-center text-sm font-medium text-primary-bg opacity-0 group-hover:opacity-100 transition-opacity">
                 View component
                 <ArrowRight className="ml-1 h-4 w-4" />
               </div>

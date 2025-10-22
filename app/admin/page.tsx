@@ -37,7 +37,7 @@ export default async function AdminDashboard() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">
+        <p className="text-fg-caption mt-1">
           Welcome to the AI-Powered Design System admin panel
         </p>
       </div>
@@ -47,11 +47,11 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Themes</CardTitle>
-            <Palette className="h-4 w-4 text-muted-foreground" />
+            <Palette className="h-4 w-4 text-fg-caption" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.themes}</div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-fg-caption mt-1">
               Design system themes
             </p>
           </CardContent>
@@ -62,11 +62,11 @@ export default async function AdminDashboard() {
             <CardTitle className="text-sm font-medium">
               Total Components
             </CardTitle>
-            <Box className="h-4 w-4 text-muted-foreground" />
+            <Box className="h-4 w-4 text-fg-caption" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.components}</div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-fg-caption mt-1">
               UI components available
             </p>
           </CardContent>
@@ -75,11 +75,11 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-            <User className="h-4 w-4 text-muted-foreground" />
+            <User className="h-4 w-4 text-fg-caption" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.users}</div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-fg-caption mt-1">
               Admin and editor accounts
             </p>
           </CardContent>
@@ -88,11 +88,11 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Active Theme</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            <CheckCircle className="h-4 w-4 text-fg-caption" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold truncate">{stats.activeTheme}</div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-fg-caption mt-1">
               Currently applied
             </p>
           </CardContent>
@@ -106,48 +106,48 @@ export default async function AdminDashboard() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-start gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-bg/10 text-primary-bg font-semibold text-sm">
               1
             </div>
             <div className="flex-1">
               <h3 className="font-medium">Create a Theme</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-fg-caption">
                 Define your color palette, typography, and spacing in the Themes section
               </p>
             </div>
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-bg/10 text-primary-bg font-semibold text-sm">
               2
             </div>
             <div className="flex-1">
               <h3 className="font-medium">Upload Component Specs</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-fg-caption">
                 Upload PNG spec sheets and let AI extract component specifications
               </p>
             </div>
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-bg/10 text-primary-bg font-semibold text-sm">
               3
             </div>
             <div className="flex-1">
               <h3 className="font-medium">Generate with AI</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-fg-caption">
                 AI automatically generates React code, props, and documentation
               </p>
             </div>
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-bg/10 text-primary-bg font-semibold text-sm">
               4
             </div>
             <div className="flex-1">
               <h3 className="font-medium">Publish & Share</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-fg-caption">
                 Components are instantly available in the public docs with copy-paste code
               </p>
             </div>

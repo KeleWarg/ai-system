@@ -63,7 +63,7 @@ export function ColorPicker({ label, value, onChange, id }: ColorPickerProps) {
       <div className="flex gap-2 items-start">
         <div className="relative">
           <div
-            className="h-9 w-12 rounded border-2 border-input"
+            className="h-9 w-12 rounded border-2 border-fg-stroke-ui"
             style={{ backgroundColor: hslToHex(localValue) }}
             title="Color preview"
           />
@@ -78,11 +78,11 @@ export function ColorPicker({ label, value, onChange, id }: ColorPickerProps) {
             className="font-mono text-sm"
           />
           {!isValidHSL(localValue) && (
-            <p className="text-xs text-destructive">
+            <p className="text-xs text-fg-feedback-error">
               Invalid HSL color (use format: H S% L%, e.g., &quot;221 83% 53%&quot;)
             </p>
           )}
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-fg-caption">
             HSL format: Hue (0-360), Saturation (0-100%), Lightness (0-100%)
           </p>
         </div>

@@ -27,10 +27,10 @@ export function ColorMappingInput({
   return (
     <div className="space-y-3 pb-6 border-b last:border-0 last:pb-0">
       <div className="flex items-start gap-2">
-        <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+        <AlertCircle className="h-5 w-5 text-fg-feedback-error flex-shrink-0 mt-0.5" />
         <div className="flex-1">
           <h4 className="font-medium text-sm">{title}</h4>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="text-xs text-fg-caption mt-1">
             Replace hardcoded color with a theme token for consistency
           </p>
         </div>
@@ -55,15 +55,15 @@ export function ColorMappingInput({
           <div className="flex items-center gap-3 text-xs">
             <div className="flex items-center gap-2">
               <div 
-                className="w-6 h-6 rounded border border-border" 
+                className="w-6 h-6 rounded border border-fg-stroke-ui" 
                 style={{ background: currentValue }}
               />
-              <span className="text-muted-foreground">Spec color</span>
+              <span className="text-fg-caption">Spec color</span>
             </div>
             <span>→</span>
             <div className="flex items-center gap-2">
-              <div className={`w-6 h-6 rounded border border-border ${value}`} />
-              <span className="text-muted-foreground">Your theme</span>
+              <div className={`w-6 h-6 rounded border border-fg-stroke-ui ${value}`} />
+              <span className="text-fg-caption">Your theme</span>
             </div>
           </div>
         )}
@@ -92,10 +92,10 @@ export function SpacingMappingInput({
   return (
     <div className="space-y-3 pb-6 border-b last:border-0 last:pb-0">
       <div className="flex items-start gap-2">
-        <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+        <AlertCircle className="h-5 w-5 text-fg-feedback-error flex-shrink-0 mt-0.5" />
         <div className="flex-1">
           <h4 className="font-medium text-sm">{title}</h4>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="text-xs text-fg-caption mt-1">
             Set the spacing to match the design specification
           </p>
         </div>
@@ -115,7 +115,7 @@ export function SpacingMappingInput({
             ))}
           </SelectContent>
         </Select>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-fg-caption">
           Recommended: {suggestedFix}
         </p>
       </div>
@@ -149,10 +149,10 @@ export function VariantMappingInput({
   return (
     <div className="space-y-3 pb-6 border-b last:border-0 last:pb-0">
       <div className="flex items-start gap-2">
-        <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+        <AlertCircle className="h-5 w-5 text-fg-feedback-error flex-shrink-0 mt-0.5" />
         <div className="flex-1">
           <h4 className="font-medium text-sm">{title}</h4>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="text-xs text-fg-caption mt-1">
             Add these variant options to match the design system
           </p>
         </div>
@@ -170,13 +170,13 @@ export function VariantMappingInput({
                 type="checkbox"
                 checked={selectedValues.includes(option)}
                 onChange={() => toggleValue(option)}
-                className="h-4 w-4 rounded border-border"
+                className="h-4 w-4 rounded border-fg-stroke-ui"
               />
               <span className="text-sm">{option}</span>
             </label>
           ))}
         </div>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-fg-caption">
           Expected: {specRequirement}
         </p>
       </div>

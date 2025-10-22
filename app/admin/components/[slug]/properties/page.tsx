@@ -269,7 +269,7 @@ export default function PropertyEditorPage({ params }: PropertyEditorPageProps) 
           </Button>
           <div>
             <h1 className="text-3xl font-bold">Edit Properties</h1>
-            <p className="text-muted-foreground">
+            <p className="text-fg-caption">
               Use a spec sheet to modify component properties
             </p>
           </div>
@@ -286,12 +286,12 @@ export default function PropertyEditorPage({ params }: PropertyEditorPageProps) 
               {component.props && component.props.length > 0 ? (
                 component.props.map((prop, i) => (
                   <div key={i} className="flex items-center gap-2 text-sm">
-                    <code className="bg-muted px-2 py-1 rounded">{prop.name}</code>
-                    <span className="text-muted-foreground">{prop.type}</span>
+                    <code className="bg-bg-neutral px-2 py-1 rounded">{prop.name}</code>
+                    <span className="text-fg-caption">{prop.type}</span>
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-muted-foreground">No props defined</p>
+                <p className="text-sm text-fg-caption">No props defined</p>
               )}
             </div>
           </div>
@@ -304,7 +304,7 @@ export default function PropertyEditorPage({ params }: PropertyEditorPageProps) 
                   <Badge key={variant} variant="outline">{variant}</Badge>
                 ))
               ) : (
-                <p className="text-sm text-muted-foreground">No variants defined</p>
+                <p className="text-sm text-fg-caption">No variants defined</p>
               )}
             </div>
           </div>
@@ -316,13 +316,13 @@ export default function PropertyEditorPage({ params }: PropertyEditorPageProps) 
         <Card className="p-6 space-y-4">
           <div>
             <h2 className="text-lg font-semibold mb-2">Upload New Spec Sheet</h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-fg-caption">
               Upload a spec sheet with updated requirements to analyze changes
             </p>
           </div>
           
           {!specImage ? (
-            <div className="border-2 border-dashed border-border rounded-lg p-12 text-center">
+            <div className="border-2 border-dashed border-fg-stroke-ui rounded-lg p-12 text-center">
               <input
                 type="file"
                 accept="image/*"
@@ -331,9 +331,9 @@ export default function PropertyEditorPage({ params }: PropertyEditorPageProps) 
                 id="spec-upload"
               />
               <label htmlFor="spec-upload" className="cursor-pointer">
-                <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <Upload className="h-12 w-12 mx-auto mb-4 text-fg-caption" />
                 <p className="font-medium">Click to upload spec sheet</p>
-                <p className="text-sm text-muted-foreground mt-1">PNG, JPG, or WebP (max 10MB)</p>
+                <p className="text-sm text-fg-caption mt-1">PNG, JPG, or WebP (max 10MB)</p>
               </label>
             </div>
           ) : (
@@ -341,7 +341,7 @@ export default function PropertyEditorPage({ params }: PropertyEditorPageProps) 
               <img
                 src={specImage}
                 alt="Spec sheet"
-                className="max-h-96 mx-auto rounded-lg border border-border"
+                className="max-h-96 mx-auto rounded-lg border border-fg-stroke-ui"
               />
               <div className="flex gap-2">
                 <Button
@@ -372,7 +372,7 @@ export default function PropertyEditorPage({ params }: PropertyEditorPageProps) 
         <Card className="p-6 space-y-6">
           <div>
             <h2 className="text-lg font-semibold mb-2">Suggested Changes</h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-fg-caption">
               Review and select which changes to apply
             </p>
           </div>
@@ -385,7 +385,7 @@ export default function PropertyEditorPage({ params }: PropertyEditorPageProps) 
                 {analysis.propertiesToAdd.map((prop) => (
                   <label
                     key={prop.name}
-                    className="flex items-start gap-3 p-3 border border-border rounded-md cursor-pointer hover:bg-accent/50"
+                    className="flex items-start gap-3 p-3 border border-fg-stroke-ui rounded-md cursor-pointer hover:bg-bg-accent/50"
                   >
                     <input
                       type="checkbox"
@@ -398,7 +398,7 @@ export default function PropertyEditorPage({ params }: PropertyEditorPageProps) 
                         <code className="text-sm font-mono">{prop.name}</code>
                         <Badge variant="secondary" className="text-xs">{prop.type}</Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground mt-1">{prop.description}</p>
+                      <p className="text-sm text-fg-caption mt-1">{prop.description}</p>
                     </div>
                   </label>
                 ))}
@@ -414,7 +414,7 @@ export default function PropertyEditorPage({ params }: PropertyEditorPageProps) 
                 {analysis.propertiesToRemove.map((name) => (
                   <label
                     key={name}
-                    className="flex items-center gap-3 p-3 border border-border rounded-md cursor-pointer hover:bg-accent/50"
+                    className="flex items-center gap-3 p-3 border border-fg-stroke-ui rounded-md cursor-pointer hover:bg-bg-accent/50"
                   >
                     <input
                       type="checkbox"
@@ -436,7 +436,7 @@ export default function PropertyEditorPage({ params }: PropertyEditorPageProps) 
                 {analysis.propertiesToModify.map((prop) => (
                   <label
                     key={prop.name}
-                    className="flex items-start gap-3 p-3 border border-border rounded-md cursor-pointer hover:bg-accent/50"
+                    className="flex items-start gap-3 p-3 border border-fg-stroke-ui rounded-md cursor-pointer hover:bg-bg-accent/50"
                   >
                     <input
                       type="checkbox"
@@ -446,12 +446,12 @@ export default function PropertyEditorPage({ params }: PropertyEditorPageProps) 
                     />
                     <div className="flex-1">
                       <code className="text-sm font-mono">{prop.name}</code>
-                      <div className="text-sm text-muted-foreground mt-1">
+                      <div className="text-sm text-fg-caption mt-1">
                         <span className="line-through">{prop.oldType}</span>
                         {' → '}
-                        <span className="text-foreground">{prop.newType}</span>
+                        <span className="text-fg-body">{prop.newType}</span>
                       </div>
-                      <p className="text-sm text-muted-foreground mt-1">{prop.description}</p>
+                      <p className="text-sm text-fg-caption mt-1">{prop.description}</p>
                     </div>
                   </label>
                 ))}
@@ -475,12 +475,12 @@ export default function PropertyEditorPage({ params }: PropertyEditorPageProps) 
         <Card className="p-6 space-y-4">
           <div>
             <h2 className="text-lg font-semibold mb-2">Updated Component</h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-fg-caption">
               Review the regenerated code before saving
             </p>
           </div>
           
-          <div className="max-h-96 overflow-auto border border-border rounded-md">
+          <div className="max-h-96 overflow-auto border border-fg-stroke-ui rounded-md">
             <pre className="p-4 text-sm">
               <code>{newCode}</code>
             </pre>

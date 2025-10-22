@@ -59,7 +59,7 @@ export default async function ComponentDetailPage({
           <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">
             {component.name}
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg text-fg-caption">
             {component.description}
           </p>
         </div>
@@ -96,7 +96,7 @@ export default async function ComponentDetailPage({
             <h2 className="text-2xl font-semibold tracking-tight">
               Component Preview
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-fg-caption">
               Real component rendering using Next.js dynamic imports.
             </p>
           </div>
@@ -122,7 +122,7 @@ export default async function ComponentDetailPage({
             <h2 className="text-2xl font-semibold tracking-tight">
               Component Code
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-fg-caption">
               Copy and paste this into your project.
             </p>
           </div>
@@ -180,7 +180,7 @@ export default async function ComponentDetailPage({
                       {component.props.map((prop, index) => (
                         <tr key={index} className="border-b">
                           <td className="p-2 font-mono text-sm">{prop.name}</td>
-                          <td className="p-2 font-mono text-sm text-muted-foreground">
+                          <td className="p-2 font-mono text-sm text-fg-caption">
                             {prop.type}
                           </td>
                           <td className="p-2">
@@ -197,7 +197,7 @@ export default async function ComponentDetailPage({
                   </table>
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-fg-caption">
                   No props documentation available.
                 </p>
               )}
@@ -217,7 +217,7 @@ export default async function ComponentDetailPage({
                   {component.prompts.basic.map((prompt, index) => (
                     <div
                       key={index}
-                      className="p-3 rounded-md bg-muted text-sm"
+                      className="p-3 rounded-md bg-bg-neutral text-sm"
                     >
                       {prompt}
                     </div>
@@ -235,7 +235,7 @@ export default async function ComponentDetailPage({
                   {component.prompts.advanced.map((prompt, index) => (
                     <div
                       key={index}
-                      className="p-3 rounded-md bg-muted text-sm"
+                      className="p-3 rounded-md bg-bg-neutral text-sm"
                     >
                       {prompt}
                     </div>

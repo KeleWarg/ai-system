@@ -50,7 +50,7 @@ export function ConfirmationDialog({
             onClick={handleConfirm}
             className={
               variant === 'destructive'
-                ? 'bg-destructive hover:bg-destructive/90 text-destructive-foreground'
+                ? 'bg-fg-feedback-error hover:bg-fg-feedback-error/90 text-primary-text'
                 : ''
             }
           >

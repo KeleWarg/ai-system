@@ -47,9 +47,9 @@ export function CodeBlockEnhanced({
   }
 
   return (
-    <div className="group relative rounded-lg border border-border bg-zinc-950 dark:bg-zinc-900">
+    <div className="group relative rounded-lg border border-fg-stroke-ui bg-zinc-950 dark:bg-zinc-900">
       {filename && (
-        <div className="flex items-center justify-between border-b border-border px-4 py-3 text-sm">
+        <div className="flex items-center justify-between border-b border-fg-stroke-ui px-4 py-3 text-sm">
           <span className="font-mono text-zinc-400">{filename}</span>
           <Button
             size="sm"

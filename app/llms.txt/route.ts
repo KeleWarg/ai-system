@@ -52,7 +52,7 @@ ${Array.from(new Set(components.map(c => c.category))).map(cat =>
 ).join('\n')}
 
 ## Theme System
-All components use theme tokens (e.g., bg-primary, text-foreground) instead of hardcoded colors.
+All components use theme tokens (e.g., bg-primary-bg, text-fg-body) instead of hardcoded colors.
 Components automatically adapt when you switch themes.
 
 ## Installation

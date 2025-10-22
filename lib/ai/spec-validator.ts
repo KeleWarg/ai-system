@@ -119,17 +119,17 @@ export function validateComponentAgainstSpec(
     analysis.hasThemeColors = false
     analysis.colorIssues = hexColors
     analysis.recommendations.push(
-      `Replace hardcoded colors ${hexColors.join(', ')} with theme tokens (bg-primary, text-foreground, etc.)`
+      `Replace hardcoded colors ${hexColors.join(', ')} with theme tokens (bg-primary-bg, text-fg-body, etc.)`
     )
   }
 
   // Check 4: Validate theme token usage
   const themeTokens = [
-    'bg-primary',
+    'bg-primary-bg',
     'text-primary',
     'bg-secondary',
     'bg-accent',
-    'bg-muted',
+    'bg-bg-neutral',
   ]
   const hasThemeTokens = themeTokens.some((token) =>
     componentCode.includes(token)
@@ -139,7 +139,7 @@ export function validateComponentAgainstSpec(
     analysis.hasThemeColors = false
     analysis.colorIssues.push('No theme tokens found')
     analysis.recommendations.push(
-      'Use theme color tokens (bg-primary, text-foreground) instead of direct colors'
+      'Use theme color tokens (bg-primary-bg, text-fg-body) instead of direct colors'
     )
   }
 
