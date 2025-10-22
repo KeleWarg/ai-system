@@ -7,7 +7,7 @@ const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focused-border focus-visible:ring-offset-2 disabled:pointer-events-none",
   {
     variants: {
-      type: {
+      variant: {
         primary: "bg-primary-bg text-primary-text hover:bg-primary-hover-bg active:bg-primary-pressed-bg disabled:bg-primary-disabled-bg",
         secondary: "bg-secondary border border-secondary-border text-secondary-text hover:bg-secondary-hover-bg active:bg-secondary-pressed-bg",
         ghost: "bg-ghost-bg text-ghost-text hover:bg-ghost-hover-bg active:bg-ghost-pressed-bg",
@@ -32,7 +32,7 @@ const buttonVariants = cva(
       }
     },
     defaultVariants: {
-      type: "primary",
+      variant: "primary",
       size: "base",
       state: "enabled",
       icon: "none"
@@ -53,17 +53,17 @@ export interface ButtonProps
  * Interactive button component for triggering actions with multiple variants, states, and icon positions
  * 
  * @example
- * <Button type="primary" size="base">
+ * <Button variant="primary" size="base">
  *   Click me
  * </Button>
  * 
  * @example
- * <Button type="secondary" size="large" leftIcon={<Icon />}>
+ * <Button variant="secondary" size="large" leftIcon={<Icon />}>
  *   With Icon
  * </Button>
  */
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, type, size, state, icon, asChild = false, leftIcon, rightIcon, children, disabled, ...props }, ref) => {
+  ({ className, variant, size, state, icon, asChild = false, leftIcon, rightIcon, children, disabled, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     
     // Determine icon position based on props
@@ -75,7 +75,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     
     return (
       <Comp
-        className={cn(buttonVariants({ type, size, state: finalState, icon: finalIcon, className }))}
+        className={cn(buttonVariants({ variant, size, state: finalState, icon: finalIcon, className }))}
         ref={ref}
         disabled={disabled}
         aria-disabled={disabled}

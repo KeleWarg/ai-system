@@ -66,21 +66,21 @@ export function ComponentPreviewReal({
 
     const examples: ReactElement[] = []
 
-    // Show type variants
-    if (variants.type && variants.type.length > 0) {
-      const typeVariants = variants.type.filter(
+    // Show variant variants
+    if (variants.variant && variants.variant.length > 0) {
+      const variantValues = variants.variant.filter(
         (v) => !['enabled', 'hover', 'focused', 'pressed', 'disabled'].includes(v)
       )
-      if (typeVariants.length > 0) {
+      if (variantValues.length > 0) {
         examples.push(
-          <div key="type" className="space-y-4">
+          <div key="variant" className="space-y-4">
             <h3 className="text-sm font-semibold text-fg-caption uppercase tracking-wide">
               Variants
             </h3>
             <div className="flex flex-wrap gap-3">
-              {typeVariants.map((typeVariant) => (
-                <DynamicComponent key={typeVariant} type={typeVariant}>
-                  {typeVariant}
+              {variantValues.map((variantValue) => (
+                <DynamicComponent key={variantValue} variant={variantValue}>
+                  {variantValue}
                 </DynamicComponent>
               ))}
             </div>

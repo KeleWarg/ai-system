@@ -458,7 +458,7 @@ export async function extractSpecFromImage(
 3. Category (MUST be one of: buttons, inputs, navigation, feedback, data-display, overlays, other)
 
 4. Variants - Extract ALL visible variants with their EXACT names (read labels if present):
-   - variant/type: ["primary", "secondary", "ghost", "outline", etc.]
+   - variant: ["primary", "secondary", "ghost", "outline", etc.]
    - size: ["small", "medium", "large", "xl", etc.]
    - state: ["default", "hover", "focus", "active", "disabled", "loading"]
    - icon: ["none", "left", "right", "only"] (if icons are shown)
