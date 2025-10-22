@@ -11,7 +11,13 @@ interface ComponentPayload {
   category?: string
   code: string
   variants?: Record<string, string[]>
-  props?: Record<string, unknown>
+  props?: Array<{
+    name: string
+    type: string
+    required: boolean
+    description: string
+    default?: string
+  }>
   prompts?: {
     basic: string[]
     advanced: string[]
@@ -145,7 +151,7 @@ export async function POST(req: NextRequest) {
       category: finalCategory,
       code,
       variants: variants || {},
-      props: props || {},
+      props: props || [],
       prompts: prompts || { basic: [], advanced: [], useCases: [] },
       installation: installationData,
       theme_id: theme_id || null,
