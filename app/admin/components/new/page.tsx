@@ -401,7 +401,14 @@ export default function NewComponentPage() {
         const component = await saveRes.json()
         console.log('✅ Component saved to database:', component.id)
         
-        toast.success('Component created successfully!', { id: toastId })
+        toast.success('Component created successfully! Redirecting...', { id: toastId })
+        
+        // Show quick action toast
+        setTimeout(() => {
+          toast.info('💡 Quick Actions: Edit Properties or Remap Styles from the component page', {
+            duration: 6000,
+          })
+        }, 1500)
         
         // Show git instructions for local development
         if (typeof window !== 'undefined') {
