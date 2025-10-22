@@ -309,7 +309,12 @@ Return ONLY valid JSON, no markdown.`
     jsonText = jsonMatch[1]
   }
 
-  return JSON.parse(jsonText)
+  try {
+    return JSON.parse(jsonText)
+  } catch (error) {
+    console.error('Failed to parse prompts JSON response:', jsonText.substring(0, 500))
+    throw new Error(`Invalid JSON response from AI: ${error instanceof Error ? error.message : 'Unknown error'}`)
+  }
 }
 
 /**
