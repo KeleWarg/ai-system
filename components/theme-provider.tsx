@@ -154,8 +154,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       )
       .subscribe((status) => {
         if (status === 'CHANNEL_ERROR') {
-          console.warn('⚠️ Realtime connection failed. Theme updates will require page refresh.')
-          console.warn('To fix: Enable Realtime in Supabase Dashboard → Database → Replication')
+          // Realtime is optional - silently degrade to manual refresh
+          console.debug('Realtime not available. Theme updates will require page refresh.')
         } else if (status === 'SUBSCRIBED') {
           console.log('✅ Realtime theme updates enabled')
         }
