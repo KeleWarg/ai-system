@@ -41,12 +41,13 @@ const buttonVariants = cva(
 )
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   leftIcon?: React.ReactNode
   rightIcon?: React.ReactNode
   children?: React.ReactNode
+  htmlType?: 'button' | 'submit' | 'reset'
 }
 
 /**
@@ -69,6 +70,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     rightIcon,
     children,
     disabled,
+    htmlType = 'button',
     ...props 
   }, ref) => {
     const Comp = asChild ? Slot : 'button'
@@ -83,10 +85,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     
     const renderIcon = (iconElement: React.ReactNode) => {
       if (React.isValidElement(iconElement)) {
-        return React.cloneElement(iconElement as React.ReactElement, {
+        return React.cloneElement(iconElement as React.ReactElement<any>, {
           size: iconSize,
           className: cn('shrink-0', (iconElement as any).props?.className)
-        })
+        } as any)
       }
       return iconElement
     }
@@ -96,6 +98,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(buttonVariants({ type, size, state: stateVariant, icon: iconVariant }), className)}
         ref={ref}
         disabled={disabled || stateVariant === 'disabled'}
+        type={asChild ? undefined : htmlType}
         {...props}
       >
         {leftIcon && renderIcon(leftIcon)}
