@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect, Suspense, useRef } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import type { ComponentType, ReactElement } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Eye, Code, Copy, Check, AlertCircle, RefreshCw } from 'lucide-react'
+import { Eye, Code, Copy, Check, AlertCircle } from 'lucide-react'
 
 interface ComponentPreviewRealProps {
   slug: string
@@ -28,29 +28,13 @@ export function ComponentPreviewReal({
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [DynamicComponent, setDynamicComponent] = useState<ComponentType<Record<string, unknown>> | null>(null)
-  const [iframePreview, setIframePreview] = useState<string | null>(null)
-  const [isLoadingIframe, setIsLoadingIframe] = useState(false)
-  const iframeRef = useRef<HTMLIFrameElement>(null)
 
   useEffect(() => {
     async function loadComponent() {
       try {
         console.log(`Loading component: ${slug}`)
         
-        // Check if we're on Vercel/production (read-only filesystem)
-        const isProduction = typeof window !== 'undefined' && 
-          (window.location.hostname.includes('vercel.app') || 
-           window.location.hostname.includes('ai-system') ||
-           !window.location.hostname.includes('localhost'))
-        
-        if (isProduction) {
-          // Production: Use iframe-based preview (code from database)
-          console.log('🌐 Using iframe preview for production (Vercel read-only filesystem)')
-          setError('preview_fallback')
-          return
-        }
-        
-        // Local development: Dynamic import from filesystem
+        // Simple direct import from registry
         const componentModule = await import(`@/components/registry/${slug}`)
         const Component = componentModule[componentName] || componentModule.default
         
@@ -59,11 +43,11 @@ export function ComponentPreviewReal({
         }
         
         setDynamicComponent(() => Component)
-        setError(null) // Clear any errors on successful load
+        setError(null)
         console.log(`✅ Component ${componentName} loaded successfully`)
       } catch (err) {
         console.error(`Failed to load component ${componentName}:`, err)
-        setError(`Failed to load component: ${err instanceof Error ? err.message : 'Unknown error'}. Try regenerating the component or view the code below.`)
+        setError(`Failed to load component: ${err instanceof Error ? err.message : 'Unknown error'}`)
       }
     }
 
@@ -75,54 +59,6 @@ export function ComponentPreviewReal({
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
-
-  // Generate iframe preview for production (when filesystem is read-only)
-  const generateIframePreview = async () => {
-    setIsLoadingIframe(true)
-    try {
-      console.log('Generating iframe preview for production...')
-      const response = await fetch('/api/preview', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          code: componentCode,
-          variants: variants || {},
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to generate preview')
-      }
-
-      const html = await response.text()
-      const blob = new Blob([html], { type: 'text/html' })
-      const url = URL.createObjectURL(blob)
-      setIframePreview(url)
-      setError(null)
-      console.log('✅ Iframe preview generated successfully')
-    } catch (err) {
-      console.error('Iframe preview failed:', err)
-      setError(`Preview generation failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
-    } finally {
-      setIsLoadingIframe(false)
-    }
-  }
-
-  // Auto-generate iframe preview when in fallback mode
-  useEffect(() => {
-    if (error === 'preview_fallback' && componentCode && !iframePreview) {
-      generateIframePreview()
-    }
-  }, [error, componentCode])
-
-  // Cleanup blob URL on unmount
-  useEffect(() => {
-    return () => {
-      if (iframePreview) {
-        URL.revokeObjectURL(iframePreview)
-      }
-    }
-  }, [iframePreview])
 
   // Generate all variant combinations for preview
   const generateVariantExamples = () => {
@@ -286,54 +222,7 @@ export function ComponentPreviewReal({
             {description && <p className="text-muted-foreground">{description}</p>}
 
             {/* Iframe fallback preview for production */}
-            {error === 'preview_fallback' && (iframePreview || isLoadingIframe) ? (
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-blue-50 dark:bg-blue-950/20 p-3 rounded border border-blue-200 dark:border-blue-800">
-                  <Eye className="h-4 w-4" />
-                  <span>Production Preview Mode - Rendered from database</span>
-                </div>
-                
-                {isLoadingIframe ? (
-                  <div className="flex items-center justify-center h-64 border rounded-lg">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                  </div>
-                ) : iframePreview ? (
-                  <div className="border rounded-lg overflow-hidden bg-background">
-                    <div className="flex items-center justify-between px-4 py-2 bg-muted border-b">
-                      <span className="text-xs font-medium text-muted-foreground">Live Preview</span>
-                      <Button onClick={generateIframePreview} variant="ghost" size="sm" className="h-7 gap-2">
-                        <RefreshCw className="h-3 w-3" />
-                        Refresh
-                      </Button>
-                    </div>
-                    <iframe
-                      ref={iframeRef}
-                      src={iframePreview}
-                      className="w-full border-0 bg-white"
-                      style={{ minHeight: '400px', height: '400px' }}
-                      sandbox="allow-scripts allow-same-origin"
-                      title="Component Preview"
-                    />
-                  </div>
-                ) : null}
-
-                {spacing && spacing.length > 0 && (
-                  <div className="text-xs bg-blue-50 dark:bg-blue-950/20 p-4 rounded border border-blue-200 dark:border-blue-900">
-                    <div className="flex items-start gap-2">
-                      <span className="text-blue-600 dark:text-blue-400">📐</span>
-                      <div className="flex-1">
-                        <strong className="text-blue-900 dark:text-blue-200">Spec Sheet Measurements:</strong>
-                        <ul className="list-disc list-inside mt-1 space-y-0.5 text-muted-foreground">
-                          {spacing.map((spec, i) => (
-                            <li key={i}>{spec}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : error ? (
+            {error ? (
               <div className="border border-destructive rounded-lg p-8 bg-destructive/5">
                 <div className="flex items-center gap-3 mb-4">
                   <AlertCircle className="h-5 w-5 text-destructive" />

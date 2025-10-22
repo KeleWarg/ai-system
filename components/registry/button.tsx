@@ -1,0 +1,106 @@
+import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
+import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@/lib/utils"
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      type: {
+        primary: "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/95",
+        secondary: "bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80 active:bg-secondary/90",
+        ghost: "bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground active:bg-accent/90",
+        white: "bg-background text-foreground border border-border hover:bg-accent hover:text-accent-foreground active:bg-accent/90",
+      },
+      size: {
+        small: "h-8 px-3 text-sm",
+        base: "h-10 px-4 text-sm",
+        large: "h-12 px-5 text-base",
+      },
+      state: {
+        enabled: "",
+        hover: "",
+        focused: "ring-2 ring-ring ring-offset-2",
+        pressed: "",
+        disabled: "opacity-50 cursor-not-allowed pointer-events-none",
+      },
+      icon: {
+        none: "",
+        left: "gap-2",
+        right: "gap-2",
+      },
+    },
+    defaultVariants: {
+      type: "primary",
+      size: "base",
+      state: "enabled",
+      icon: "none",
+    },
+  }
+)
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean
+  leftIcon?: React.ReactNode
+  rightIcon?: React.ReactNode
+}
+
+/**
+ * Button component with multiple variants, states, and configurations.
+ * 
+ * @example
+ * <Button type="primary" size="base">Click me</Button>
+ * <Button type="secondary" size="large" leftIcon={<Icon />}>With Icon</Button>
+ */
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ 
+    className, 
+    type, 
+    size, 
+    state, 
+    icon, 
+    asChild = false, 
+    leftIcon, 
+    rightIcon, 
+    children,
+    disabled,
+    ...props 
+  }, ref) => {
+    const Comp = asChild ? Slot : "button"
+    
+    // Determine icon variant based on presence of icons
+    const iconVariant = leftIcon ? "left" : rightIcon ? "right" : "none"
+    
+    // Override state if disabled
+    const finalState = disabled ? "disabled" : state
+
+    return (
+      <Comp
+        className={cn(buttonVariants({ type, size, state: finalState, icon: iconVariant, className }))}
+        ref={ref}
+        disabled={disabled}
+        aria-disabled={disabled}
+        {...props}
+      >
+        {leftIcon && (
+          <span className="flex-shrink-0 w-4 h-4">
+            {leftIcon}
+          </span>
+        )}
+        {children}
+        {rightIcon && (
+          <span className="flex-shrink-0 w-4 h-4">
+            {rightIcon}
+          </span>
+        )}
+      </Comp>
+    )
+  }
+)
+
+Button.displayName = "Button"
+
+export type ButtonVariants = VariantProps<typeof buttonVariants>

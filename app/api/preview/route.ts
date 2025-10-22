@@ -36,9 +36,12 @@ export async function POST(req: NextRequest) {
     const body = JSON.parse(text)
     const { code, variants, theme } = body
 
+    console.log('Preview API - Received body:', { hasCode: !!code, codeLength: code?.length, variants, theme })
+
     if (!code) {
+      console.error('Preview API - Missing code field. Body keys:', Object.keys(body))
       return NextResponse.json(
-        { error: 'Missing required field: code' },
+        { error: 'Missing required field: code', receivedKeys: Object.keys(body) },
         { status: 400 }
       )
     }

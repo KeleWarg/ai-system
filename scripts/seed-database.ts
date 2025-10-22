@@ -85,6 +85,7 @@ async function seedDatabase() {
       .from('components')
       .insert({
         name: 'Button',
+        component_name: 'Button',
         slug: 'button',
         description: 'A versatile button component with multiple variants and sizes',
         category: 'buttons',
@@ -199,6 +200,7 @@ export { Button, buttonVariants }`,
       .from('components')
       .insert({
         name: 'Card',
+        component_name: 'Card',
         slug: 'card',
         description: 'A flexible card container for displaying content',
         category: 'data-display',

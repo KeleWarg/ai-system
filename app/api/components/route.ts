@@ -172,7 +172,35 @@ export async function POST(req: NextRequest) {
       )
     }
     
-    console.log('✅ Component saved successfully:', (data as any)?.id)
+    console.log('✅ Component saved to database:', (data as any)?.id)
+    
+    // Also write to filesystem for preview (local dev only)
+    try {
+      const registryResponse = await fetch(new URL('/api/registry/write', req.url), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': req.headers.get('Cookie') || '', // Forward auth cookies
+        },
+        body: JSON.stringify({
+          slug,
+          code,
+          componentName: component_name,
+          variants,
+        }),
+      })
+      
+      if (registryResponse.ok) {
+        const registryData = await registryResponse.json()
+        console.log('✅ Component written to registry:', registryData)
+      } else {
+        console.warn('⚠️  Failed to write to registry (may be on Vercel):', await registryResponse.text())
+      }
+    } catch (registryError) {
+      console.warn('⚠️  Could not write to registry:', registryError)
+      // Don't fail the request if registry write fails
+    }
+    
     return NextResponse.json(data)
   } catch (error) {
     console.error('Server error:', error)

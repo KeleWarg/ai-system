@@ -1,6 +1,12 @@
 {
   "components": [
     {
+      "slug": "card",
+      "name": "Card",
+      "variants": {},
+      "addedAt": "2025-10-22T00:00:00.000Z"
+    },
+    {
       "slug": "button2",
       "name": "Button2",
       "variants": {
@@ -29,6 +35,36 @@
         ]
       },
       "addedAt": "2025-10-21T01:16:07.848Z"
+    },
+    {
+      "slug": "button",
+      "name": "Button",
+      "variants": {
+        "type": [
+          "primary",
+          "secondary",
+          "ghost",
+          "white"
+        ],
+        "size": [
+          "small",
+          "base",
+          "large"
+        ],
+        "state": [
+          "enabled",
+          "hover",
+          "focused",
+          "pressed",
+          "disabled"
+        ],
+        "icon": [
+          "none",
+          "left",
+          "right"
+        ]
+      },
+      "addedAt": "2025-10-22T00:49:13.517Z"
     }
   ]
 }
