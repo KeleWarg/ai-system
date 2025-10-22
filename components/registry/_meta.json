@@ -35,36 +35,6 @@
         ]
       },
       "addedAt": "2025-10-21T01:16:07.848Z"
-    },
-    {
-      "slug": "button",
-      "name": "Button",
-      "variants": {
-        "type": [
-          "primary",
-          "secondary",
-          "ghost",
-          "white"
-        ],
-        "size": [
-          "small",
-          "base",
-          "large"
-        ],
-        "state": [
-          "enabled",
-          "hover",
-          "focused",
-          "pressed",
-          "disabled"
-        ],
-        "icon": [
-          "none",
-          "left",
-          "right"
-        ]
-      },
-      "addedAt": "2025-10-22T14:53:14.702Z"
     }
   ]
 }
