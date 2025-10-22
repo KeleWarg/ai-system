@@ -40,16 +40,21 @@
       "slug": "button",
       "name": "Button",
       "variants": {
-        "type": [
-          "primary",
-          "secondary",
-          "ghost",
-          "white"
+        "icon": [
+          "none",
+          "left",
+          "right"
         ],
         "size": [
           "base",
           "large",
           "small"
+        ],
+        "type": [
+          "primary",
+          "secondary",
+          "ghost",
+          "white"
         ],
         "state": [
           "enabled",
@@ -57,14 +62,9 @@
           "focused",
           "pressed",
           "disabled"
-        ],
-        "icon": [
-          "none",
-          "left",
-          "right"
         ]
       },
-      "addedAt": "2025-10-22T01:14:02.215Z"
+      "addedAt": "2025-10-22T13:46:21.838Z"
     }
   ]
 }

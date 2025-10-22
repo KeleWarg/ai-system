@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { ConfirmationDialog } from '@/components/confirmation-dialog'
-import { MoreVertical, Eye, Trash2, Edit } from 'lucide-react'
+import { MoreVertical, Eye, Trash2, Edit, Palette } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
@@ -71,13 +71,23 @@ export function ComponentActions({
               Preview
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link 
-              href={`/admin/components/${componentSlug}/edit`}
+              href={`/admin/components/${componentSlug}/properties`}
               className="flex items-center cursor-pointer"
             >
               <Edit className="h-4 w-4 mr-2" />
-              Edit
+              Edit Properties
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link 
+              href={`/admin/components/${componentSlug}/remap`}
+              className="flex items-center cursor-pointer"
+            >
+              <Palette className="h-4 w-4 mr-2" />
+              Remap Styles
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

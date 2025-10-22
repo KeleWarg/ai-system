@@ -2,7 +2,7 @@ import { requireAuth } from '@/lib/auth-helpers'
 import { getComponentBySlug } from '@/lib/db/components'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Edit } from 'lucide-react'
+import { ArrowLeft, Edit, Palette } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ComponentPreviewReal } from '@/components/component-preview-real'
@@ -37,12 +37,20 @@ export default async function AdminComponentPreviewPage({
             <p className="text-muted-foreground mt-1">{component.description}</p>
           </div>
         </div>
-        <Link href={`/admin/components/${slug}/edit`}>
-          <Button>
-            <Edit className="h-4 w-4 mr-2" />
-            Edit
+        <div className="flex gap-2">
+          <Button asChild variant="outline">
+            <Link href={`/admin/components/${slug}/properties`}>
+              <Edit className="h-4 w-4 mr-2" />
+              Edit Properties
+            </Link>
           </Button>
-        </Link>
+          <Button asChild>
+            <Link href={`/admin/components/${slug}/remap`}>
+              <Palette className="h-4 w-4 mr-2" />
+              Remap Styles
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Component Info */}

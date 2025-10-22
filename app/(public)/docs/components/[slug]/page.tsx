@@ -1,12 +1,15 @@
 import { getComponentBySlug } from '@/lib/db/components'
+import { getCurrentUser } from '@/lib/auth-helpers'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CodeBlockEnhanced } from '@/components/code-block-enhanced'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { ComponentPreviewReal } from '@/components/component-preview-real'
-import { Package, Layers, Code2 } from 'lucide-react'
+import { Package, Layers, Code2, Palette, Edit } from 'lucide-react'
 
 export default async function ComponentDetailPage({
   params,
@@ -15,6 +18,10 @@ export default async function ComponentDetailPage({
 }) {
   const { slug } = await params
   const component = await getComponentBySlug(slug)
+  const currentUser = await getCurrentUser()
+  
+  // Check if user can edit (admin or editor)
+  const canEdit = currentUser?.dbUser?.role === 'admin' || currentUser?.dbUser?.role === 'editor'
 
   if (!component) {
     notFound()
@@ -24,11 +31,29 @@ export default async function ComponentDetailPage({
     <div className="space-y-8">
       {/* Header */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className="gap-1">
-            <Layers className="h-3 w-3" />
-            {component.category}
-          </Badge>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="gap-1">
+              <Layers className="h-3 w-3" />
+              {component.category}
+            </Badge>
+          </div>
+          {canEdit && (
+            <div className="flex gap-2">
+              <Button asChild variant="outline" size="sm">
+                <Link href={`/admin/components/${slug}/properties`}>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit Properties
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="sm">
+                <Link href={`/admin/components/${slug}/remap`}>
+                  <Palette className="h-4 w-4 mr-2" />
+                  Remap Styles
+                </Link>
+              </Button>
+            </div>
+          )}
         </div>
         <div className="space-y-2">
           <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">

@@ -473,9 +473,9 @@ export function ThemeForm({ theme }: ThemeFormProps) {
       {/* Colors */}
       <Card>
         <CardHeader>
-          <CardTitle>Colors (Hex Format)</CardTitle>
+          <CardTitle>Colors (HSL Format)</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Use hex format (#000000) or &quot;transparent&quot;
+            Use HSL format (H S% L%) - Example: 221 83% 53%
           </p>
         </CardHeader>
         <CardContent>
