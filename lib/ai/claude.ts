@@ -270,6 +270,8 @@ IMPORTANT:
 - Instructions should guarantee the component works when copy-pasted
 - Include exact import paths
 - Show actual code examples users can run
+- Keep each example concise (under 200 characters)
+- Escape any quotes in code examples properly
 
 Return as JSON:
 {
@@ -284,11 +286,11 @@ Return as JSON:
   ]
 }
 
-Return ONLY valid JSON, no markdown.`
+CRITICAL: Return ONLY valid JSON with properly escaped strings. No markdown, no backticks.`
 
   const message = await anthropic.messages.create({
     model: 'claude-sonnet-4-20250514', // Claude 4.5 Sonnet - latest version
-    max_tokens: 1500,
+    max_tokens: 3000, // Increased to avoid truncation
     messages: [
       {
         role: 'user',
