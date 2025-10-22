@@ -51,7 +51,7 @@ export function InlineComponentPreview({ code, variants }: InlineComponentPrevie
             </div>
           )}
           <p className="text-xs text-muted-foreground mt-3">
-            💡 <strong>Tip:</strong> Click "Save Component" below to see the live preview with all variants
+            💡 <strong>Tip:</strong> Click &quot;Save Component&quot; below to see the live preview with all variants
           </p>
         </div>
       </div>
