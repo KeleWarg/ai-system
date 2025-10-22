@@ -21,7 +21,8 @@ export default async function ComponentDetailPage({
   const currentUser = await getCurrentUser()
   
   // Check if user can edit (admin or editor)
-  const canEdit = (currentUser?.dbUser as { role?: string } | null)?.role === 'admin' || (currentUser?.dbUser as { role?: string } | null)?.role === 'editor'
+  const userRole = (currentUser?.dbUser as { role?: string } | undefined)?.role
+  const canEdit = userRole === 'admin' || userRole === 'editor'
 
   if (!component) {
     notFound()
