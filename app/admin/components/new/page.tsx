@@ -272,9 +272,20 @@ export default function NewComponentPage() {
       console.log('📝 Docs response:', docsRes.status, docsRes.ok)
       
       if (!promptsRes.ok || !docsRes.ok) {
-        const errorData = await (promptsRes.ok ? docsRes : promptsRes).json().catch(() => ({}))
-        console.error('❌ Documentation generation failed:', errorData)
-        throw new Error(errorData.error || 'Failed to generate documentation')
+        const failedRes = promptsRes.ok ? docsRes : promptsRes
+        const failedType = promptsRes.ok ? 'docs' : 'prompts'
+        
+        let errorData: any = {}
+        try {
+          errorData = await failedRes.json()
+        } catch {
+          const errorText = await failedRes.text()
+          console.error(`❌ ${failedType} generation failed with non-JSON response:`, errorText.substring(0, 500))
+          throw new Error(`Failed to generate ${failedType}: ${errorText.substring(0, 200)}`)
+        }
+        
+        console.error(`❌ ${failedType} generation failed:`, errorData)
+        throw new Error(errorData.error || errorData.details || `Failed to generate ${failedType}`)
       }
       
       const prompts = await promptsRes.json()
