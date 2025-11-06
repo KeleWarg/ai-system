@@ -260,7 +260,7 @@ export default async function ComponentDetailPage({
                 <div className="space-y-2">
                   <h4 className="font-medium text-sm">Step 1: Copy the component code</h4>
                   <p className="text-xs text-fg-caption">
-                    Use the "Code" tab above to copy the component code, then save it to your project.
+                    Use the &ldquo;Code&rdquo; tab above to copy the component code, then save it to your project.
                   </p>
                   <CodeBlockEnhanced
                     code={`// Save to: components/ui/${component.slug}.tsx
