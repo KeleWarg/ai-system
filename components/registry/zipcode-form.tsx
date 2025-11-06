@@ -55,7 +55,7 @@ const buttonVariants = cva(
 );
 
 export interface ZipcodeFormProps 
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onSubmit'>,
     VariantProps<typeof zipcodeFormVariants> {
   title?: string;
   description?: string;
