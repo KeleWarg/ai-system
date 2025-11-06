@@ -43,6 +43,9 @@ next-env.d.ts
 # temp preview files
 components/registry/.temp/
 
+# generated package output (should not be committed)
+dist-package/
+
 # temporary documentation (keep locally, don't commit)
 # Exclude all MD files except README.md
 *.md
