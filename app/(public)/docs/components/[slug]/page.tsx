@@ -28,6 +28,10 @@ export default async function ComponentDetailPage({
     notFound()
   }
 
+  const dependencies = component.installation?.dependencies ?? []
+  const devDependencies = component.installation?.devDependencies ?? []
+  const hasDependencies = dependencies.length > 0 || devDependencies.length > 0
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -298,29 +302,26 @@ export default function MyPage() {
             </Card>
 
             {/* Dependencies */}
-            {(component.installation?.dependencies?.length > 0 ||
-              component.installation?.devDependencies?.length > 0) && (
+            {hasDependencies && (
               <Card>
                 <CardHeader>
                   <CardTitle>Required Dependencies</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {component.installation.dependencies &&
-                    component.installation.dependencies.length > 0 && (
+                  {dependencies.length > 0 && (
                       <div>
                         <h3 className="font-medium mb-2 text-sm">Dependencies</h3>
                         <CodeBlockEnhanced
-                          code={`npm install ${component.installation.dependencies.join(' ')}`}
+                          code={`npm install ${dependencies.join(' ')}`}
                           language="bash"
                         />
                       </div>
                     )}
-                  {component.installation.devDependencies &&
-                    component.installation.devDependencies.length > 0 && (
+                  {devDependencies.length > 0 && (
                       <div>
                         <h3 className="font-medium mb-2 text-sm">Dev Dependencies</h3>
                         <CodeBlockEnhanced
-                          code={`npm install -D ${component.installation.devDependencies.join(' ')}`}
+                          code={`npm install -D ${devDependencies.join(' ')}`}
                           language="bash"
                         />
                       </div>
