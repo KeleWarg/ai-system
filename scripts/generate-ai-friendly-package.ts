@@ -265,7 +265,7 @@ export * from './types'
   )
   
   // Generate AI-friendly README
-  const readme = `# @ai-design-system/components
+  const readme: string = `# @ai-design-system/components
 
 🤖 **AI-Friendly React Components** - Perfect for Bolt, Lovable, v0, Cursor, and other AI tools!
 
