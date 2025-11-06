@@ -10,7 +10,9 @@ import {
   Box, 
   Settings, 
   LogOut,
-  Loader2
+  Loader2,
+  Home,
+  ExternalLink
 } from 'lucide-react'
 import { Button } from './ui/button'
 import { ThemeSwitcherAdmin } from './theme-switcher-admin'
@@ -85,6 +87,20 @@ export function AdminSidebar() {
             </Link>
           )
         })}
+        
+        {/* View Public Site Link */}
+        <div className="pt-4 mt-4 border-t border-fg-stroke-ui">
+          <Link
+            href="/"
+            className={cn(
+              'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors text-fg-caption hover:bg-bg-accent/50 hover:text-fg-body'
+            )}
+          >
+            <Home className="h-5 w-5" />
+            <span>View Public Site</span>
+            <ExternalLink className="h-3 w-3 ml-auto" />
+          </Link>
+        </div>
       </nav>
 
       {/* Theme Switcher */}

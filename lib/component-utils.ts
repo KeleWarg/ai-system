@@ -43,6 +43,20 @@ export function isValidComponentName(name: string): boolean {
 }
 
 /**
+ * Convert any string to valid PascalCase component name
+ * Examples:
+ *   "Design System Layout" → "DesignSystemLayout"
+ *   "my-component" → "MyComponent"
+ *   "button_primary" → "ButtonPrimary"
+ */
+export function toPascalCase(name: string): string {
+  return name
+    .split(/[\s-_]+/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join('')
+}
+
+/**
  * Extract the exported component name from component code
  * Looks for patterns like:
  *   export const Button = ...

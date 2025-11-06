@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "prebuild": "npm run validate:colors && tsx scripts/prebuild-components.ts",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -22,7 +23,11 @@
     "test:part9": "tsx scripts/test-ai-integration.ts",
     "test:deploy": "tsx scripts/test-deployment-readiness.ts",
     "test:all": "npm run test:part1 && npm run test:part2 && npm run test:part3 && npm run test:part4 && npm run test:part5 && npm run test:part6 && npm run test:part7 && npm run test:part8 && npm run test:part9",
-    "prebuild": "npm run validate:colors"
+    "prebuild": "npm run validate:colors",
+    "generate-package": "tsx scripts/generate-package.ts",
+    "generate-package:ai": "tsx scripts/generate-ai-friendly-package.ts",
+    "security-audit": "tsx scripts/security-audit.ts",
+    "prepublish": "npm run security-audit"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.67.0",

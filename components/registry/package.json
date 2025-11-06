@@ -1,0 +1,32 @@
+{
+  "name": "@ai-design-system/components",
+  "version": "1.0.0",
+  "description": "AI-generated React components for the AI Design System",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./button": "./button.tsx"
+  },
+  "sideEffects": false,
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "@radix-ui/react-slot": "^1.2.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.1"
+  },
+  "keywords": [
+    "react",
+    "components",
+    "design-system",
+    "tailwind",
+    "typescript"
+  ],
+  "license": "MIT"
+}
+
+
+
+

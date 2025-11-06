@@ -175,16 +175,33 @@ ${propsText}${themeInfo}${spacingInfo}
    ✓ Use arbitrary values for non-standard sizes: h-[42px]
    ✓ DO NOT approximate (40px is NOT h-12)
 
-5. COLOR MAPPING (NO HEX COLORS ALLOWED):
-   ✓ Map spec colors to theme tokens:
-     • Primary/Brand → bg-primary-bg, text-primary-text
-     • Secondary → bg-secondary, text-fg-body
-     • Neutral/Gray → bg-bg-neutral, text-fg-caption
-     • Borders → border-fg-stroke-ui
-     • Hover states → hover:bg-primary-bg/90
-     • Disabled → opacity-50, cursor-not-allowed
-   ✓ NEVER use: bg-blue-500, #3B82F6, rgb()
-   ✓ ALWAYS use: bg-primary-bg, text-fg-body
+5. COLOR MAPPING (🚫 ABSOLUTELY NO HEX/ARBITRARY COLORS):
+   ⚠️ CRITICAL: You MUST use theme tokens. Hardcoded colors will BREAK theming.
+   
+   ✓ REQUIRED THEME TOKEN MAPPING:
+     • Container backgrounds → bg-neutral-subtle, bg-white, bg-neutral-light
+     • Primary buttons → bg-primary-bg + text-primary-text + hover:bg-primary-hover-bg
+     • Secondary buttons → bg-secondary-bg + border-secondary-border + text-secondary-text
+     • Text headings → text-fg-heading
+     • Text body/descriptions → text-fg-body or text-fg-caption
+     • Borders/strokes → border-fg-stroke-ui, border-fg-divider
+     • Input backgrounds → bg-white
+     • Disabled states → disabled:bg-primary-disabled-bg disabled:opacity-50
+   
+   ❌ FORBIDDEN (Will fail validation):
+     • bg-[#F5F5F3] → Use bg-neutral-subtle
+     • text-[#000000] → Use text-fg-heading
+     • text-gray-600 → Use text-fg-caption
+     • bg-blue-500 → Use bg-primary-bg
+     • border-[#E5E5E5] → Use border-fg-stroke-ui
+     • bg-[#007BFF] → Use bg-primary-bg
+   
+   ✅ CORRECT EXAMPLES:
+     Container: "bg-neutral-subtle border border-fg-stroke-ui rounded-lg p-6"
+     Heading: "text-fg-heading font-semibold text-lg"
+     Description: "text-fg-caption text-sm"
+     Button: "bg-primary-bg text-primary-text hover:bg-primary-hover-bg"
+     Input: "bg-white border-fg-stroke-ui text-fg-body"
 
 6. SHADCN/UI PATTERNS:
    ✓ Use React.forwardRef for ref forwarding
@@ -199,19 +216,32 @@ ${propsText}${themeInfo}${spacingInfo}
    ✓ Disabled state handling
 
 8. STRUCTURE:
-   ✓ Import statements at top
+   ✓ Import statements at top (MUST use @/lib/utils for cn utility)
+   ✓ Required imports:
+     import React from 'react'
+     import { cva, type VariantProps } from 'class-variance-authority'
+     import { cn } from '@/lib/utils'
    ✓ Type definitions before component
    ✓ cva() variant definition
    ✓ Component with React.forwardRef
    ✓ Export statement at bottom
    ✓ JSDoc comments with usage examples
 
-⚠️ VALIDATION: Component will be programmatically validated against spec sheet:
+⚠️ AUTOMATED VALIDATION (Component will be scanned):
 ✓ Variant count matches (expecting ${Object.keys(params.variants || {}).length})
-✓ No hex colors present
-✓ Spacing matches spec
-✓ Export name: ${params.name}
+✓ NO hex colors (#XXXXXX patterns) - Will REJECT if found
+✓ NO arbitrary color values (bg-[#...], text-[#...]) - Will REJECT if found
+✓ NO Tailwind color utilities (bg-blue-500, text-gray-600) - Will REJECT if found  
+✓ ONLY theme tokens allowed (bg-primary-bg, text-fg-body, etc.)
+✓ Spacing matches spec requirements
+✓ Export name exactly: ${params.name}
 ✓ TypeScript types present
+✓ All sections from spec implemented
+
+🔍 VALIDATION REGEX PATTERNS:
+- Hex colors: /#[0-9A-Fa-f]{3,6}/ → Will cause REJECTION
+- Arbitrary colors: /bg-\[#|text-\[#|border-\[#/ → Will cause REJECTION
+- Tailwind colors: /bg-(red|blue|green|gray|slate)-\d+/ → Will cause REJECTION
 
 Return ONLY the component code, no explanations.`
 

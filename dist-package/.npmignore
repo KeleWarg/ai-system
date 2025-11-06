@@ -1,0 +1,63 @@
+# Security: Exclude sensitive files
+.env*
+*.env
+*.local
+*.key
+*.pem
+*.secret
+
+# Exclude development files
+*.log
+*.tsbuildinfo
+.DS_Store
+node_modules/
+.git/
+.vscode/
+.idea/
+
+# Exclude source files (only include compiled/components)
+scripts/
+database/
+app/
+lib/
+hooks/
+middleware.ts
+next.config.ts
+tsconfig.json
+tailwind.config.ts
+postcss.config.mjs
+eslint.config.mjs
+
+# Exclude test files
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__/
+test/
+
+# Exclude build artifacts
+.next/
+out/
+dist/
+build/
+coverage/
+
+# Exclude documentation (keep README.md)
+*.md
+!README.md
+
+# Exclude config files
+.gitignore
+vercel.json
+.editorconfig
+.prettierrc
+
+# Only include what's needed
+# components/**/* - INCLUDED
+# types/**/* - INCLUDED
+# package.json - INCLUDED
+# README.md - INCLUDED
+
+
+

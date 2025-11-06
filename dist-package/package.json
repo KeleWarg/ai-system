@@ -1,0 +1,36 @@
+{
+  "name": "@ai-design-system/components",
+  "version": "1.0.0",
+  "description": "AI-generated React components from your design system",
+  "author": "Your Name",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/ai-design-system"
+  },
+  "homepage": "https://your-domain.com/docs/components",
+  "bugs": {
+    "url": "https://github.com/your-org/ai-design-system/issues"
+  },
+  "main": "./components/index.ts",
+  "types": "./components/index.ts",
+  "files": [
+    "components/**/*"
+  ],
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "@radix-ui/react-slot": "^1.2.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.1"
+  },
+  "keywords": [
+    "react",
+    "components",
+    "design-system",
+    "tailwind",
+    "ai-generated",
+    "typescript"
+  ],
+  "license": "MIT"
+}

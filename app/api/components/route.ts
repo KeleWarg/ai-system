@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
-import { isValidComponentName, extractComponentNameFromCode } from '@/lib/component-utils'
+import { isValidComponentName, extractComponentNameFromCode, toPascalCase } from '@/lib/component-utils'
 import { getComponents } from '@/lib/db/components'
 
 interface ComponentPayload {
@@ -116,14 +116,21 @@ export async function POST(req: NextRequest) {
       component_name = extracted
     }
     
-    // Validate component name format
+    // Auto-convert to PascalCase if needed
+    if (!isValidComponentName(component_name)) {
+      const originalName = component_name
+      component_name = toPascalCase(component_name)
+      console.log(`📝 Auto-converted component name: "${originalName}" → "${component_name}"`)
+    }
+    
+    // Validate the final name
     const isValid = isValidComponentName(component_name)
     console.log('🔵 Component name format validation:', component_name, 'valid:', isValid)
     
     if (!isValid) {
-      console.error('❌ Invalid component name format:', component_name)
+      console.error('❌ Invalid component name format after conversion:', component_name)
       return NextResponse.json(
-        { error: `Invalid component name: ${component_name}. Must start with uppercase letter and contain only alphanumeric characters.` },
+        { error: `Invalid component name: ${component_name}. Could not convert to valid PascalCase.` },
         { status: 400 }
       )
     }

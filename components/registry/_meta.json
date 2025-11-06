@@ -1,34 +1,10 @@
 {
+  "generatedAt": "2025-11-06T09:54:12.593Z",
+  "componentCount": 1,
   "components": [
     {
-      "slug": "button",
-      "name": "Button",
-      "variants": {
-        "variant": [
-          "primary",
-          "secondary",
-          "ghost",
-          "white"
-        ],
-        "size": [
-          "small",
-          "base",
-          "large"
-        ],
-        "state": [
-          "enabled",
-          "hover",
-          "focused",
-          "pressed",
-          "disabled"
-        ],
-        "icon": [
-          "none",
-          "left",
-          "right"
-        ]
-      },
-      "addedAt": "2025-10-22T17:37:21.904Z"
+      "slug": "zipcode-form",
+      "name": "ZipcodeForm"
     }
   ]
 }
