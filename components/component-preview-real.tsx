@@ -108,21 +108,49 @@ export function ComponentPreviewReal({
     }
 
     // Show state variants
-    if (variants.state && variants.state.includes('disabled')) {
-      examples.push(
-        <div key="state" className="space-y-4">
-          <h3 className="text-sm font-semibold text-fg-caption uppercase tracking-wide">
-            States
-          </h3>
-          <div className="flex flex-wrap gap-3">
-            <DynamicComponent>Default</DynamicComponent>
-            <DynamicComponent disabled>Disabled</DynamicComponent>
-          </div>
-          <p className="text-xs text-fg-caption">
-            Hover and focus states are interactive - try hovering over the components above
-          </p>
-        </div>
+    if (variants.state && variants.state.length > 0) {
+      // Filter out interactive states that can't be statically rendered
+      const staticStates = variants.state.filter(
+        (s) => !['hover', 'focus', 'focused', 'active'].includes(s.toLowerCase())
       )
+      
+      // Always show default if states exist
+      const statesToShow = ['default', ...staticStates.filter(s => s !== 'default')]
+      
+      if (statesToShow.length > 0) {
+        examples.push(
+          <div key="state" className="space-y-4">
+            <h3 className="text-sm font-semibold text-fg-caption uppercase tracking-wide">
+              States
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              {statesToShow.map((state) => {
+                const stateProps: Record<string, unknown> = {}
+                
+                // Map state names to component props
+                if (state === 'disabled') {
+                  stateProps.disabled = true
+                } else if (state === 'loading') {
+                  stateProps.loading = true
+                } else if (state !== 'default') {
+                  stateProps.state = state
+                }
+                
+                return (
+                  <DynamicComponent key={state} {...stateProps}>
+                    {state === 'default' ? 'Default' : state.charAt(0).toUpperCase() + state.slice(1)}
+                  </DynamicComponent>
+                )
+              })}
+            </div>
+            {(variants.state.includes('hover') || variants.state.includes('focus') || variants.state.includes('focused')) && (
+              <p className="text-xs text-fg-caption">
+                💡 Hover and focus states are interactive - try hovering over or focusing the components above
+              </p>
+            )}
+          </div>
+        )
+      }
     }
 
     // Show icon variants
